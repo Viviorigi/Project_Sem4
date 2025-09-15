@@ -35,6 +35,7 @@ namespace AspnetApi.Controllers
             _userManager = userManager;
         }
 
+        [HttpPost]
         public async Task<IActionResult> CreateComment(Comment comment)
         {
             _context.Comments.Add(comment);

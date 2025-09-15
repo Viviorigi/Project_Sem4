@@ -204,9 +204,10 @@ namespace AspnetApi.Controllers
             // Use these paths as needed
             return Ok(rootPath);
         }
-        [AllowAnonymous]
 
-        [Route("getimage/{fileName}")]
+        [AllowAnonymous]
+        [HttpGet("getimage/{fileName}")]
+        [Produces("image/jpeg")]
         public IActionResult GetImage(string fileName)
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);

@@ -1,10 +1,11 @@
-using AspnetApi.Common;
+﻿using AspnetApi.Common;
 using AspnetApi.Config;
 using AspnetApi.Configs;
 using AspnetApi.Data;
 using AspnetApi.Models;
 using AspnetApi.Services.Auth;
 using AspnetApi.Services.User;
+using Microsoft.OpenApi.Models;
 using AspnetApi.Utils;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -86,6 +87,42 @@ builder.Services.AddSingleton(new TokenValidationParameters
 // Configure AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+/* ---------------- Swagger + JWT ---------------- */
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "AspnetApi",
+        Version = "v1",
+        Description = "API documentation with JWT auth"
+    });
+
+    // JWT bearer in Swagger (Authorize button)
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Enter JWT like: Bearer {token}",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+        }
+    };
+
+    c.AddSecurityDefinition("Bearer", securityScheme);
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { securityScheme, new string[]{} }
+    });
+
+});
+
+
 // Build the app
 var app = builder.Build();
 
@@ -94,6 +131,14 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins"); // Apply CORS policy
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Swagger (bật mọi môi trường cho tiện dev)
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "AspnetApi v1");
+    c.RoutePrefix = "swagger"; // -> /swagger
+});
 
 // Seed Identity data
 using (var scope = app.Services.CreateScope())

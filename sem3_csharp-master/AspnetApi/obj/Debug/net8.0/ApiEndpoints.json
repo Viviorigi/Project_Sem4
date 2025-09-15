@@ -142,7 +142,7 @@
     "ContainingType": "AspnetApi.Controllers.AccountController",
     "Method": "GetImage",
     "RelativePath": "api/Account/getimage/{fileName}",
-    "HttpMethod": "",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -359,7 +359,7 @@
     "ContainingType": "AspnetApi.Controllers.AttributeOptionController",
     "Method": "GetOptionsByAttributeId",
     "RelativePath": "api/AttributeOption/getbyattribute/{id}",
-    "HttpMethod": "",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -672,7 +672,7 @@
     "ContainingType": "AspnetApi.Controllers.CommentController",
     "Method": "CreateComment",
     "RelativePath": "api/Comment",
-    "HttpMethod": "",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\doanky4\\btl\\be\\sem3_csharp\\AspnetApi\\AspnetApi.csproj": {}
+    "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem3_csharp-master\\AspnetApi\\AspnetApi.csproj": {}
   },
   "projects": {
-    "D:\\doanky4\\btl\\be\\sem3_csharp\\AspnetApi\\AspnetApi.csproj": {
+    "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem3_csharp-master\\AspnetApi\\AspnetApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\doanky4\\btl\\be\\sem3_csharp\\AspnetApi\\AspnetApi.csproj",
+        "projectUniqueName": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem3_csharp-master\\AspnetApi\\AspnetApi.csproj",
         "projectName": "AspnetApi",
-        "projectPath": "D:\\doanky4\\btl\\be\\sem3_csharp\\AspnetApi\\AspnetApi.csproj",
-        "packagesPath": "C:\\Users\\Namnv\\.nuget\\packages\\",
-        "outputPath": "D:\\doanky4\\btl\\be\\sem3_csharp\\AspnetApi\\obj\\",
+        "projectPath": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem3_csharp-master\\AspnetApi\\AspnetApi.csproj",
+        "packagesPath": "C:\\Users\\dn281\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem3_csharp-master\\AspnetApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Namnv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\dn281\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -87,6 +87,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.4, )"
             }
           },
           "imports": [
@@ -108,7 +112,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

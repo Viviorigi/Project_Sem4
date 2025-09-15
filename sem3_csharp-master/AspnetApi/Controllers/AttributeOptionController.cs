@@ -130,7 +130,7 @@ namespace AspnetApi.Controllers
 
         }
         [Authorize(Roles = "Admin, Manager")]
-        [Route("getbyattribute/{id}")]
+        [HttpGet("getbyattribute/{id}")]
         public async Task<IActionResult> GetOptionsByAttributeId(int id)
         {
             var items = await _context.AttributeOptions

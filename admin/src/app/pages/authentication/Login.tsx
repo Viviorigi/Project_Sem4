@@ -82,13 +82,17 @@ export default function Login() {
     }
     dispatch(setLoading(true));
     AuthService.getInstance().login(loginRequest).then((resp: any) => {
+      console.log(resp);
+      
       if (resp) {
         dispatch(setLoading(false))
         const expires = new Date();
         expires.setDate(expires.getDate() + AuthConstant.EXPIRES_TOKEN)
-        cookie.set(AuthConstant.ACCESS_TOKEN, resp.data.jwt, { path: '/', expires: expires })
-        cookie.set('fullName', resp.data.fullName)
-        cookie.set('avatar', resp.data.avatar)
+        cookie.set(AuthConstant.ACCESS_TOKEN, resp.data.result.accessToken, { path: '/', expires: expires })
+        console.log(cookie.get(AuthConstant.ACCESS_TOKEN));
+        
+        // cookie.set('fullName', resp.data.fullName)
+        // cookie.set('avatar', resp.data.avatar)
         navigate('/')
         if (rememberMe) {
           cookie.set('username', resp.data.username)
@@ -113,7 +117,7 @@ export default function Login() {
         <div className="container">
           <div className="row flex-center min-vh-100 py-5">
             <div className="col-sm-10 col-md-8 col-lg-5 col-xl-5 col-xxl-3"><label className="d-flex flex-center text-decoration-none mb-4" >
-              <div className="d-flex align-items-center fw-bolder fs-5 d-inline-block"><img src="../../../assets/img/icons/book.avif" alt="phoenix" width={80} /></div>
+              <div className="d-flex align-items-center fw-bolder fs-5 d-inline-block"><img src="../../../assets/img/icons/logo.png" alt="phoenix" width={80} /></div>
             </label>
               <div className="text-center mb-7">
                 <h3 className="text-1000">Đăng nhập Admin</h3>

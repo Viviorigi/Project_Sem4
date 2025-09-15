@@ -3,7 +3,7 @@ import Layout from "../comp/layouts/Layout";
 import DashBoard from '../pages/DashBoard';
 import Category from '../pages/category/Category';
 import Book from '../pages/book/Book';
-import Student from '../pages/student/Student';
+import Student from '../pages/customer/Customer';
 import Order from '../pages/order/Order';
 import Return from '../pages/return/Return';
 import AuthGuard from '../guard/AuthGuard';
@@ -19,16 +19,16 @@ export const indexRouter: any = {
         <AuthGuard><Layout /> </AuthGuard>
     ),
     children: [
-        { path: 'dashboard', element: <RoleGuard role="ADMIN"> <DashBoard /> </RoleGuard> },
-        { path: 'category', element: <RoleGuard role="ADMIN"><Category /></RoleGuard>  },
-        { path: 'book', element: <RoleGuard role="ADMIN"><Book /> </RoleGuard> },
-        { path: 'student', element: <RoleGuard role="ADMIN"><Student /> </RoleGuard> },
-        { path: 'order', element: <RoleGuard role="ADMIN"><Order /></RoleGuard>  },
-        { path: 'returnbook', element: <RoleGuard role="ADMIN"><Return /></RoleGuard> },
-        { path: 'banner', element: <RoleGuard role="ADMIN"><Banner /></RoleGuard> },
-        { path: 'contact', element: <RoleGuard role="ADMIN"><Contact /></RoleGuard> },
-        { path: 'about', element: <RoleGuard role="ADMIN"><About /></RoleGuard> },
-        { path: 'notification', element: <RoleGuard role="ADMIN"><Notification /></RoleGuard> },
-        { path: 'feedback', element: <RoleGuard role="ADMIN"><FeedBack /></RoleGuard> }
+        { path: 'dashboard', element:  <DashBoard />  },
+        { path: 'category', element: <Category />  },
+        { path: 'book', element: <Book />  },
+        { path: 'customer', element: <Student />  },
+        { path: 'order', element: <Order />  },
+        { path: 'returnbook', element: <Return /> },
+        { path: 'banner', element: <Banner /> },
+        { path: 'contact', element: <Contact /> },
+        { path: 'about', element: <About /> },
+        { path: 'notification', element: <Notification /> },
+        { path: 'feedback', element: <FeedBack /> }
     ],
 };

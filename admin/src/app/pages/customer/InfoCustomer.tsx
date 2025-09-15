@@ -13,8 +13,17 @@ export default function InfoStudent(props: any) {
     return format(new Date(date), "dd/MM/yyyy");
   };
   const formatDate = (date: any) => {
-    return format(new Date(date), 'dd/MM/yyyy, hh:mm');
-  };
+  if (!date) {
+    return 'N/A'; // hoặc 'N/A', tuỳ bạn muốn hiển thị gì
+  }
+
+  try {
+    return format(new Date(date), 'dd/MM/yyyy');
+  } catch (e) {
+    console.error('Invalid date:', date, e);
+    return '';
+  }
+};
   const dispatch = useAppDispatch();
 
   const deleteUser = (id: number) => {
@@ -55,7 +64,7 @@ export default function InfoStudent(props: any) {
         </div>
         <div className="col-auto">
           <div className="row g-2 g-sm-3">
-            <div className="col-auto"><button className="btn btn-phoenix-danger" onClick={() => deleteUser(info.userUid)}><i className="fa-solid fa-trash"></i> Xóa Sinh viên</button></div>
+            <div className="col-auto"><button className="btn btn-phoenix-danger" onClick={() => deleteUser(info.userUid)}><i className="fa-solid fa-trash"></i> Xóa Khách hàng</button></div>
           </div>
         </div>
       </div>
@@ -71,26 +80,18 @@ export default function InfoStudent(props: any) {
                   </div>
                   <div className="col-12 col-sm-auto mb-3">
                     <h3>{info.fullName}</h3>
-                    <p className="text-800">{formatDOB(info.dob)}</p>
+                    <p className="text-800">{formatDOB(info.birthday)}</p>
                   </div>
                 </div>
               </div>
               <div className="d-flex flex-between-center pt-4">
-                <div>
-                  <h6 className="mb-2 text-800">Vai trò</h6>
-                  <h4 className="fs-1 text-1000 mb-0">{info.roles}</h4>
-                </div>
-                <div>
-                  <h6 className="mb-2 text-800">Lớp</h6>
-                  <h4 className="fs-1 text-1000 mb-0">{info.className}</h4>
-                </div>
                 <div className="text-end">
                   <h6 className="mb-2 text-800">Ngày tạo</h6>
-                  <h4 className="fs-1 text-1000 mb-0">{formatDate(info.cre_dt)}</h4>
+                  <h4 className="fs-1 text-1000 mb-0">{formatDate(info.createdAt)}</h4>
                 </div>
                 <div className="text-end">
                   <h6 className="mb-2 text-800">Ngày cập nhật</h6>
-                  <h4 className="fs-1 text-1000 mb-0">{formatDate(info.upd_dt)}</h4>
+                  <h4 className="fs-1 text-1000 mb-0">{formatDate(info.updatedAt)}</h4>
                 </div>
               </div>
             </div>

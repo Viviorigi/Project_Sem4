@@ -7,13 +7,13 @@ import { AuthService } from "../../services/auth/AuthService";
 import { toast } from "react-toastify";
 import defaultPersonImage from "../../../assets/images/imagePerson.png"
 import noImageAvailable from "../../../assets/images/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg"
-export default function StudentForm(props: any) {
+export default function CustomerForm(props: any) {
   const { closeForm, onSave, user } = props;
   const [userSave, setUserSave] = useState<UserDTORequest>(
     new UserDTORequest()
   );
   const dispatch = useAppDispatch();  
-  // console.log(user);
+  console.log(user);
 
   useEffect(() => {
     if (user) {
@@ -68,8 +68,7 @@ export default function StudentForm(props: any) {
         email: prev.email || "",
         fullName: prev.fullName || "",
         address: prev.address || "",
-        className: prev.className || "",
-        dob: prev.dob || "",
+        birthday: prev.birthday || "",
         phone: prev.phone || "",
       };
     });
@@ -99,7 +98,7 @@ export default function StudentForm(props: any) {
       setUserState();
       return false;
     }
-    if (userSave.dob === undefined || userSave.dob.toString() === "") {
+    if (userSave.birthday === undefined || userSave.birthday.toString() === "") {
       setUserState();
       return false;
     }
@@ -116,12 +115,12 @@ export default function StudentForm(props: any) {
     if (!chk()) {
       return;
     }
-    const formData = new FormData();
+    // const formData = new FormData();
 
-    formData.append("userDTO", JSON.stringify(userSave));
-    if (file) {
-      formData.append("file", file);
-    }
+    // formData.append("userDTO", JSON.stringify(userSave));
+    // if (file) {
+    //   formData.append("file", file);
+    // }
     Swal.fire({
       title: `Confirm`,
       text:
@@ -139,7 +138,7 @@ export default function StudentForm(props: any) {
         if (user === null) {
           dispatch(setLoading(true));
           AuthService.getInstance()
-            .create(formData)
+            .create(userSave)
             .then((resp: any) => {
               if (resp) {
                 setTimeout(() => {
@@ -158,7 +157,7 @@ export default function StudentForm(props: any) {
         } else {
           dispatch(setLoading(true));
           AuthService.getInstance()
-            .update(formData)
+            .update(userSave)
             .then((resp: any) => {
               if (resp) {
                 setTimeout(() => {
@@ -180,7 +179,7 @@ export default function StudentForm(props: any) {
   };
   return (
     <div>
-      <h3>{user === null ? "Tạo mới Sinh viên" : "Cập nhật Sinh viên"}</h3>
+      <h3>{user === null ? "Tạo mới khách hàng" : "Cập nhật Khách hàng"}</h3>
       <div className="row">
         {/* Column 1 */}
         <div className="col-md-6 mb-5">
@@ -205,7 +204,7 @@ export default function StudentForm(props: any) {
               Tài khoản  không được để trống & tối thiểu 3 ký tự trở lên
             </div>
           </div>
-          {user === null && (
+         
             <div className="form-group">
               <label>
                 Mật khẩu <span className="text-danger">(*)</span>
@@ -226,7 +225,7 @@ export default function StudentForm(props: any) {
                 Mật khẩu không được để trống & tối thiểu 6 ký tự
               </div>
             </div>
-          )}
+          
 
           <div className="form-group">
             <label>
@@ -297,9 +296,9 @@ export default function StudentForm(props: any) {
               </label>
               <select
                 className="form-select"
-                value={userSave.isActive ? "true" : "false"}
+                value={userSave.status ? "true" : "false"}
                 onChange={handleActiveChange}
-                name="isActive"
+                name="status"
               >
                 <option value="true">Active</option>
                 <option value="false">InActive</option>
@@ -312,37 +311,17 @@ export default function StudentForm(props: any) {
         <div className="col-md-6">
           <div className="form-group">
             <label>
-              Lớp <span className="text-danger">(*)</span>
-            </label>
-            <input
-              type="text"
-              name="className"
-              className="form-control"
-              value={userSave?.className || ""}
-              onChange={handleChangeText}
-              placeholder="Nhập Lớp"
-            />
-            <div
-              className={`invalid-feedback ${userSave?.className?.toString() === "" ? "d-block" : ""
-                }`}
-              style={{ fontSize: "100%", color: "red" }}
-            >
-              Lớp không được để trống.
-            </div>
-          </div>
-          <div className="form-group">
-            <label>
               Ngày sinh <span className="text-danger">(*)</span>
             </label>
             <input
               type="date"
-              name="dob"
+              name="birthday"
               className="form-control"
-              value={userSave?.dob || ""}
+              value={userSave?.birthday || ""}
               onChange={handleChangeText}
             />
             <div
-              className={`invalid-feedback ${userSave?.dob?.toString() === "" ? "d-block" : ""
+              className={`invalid-feedback ${userSave?.birthday?.toString() === "" ? "d-block" : ""
                 }`}
               style={{ fontSize: "100%", color: "red" }}
             >

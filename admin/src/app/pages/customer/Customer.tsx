@@ -5,15 +5,15 @@ import { format } from 'date-fns';
 import { useAppDispatch } from '../../store/hook';
 import { setLoading } from '../../reducers/spinnerSlice';
 import { Dialog } from 'primereact/dialog';
-import StudentForm from './StudentForm';
+import CustomerForm from './CustomerForm';
 import Pagination from '../../comp/common/Pagination';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import defaultPersonImage from "../../../assets/images/imagePerson.png"
 import noImageAvailable from "../../../assets/images/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg"
-import InfoStudent from './InfoStudent';
+import InfoStudent from './InfoCustomer';
 
-export default function Student() {
+export default function Customer() {
   const [listUser, setListUser] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
@@ -36,9 +36,18 @@ export default function Student() {
   const formatDOB = (date: any) => {
     return format(new Date(date), "dd/MM/yyyy");
   };
-  const formatDate = (date: any) => {
-    return format(new Date(date), 'dd/MM/yyyy, hh:mm');
-  };
+const formatDate = (date: any) => {
+  if (!date) {
+    return 'N/A'; // hoặc 'N/A', tuỳ bạn muốn hiển thị gì
+  }
+
+  try {
+    return format(new Date(date), 'dd/MM/yyyy');
+  } catch (e) {
+    console.error('Invalid date:', date, e);
+    return '';
+  }
+};
 
   const prev = () => {
     if (userSearchParams.page > 1) {
@@ -88,7 +97,7 @@ export default function Student() {
       .then((resp: any) => {
         // dispatch(setLoading(false));
         if (resp.status === 200) {
-          setListUser(resp.data.users);
+          setListUser(resp.data.result);
           setTotalUsers(resp.data.totalUsers);
           setTotalPage(resp.data.totalPages);
         }
@@ -115,7 +124,7 @@ export default function Student() {
   const deleteUser = (id: number) => {
     Swal.fire({
       title: `Confirm`,
-      text: `Bạn có muốn xóa sinh viên này`,
+      text: `Bạn có muốn xóa sinh viên này `,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#89B449",
@@ -126,7 +135,7 @@ export default function Student() {
       if (result.value) {
         dispatch(setLoading(true));
         AuthService.getInstance()
-          .delete({ userUid: id })
+          .delete(id)
           .then((resp: any) => {
             dispatch(setLoading(false));
             setUserSearchParams({
@@ -150,7 +159,7 @@ export default function Student() {
         <div className='card mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white'>
           <div className="row g-2 mb-4">
             <div className="col-auto">
-              <h2 className="mt-4">Danh sách sinh viên</h2>
+              <h2 className="mt-4">Danh sách Khách hàng</h2>
             </div>
           </div>
           <div id="products" data-list="{&quot;valueNames&quot;:[&quot;customer&quot;,&quot;email&quot;,&quot;total-orders&quot;,&quot;total-spent&quot;,&quot;city&quot;,&quot;last-seen&quot;,&quot;last-order&quot;],&quot;page&quot;:10,&quot;pagination&quot;:true}">
@@ -159,7 +168,7 @@ export default function Student() {
                 <div className="col-auto">
                   <div className="search-box d-flex">
                     {/* search input */}
-                    <input className="form-control search-input search" type="search" placeholder="Tìm kiếm sinh viên" name="keySearch" aria-label="Search"
+                    <input className="form-control search-input search" type="search" placeholder="Tìm kiếm khách hàng" name="keySearch" aria-label="Search"
                       value={userSearchParams.keySearch || ""}
                       onChange={handleChangeSearch}
                       onKeyUp={handleKeyUpSearch} />
@@ -175,7 +184,7 @@ export default function Student() {
                 <div className="col-auto scrollbar overflow-hidden-y flex-grow">
                   <div className="col-auto">
                     <button className="btn btn-primary" onClick={addStudent}>
-                      <span className="fas fa-plus me-2" />Tạo mới sinh viên
+                      <span className="fas fa-plus me-2" />Tạo mới khách hàng
                     </button></div>
                 </div>
               </div>
@@ -194,7 +203,7 @@ export default function Student() {
                       <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>Địa chỉ</th>
                       <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>Ngày tạo</th>
                       <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>Ngày cập nhật</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '5%' }}>Vai Trò</th>
+                      {/* <th className="sort align-middle text-center" scope="col" style={{ width: '5%' }}>Vai Trò</th> */}
                       <th className="sort align-middle text-center" scope="col" style={{ width: '5%' }}>Trạng Thái</th>
                       <th className="sort align-middle text-center" scope="col" style={{ width: '12%' }}>Hành động</th>
                     </tr>
@@ -215,18 +224,18 @@ export default function Student() {
                         <td className="email align-middle white-space-nowrap ps-3">{u.email}</td>
                         <td className="total-orders align-middle white-space-nowrap fw-semi-bold text-end text-1000">{u.username}</td>
                         <td className="total-spent align-middle white-space-nowrap fw-bold text-end ps-3 text-1100">{u.phone}</td>
-                        <td className="city align-middle white-space-nowrap text-1000 ">{formatDOB(u.dob)}</td>
+                        <td className="city align-middle white-space-nowrap text-1000 ">{formatDOB(u.birthday)}</td>
                         <td className="last-seen align-middle white-space-nowrap text-700 ps-3">{u.address}</td>
-                        <td className="last-order align-middle white-space-nowrap text-700 text-end">{formatDate(u.cre_dt)}</td>
-                        <td className="last-order align-middle white-space-nowrap text-700 text-end">{formatDate(u.upd_dt)}</td>
-                        <td className="last-order align-middle white-space-nowrap text-700 text-center"><span className={u.roles == 'STUDENT' ? 'badge badge-phoenix fs--2 badge-phoenix-secondary' : 'badge badge-phoenix fs--2 badge-phoenix-info'}><span className="badge-label">{u.roles}</span></span></td>
+                        <td className="last-order align-middle white-space-nowrap text-700 text-end">{formatDate(u.createdAt)}</td>
+                        <td className="last-order align-middle white-space-nowrap text-700 text-end">{formatDate(u.updatedAt)}</td>
+                        {/* <td className="last-order align-middle white-space-nowrap text-700 text-center"><span className={u.roles == 'STUDENT' ? 'badge badge-phoenix fs--2 badge-phoenix-secondary' : 'badge badge-phoenix fs--2 badge-phoenix-info'}><span className="badge-label">{u.roles}</span></span></td> */}
                         <td className="last-order align-middle white-space-nowrap text-700 text-end">
-                          <span className={u.isActive ? 'badge badge-phoenix fs--2 badge-phoenix-success' : 'badge badge-phoenix fs--2 badge-phoenix-danger'}><span className="badge-label">{u.isActive ? "Active" : "InActive"}</span></span>
+                          <span className={u.status ? 'badge badge-phoenix fs--2 badge-phoenix-success' : 'badge badge-phoenix fs--2 badge-phoenix-danger'}><span className="badge-label">{u.status ? "Active" : "InActive"}</span></span>
                         </td>
                         <td className="last-order align-middle white-space-nowrap text-700 "> 
                           <button className="btn btn-phoenix-secondary me-1 mb-1" type="button" onClick={() => info(u)}><i className="far fa-eye"></i></button>
                           <button className="btn btn-phoenix-primary me-1 mb-1" type="button" onClick={() => editUser(u)}><i className="fa-solid fa-pen"></i></button>
-                          <button className="btn btn-phoenix-danger me-1 mb-1" type="button" onClick={() => deleteUser(u.userUid)}><i className="fa-solid fa-trash"></i></button>
+                          <button className="btn btn-phoenix-danger me-1 mb-1" type="button" onClick={() => deleteUser(u.id)}><i className="fa-solid fa-trash"></i></button>
                         </td>
                       </tr>
                     })}
@@ -249,7 +258,7 @@ export default function Student() {
               visible={open}
               onHide={() => handleClickClose()}
             >
-              <StudentForm
+              <CustomerForm
                 user={userRef.current}
                 closeForm={handleClickClose}
                 onSave={() => {

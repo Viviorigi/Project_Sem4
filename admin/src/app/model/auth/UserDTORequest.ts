@@ -1,12 +1,12 @@
 
 export class  UserDTORequest {
-  userUid?:number;
+  id?:number;
   username?: string;
   password?: string;
   email?: string;
   fullName?: string;
-  dob?: string;  
-  isActive?:string;
+  birthday?: string;  
+  status?:string;
   className?: string;
   phone?: string;
   address?: string;

@@ -14,15 +14,15 @@ export class AuthService {
   }
 
   public login(login: any) {
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/auth/login`);
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/auth/login`);
     return axios.post(url, login, {
       headers: HeadersUtil.getHeaders()
     });
   }
 
   public getList(modelSearch: any) {
-    const params: RequestParam[] = ParamUtil.toRequestParams(modelSearch);
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/admin/getAll`, params);
+    // const params: RequestParam[] = ParamUtil.toRequestParams(modelSearch);
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/users`);
 
     return axios.get(url, {
       headers: HeadersUtil.getHeadersAuth()
@@ -39,22 +39,24 @@ export class AuthService {
   }
 
   public create(auth:any){
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/admin/create`);
-    return axios.post(url,auth, {
-      headers: HeadersUtil.getHeadersAuthFormData()
-    });
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/auth/register`);
+    return axios.post(url,auth);
+    // , {
+    //   headers: HeadersUtil.getHeadersAuthFormData()
+    // }
   }
   
   public update(auth:any){
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/admin/update`);
-    return axios.post(url,auth, {
-      headers: HeadersUtil.getHeadersAuthFormData()
+    
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/users/`+auth.id);
+    return axios.put(url,auth, {
+      headers: HeadersUtil.getHeadersAuth()
     });
   }
 
   public delete(id:any){
-    const params: RequestParam[] = ParamUtil.toRequestParams(id);
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/admin/delete`, params);
+    
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/users/`+ id );
 
     return axios.delete(url, {
       headers: HeadersUtil.getHeadersAuth()

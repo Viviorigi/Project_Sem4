@@ -34,7 +34,6 @@ public class PreFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        log.info("---------- doFilterInternal ----------");
 
         final String authorization = request.getHeader(AUTHORIZATION);
 

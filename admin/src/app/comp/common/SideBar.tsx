@@ -16,8 +16,8 @@ export default function SideBar() {
                                 <div className="nav-item-wrapper">
                                     <div className="parent-wrapper mt-5 label-1">
                                         <ul className="nav " id="nv-home">
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/student" ? "nav-link active" : "nav-link"} to="student" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-regular fa-user"></i> Quản lý Sinh viên</span></div>
+                                            <li className="nav-item mb-2"><Link className={location.pathname === "/customer" ? "nav-link active" : "nav-link"} to="customer" >
+                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-regular fa-user"></i> Quản lý Khách Hàng </span></div>
                                             </Link>
                                             </li>
                                             <li className="nav-item mb-2"><Link className={location.pathname === "/category" ? "nav-link active" : "nav-link"} to="category" >

@@ -20,5 +20,13 @@ public class UserResponse {
 
     private String phone;
 
+    private String address;
+
     private Date birthday;
+
+    private Date createdAt;
+
+    private Date updatedAt;
+
+    private boolean status;
 }

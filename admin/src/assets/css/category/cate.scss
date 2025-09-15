@@ -1,0 +1,12 @@
+/* CSS in your styles */
+.truncated-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;  
+  }
+  
+
+.test{
+    color: red;
+}

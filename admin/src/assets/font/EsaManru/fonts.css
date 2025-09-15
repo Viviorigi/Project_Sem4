@@ -1,0 +1,33 @@
+
+@font-face {
+    font-family: 'EsaManru';
+    font-weight: 300;
+    font-style: normal;
+    src: url('EsaManruLight.eot');
+    src: url('EsaManruLight.eot?#iefix') format('embedded-opentype'),
+        url('EsaManruLight.woff2') format('woff2'),
+        url('EsaManruLight.woff') format('woff'),
+        url('EsaManruLight.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: 'EsaManru';
+    font-weight: 500;
+    font-style: normal;
+    src: url('EsaManruMedium.eot');
+    src: url('EsaManruMedium.eot?#iefix') format('embedded-opentype'),
+        url('EsaManruMedium.woff2') format('woff2'),
+        url('EsaManruMedium.woff') format('woff'),
+        url('EsaManruMedium.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: 'EsaManru';
+    font-weight: 700;
+    font-style: normal;
+    src: url('EsaManruBold.eot');
+    src: url('EsaManruBold.eot?#iefix') format('embedded-opentype'),
+        url('EsaManruBold.woff2') format('woff2'),
+        url('EsaManruBold.woff') format('woff'),
+        url('EsaManruBold.ttf') format("truetype");
+}

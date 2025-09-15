@@ -1,0 +1,11 @@
+
+export enum CheckoutStatus {
+  REQUESTED = 'REQUESTED',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  BORROWED = 'BORROWED',
+  EXPIRED = 'EXPIRED',
+  RETURNED = 'RETURNED',
+  PENALTY = 'PENALTY',
+}
+

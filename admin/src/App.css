@@ -1,0 +1,12 @@
+@import './assets/font/xeicon/xeicon.min.css';
+@import 'react-toastify/dist/ReactToastify.min.css';
+@import 'primereact/resources/themes/lara-light-indigo/theme.css';
+@import 'primereact/resources/primereact.min.css';
+@import 'primeicons/primeicons.css';
+
+.swal2-container {
+  z-index: 2500;
+}
+.ck-editor__editable {
+  min-height: 200px;
+}

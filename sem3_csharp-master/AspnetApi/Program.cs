@@ -5,13 +5,14 @@ using AspnetApi.Data;
 using AspnetApi.Models;
 using AspnetApi.Services.Auth;
 using AspnetApi.Services.User;
-using Microsoft.OpenApi.Models;
 using AspnetApi.Utils;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
+        RoleClaimType = ClaimTypes.Role,
         RequireExpirationTime = false
     };
 });

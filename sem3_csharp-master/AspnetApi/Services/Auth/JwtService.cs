@@ -69,7 +69,7 @@ namespace AspnetApi.Services.Auth
                 IsRevoked = false,
                 UserId = user.Id,
                 CreatedAt = DateTime.UtcNow,
-                ExpiredAt = DateTime.UtcNow,
+                ExpiredAt = DateTime.UtcNow.AddDays(7),
                 Token = GetRandomString() + Guid.NewGuid()
             };
             await _context.RefreshTokens.AddAsync(refreshToken);

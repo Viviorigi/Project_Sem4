@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { UserSearchParams } from '../../model/auth/UserSearchParams';
-import { AuthService } from '../../services/auth/AuthService';
 import { format } from 'date-fns';
 import { useAppDispatch } from '../../store/hook';
 import { setLoading } from '../../reducers/spinnerSlice';
@@ -12,119 +10,150 @@ import { toast } from 'react-toastify';
 import defaultPersonImage from "../../../assets/images/imagePerson.png"
 import noImageAvailable from "../../../assets/images/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg"
 import InfoStudent from './InfoCustomer';
+import { AuthService } from '../../services/auth/AuthService';
+import { CustomerSearch } from '../../model/auth/CustomerSearch';
+
+type ApiUser = {
+  id: string;
+  userName: string;
+  normalizedUserName: string;
+  email: string;
+  normalizedEmail: string;
+  emailConfirmed: boolean;
+  phoneNumber: string | null;
+  address: string | null;
+  avatar: string | null;
+  createdAt: string | null;
+  lockoutEnd: string | null;
+  // ... các field khác nếu cần
+};
+
+type ApiResponse = {
+  pageNumber: number;
+  pageSize: number;
+  totalRecords: number;
+  data: ApiUser[];
+};
 
 export default function Customer() {
-  const [listUser, setListUser] = useState([]);
+  const [listUser, setListUser] = useState<ApiUser[]>([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [open, setOpen] = useState(false);
   const [openDetail, setOpenDetail] = useState(false);
-  const [userSearchParams, setUserSearchParams] = useState<UserSearchParams>(
-    new UserSearchParams("", 1, 5, new Date().getTime())
+
+  const [userSearchParams, setUserSearchParams] = useState<CustomerSearch>(
+    new CustomerSearch("", 1, 5, Date.now(), "", "CreatedAt", "DESC", "")
   );
+
   const dispatch = useAppDispatch();
-  const indexOfLastItem = userSearchParams.page * userSearchParams.limit;
-  const indexOfFirstItem = indexOfLastItem - userSearchParams.limit;
+  const indexOfLastItem = userSearchParams.pageNumber * userSearchParams.pageSize;
+  const indexOfFirstItem = indexOfLastItem - userSearchParams.pageSize;
   const userRef = useRef<any>();
-  const handleClickClose = () => {
-    setOpen(false);
-  };
-  const handleClickCloseDetail = () => {
-    setOpenDetail(false);
-  };
 
-  const formatDOB = (date: any) => {
-    return format(new Date(date), "dd/MM/yyyy");
-  };
-const formatDate = (date: any) => {
-  if (!date) {
-    return 'N/A'; // hoặc 'N/A', tuỳ bạn muốn hiển thị gì
-  }
+  const handleClickClose = () => setOpen(false);
+  const handleClickCloseDetail = () => setOpenDetail(false);
 
-  try {
-    return format(new Date(date), 'dd/MM/yyyy');
-  } catch (e) {
-    console.error('Invalid date:', date, e);
-    return '';
-  }
-};
+  const formatDate = (date: any) => {
+    if (!date) return 'N/A';
+    try {
+      return format(new Date(date), 'dd/MM/yyyy');
+    } catch {
+      return 'N/A';
+    }
+  };
 
   const prev = () => {
-    if (userSearchParams.page > 1) {
-      setUserSearchParams(() => ({
-        ...userSearchParams,
-        page: userSearchParams.page - 1,
+    if (userSearchParams.pageNumber > 1) {
+      setUserSearchParams(prev => ({
+        ...prev,
+        pageNumber: prev.pageNumber - 1,
+        timer: new Date().getTime(), // để kích useEffect gọi API
       }));
     }
   };
+
   const next = () => {
-    if (userSearchParams.page < totalPage) {
-      setUserSearchParams(() => ({
-        ...userSearchParams,
-        page: userSearchParams.page + 1,
+    if (userSearchParams.pageNumber < totalPage) {
+      setUserSearchParams(prev => ({
+        ...prev,
+        pageNumber: prev.pageNumber + 1, // FIX: đúng key
+        timer: new Date().getTime(),
       }));
     }
   };
-  const handlePageClick = (pageNumber: any) => {
-    setUserSearchParams(() => ({
-      ...userSearchParams,
-      page: pageNumber,
+
+  const handlePageClick = (pageNumber: number) => {
+    setUserSearchParams(prev => ({
+      ...prev,
+      pageNumber, // FIX: đúng key
+      timer: new Date().getTime(),
     }));
   };
-  const handleChangeSearch = (event: any) => {
-    setUserSearchParams({
-      ...userSearchParams,
+
+  const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserSearchParams(prev => ({
+      ...prev,
+      // FIX: input name phải là "keyword"
       [event.target.name]: event.target.value,
-      page: 1
-    });
+      pageNumber: 1
+    }) as any);
   };
-  const handleKeyUpSearch = (e: any) => {
+
+  const handleKeyUpSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setUserSearchParams({
-        ...userSearchParams,
+      setUserSearchParams(prev => ({
+        ...prev,
         timer: new Date().getTime(),
-      });
+      }));
     }
   };
+
   useEffect(() => {
-    // dispatch(setLoading(true));
     AuthService.getInstance()
       .getList({
-        keySearch: userSearchParams.keySearch,
-        limit: userSearchParams.limit,
-        page: userSearchParams.page,
+        keyword: userSearchParams.keyword,
+        pageNumber: userSearchParams.pageNumber,
+        pageSize: userSearchParams.pageSize,
+        status: userSearchParams.status,
+        sortBy: userSearchParams.sortBy,
+        sortDir: userSearchParams.sortDir,
+        roleId: userSearchParams.roleId,
       })
       .then((resp: any) => {
-        // dispatch(setLoading(false));
         if (resp.status === 200) {
-          setListUser(resp.data.result);
-          setTotalUsers(resp.data.totalUsers);
-          setTotalPage(resp.data.totalPages);
+          const data: ApiResponse = resp.data;
+          setListUser(data.data);
+          setTotalUsers(data.totalRecords);
+
+          const pages = Math.max(1, Math.ceil((data.totalRecords ?? 0) / (data.pageSize || userSearchParams.pageSize || 1)));
+          setTotalPage(pages);
         }
       })
       .catch((err: any) => {
         console.error(err);
       })
-  }, [userSearchParams.timer, userSearchParams.page]);
+  }, [userSearchParams.timer, userSearchParams.pageNumber, userSearchParams.pageSize, userSearchParams.keyword]);
 
-  const addStudent = () => {
+  const addUser = () => {
     userRef.current = null;
     setOpen(true);
   };
 
-  const editUser = (u: any) => {
+  const editUser = (u: ApiUser) => {
     userRef.current = u;
     setOpen(true);
   };
-  const info = (u: any) => {
+
+  const info = (u: ApiUser) => {
     userRef.current = u;
     setOpenDetail(true);
   };
 
-  const deleteUser = (id: number) => {
+  const deleteUser = (id: string) => { // FIX: id là GUID string
     Swal.fire({
       title: `Confirm`,
-      text: `Bạn có muốn xóa sinh viên này `,
+      text: `Bạn có muốn xóa sinh viên này`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#89B449",
@@ -138,20 +167,27 @@ const formatDate = (date: any) => {
           .delete(id)
           .then((resp: any) => {
             dispatch(setLoading(false));
-            setUserSearchParams({
-              ...userSearchParams,
+            setUserSearchParams(prev => ({
+              ...prev,
               timer: new Date().getTime(),
-            });
-            toast.success(resp.data.message);
+            }));
+            toast.success(resp.data.message ?? "Đã xóa");
           })
           .catch((err: any) => {
             dispatch(setLoading(false));
-            toast.error(err.message);
+            toast.error(err.message ?? "Xóa thất bại");
           });
       }
     });
   };
 
+  // xác định trạng thái từ Identity fields
+  const getStatus = (u: ApiUser) => {
+    // lockoutEnd != null coi như Locked, ngược lại Active
+    const isLocked = !!u.lockoutEnd;
+    return isLocked ? { label: 'Locked', className: 'badge-phoenix-danger' }
+      : { label: 'Active', className: 'badge-phoenix-success' };
+  };
 
   return (
     <div>
@@ -162,128 +198,268 @@ const formatDate = (date: any) => {
               <h2 className="mt-4">Danh sách Khách hàng</h2>
             </div>
           </div>
-          <div id="products" data-list="{&quot;valueNames&quot;:[&quot;customer&quot;,&quot;email&quot;,&quot;total-orders&quot;,&quot;total-spent&quot;,&quot;city&quot;,&quot;last-seen&quot;,&quot;last-order&quot;],&quot;page&quot;:10,&quot;pagination&quot;:true}">
+
+          <div id="products">
             <div className="">
               <div className="row g-3">
                 <div className="col-auto">
                   <div className="search-box d-flex">
-                    {/* search input */}
-                    <input className="form-control search-input search" type="search" placeholder="Tìm kiếm khách hàng" name="keySearch" aria-label="Search"
-                      value={userSearchParams.keySearch || ""}
+                    {/* FIX: name="keyword" để map đúng */}
+                    <input
+                      className="form-control search-input search"
+                      type="search"
+                      placeholder="Tìm kiếm khách hàng"
+                      name="keyword"
+                      aria-label="Search"
+                      value={userSearchParams.keyword || ""}
                       onChange={handleChangeSearch}
-                      onKeyUp={handleKeyUpSearch} />
-                    <button className='btn btn-primary' onClick={() => {
-                      setUserSearchParams({
-                        ...userSearchParams,
-                        timer: new Date().getTime(),
-                      });
-                    }}><span className="fas fa-search " /></button>
+                      onKeyUp={handleKeyUpSearch}
+                    />
+                    <button
+                      className='btn btn-primary'
+                      onClick={() => {
+                        setUserSearchParams(prev => ({
+                          ...prev,
+                          timer: new Date().getTime(),
+                        }));
+                      }}>
+                      <span className="fas fa-search " />
+                    </button>
                   </div>
                 </div>
-                <div className="col-auto scrollbar overflow-hidden-y flex-grow-1"></div>
+                <div className="col-auto">
+                  <select
+                    className="form-select"
+                    value={userSearchParams.sortBy}
+                    onChange={(e) =>
+                      setUserSearchParams(prev => ({
+                        ...prev,
+                        sortBy: e.target.value,   // "CreatedAt" | "UserName" | "Email" (phụ thuộc backend)
+                        pageNumber: 1,
+                        timer: Date.now(),
+                      }))
+                    }
+                  >
+                    <option value="CreatedAt">Sắp xếp: Ngày tạo</option>
+                    <option value="UserName">Tài khoản</option>
+                    <option value="Email">Email</option>
+                  </select>
+                </div>
+
+                {/* Sort dir */}
+                <div className="col-auto">
+                  <select
+                    className="form-select"
+                    value={userSearchParams.sortDir}
+                    onChange={(e) =>
+                      setUserSearchParams(prev => ({
+                        ...prev,
+                        sortDir: e.target.value as "ASC" | "DESC",
+                        pageNumber: 1,
+                        timer: Date.now(),
+                      }))
+                    }
+                  >
+                    <option value="DESC">Giảm dần</option>
+                    <option value="ASC">Tăng dần</option>
+                  </select>
+                </div>
+
+                <div className="col-auto scrollbar overflow-hidden-y flex-grow-1" />
                 <div className="col-auto scrollbar overflow-hidden-y flex-grow">
                   <div className="col-auto">
-                    <button className="btn btn-primary" onClick={addStudent}>
-                      <span className="fas fa-plus me-2" />Tạo mới khách hàng
-                    </button></div>
+                    <button className="btn btn-primary" onClick={addUser}>
+                      <span className="fas fa-plus me-2" />
+                      Tạo mới khách hàng
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
+
             <div className=" border-bottom border-200 position-relative top-1">
               <div className="table-responsive scrollbar-overlay mx-n1 px-1">
                 <table className="table table-bordered fs--1 mb-2 mt-5">
                   <thead>
                     <tr>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '3%' }}>#</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '11%' }}>Sinh viên</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '13%' }}>EMAIL</th>
-                      <th className="sort align-middle text-end" scope="col" style={{ width: '9%' }}>Tài Khoản</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>SĐT</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '6%' }}>DOB</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>Địa chỉ</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>Ngày tạo</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>Ngày cập nhật</th>
-                      {/* <th className="sort align-middle text-center" scope="col" style={{ width: '5%' }}>Vai Trò</th> */}
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '5%' }}>Trạng Thái</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '12%' }}>Hành động</th>
+                      <th className="align-middle text-center" style={{ width: '4%' }}>#</th>
+                      <th className="align-middle text-center" style={{ width: '20%' }}>Khách Hàng</th>
+                      <th className="align-middle text-center" style={{ width: '20%' }}>EMAIL</th>
+                      <th className="align-middle text-center" style={{ width: '12%' }}>SĐT</th>
+                      <th className="align-middle text-center" style={{ width: '15%' }}>Địa chỉ</th>
+                      <th className="align-middle text-center" style={{ width: '12%' }}>Ngày tạo</th>
+                      <th className="align-middle text-center" style={{ width: '7%' }}>Trạng Thái</th>
+                      <th className="align-middle text-center" style={{ width: '10%' }}>Hành động</th>
                     </tr>
                   </thead>
-                  <tbody className="list" id="customers-table-body">
-                    {listUser.map((u: any, index: number) => {
-                      return <tr className="hover-actions-trigger btn-reveal-trigger position-static" key={u.userUid} >
-                        <td className='align-middle white-space-nowrap  text-700 text-end pe-3'>{indexOfFirstItem + index + 1}</td>
-                        <td className="customer align-middle white-space-nowrap pe-5"><div className="d-flex align-items-center text-1100">
-                          <div className="avatar avatar-m">
-                            <img className="rounded-circle" src={u.avatar ? `http://localhost:8080/api/auth/getImage?atchFleSeqNm=${u.avatar}` : defaultPersonImage} alt="PersonAvatar" onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.onerror = null; // Prevent infinite loop in case fallback image also fails
-                              target.src = noImageAvailable; // Set the fallback image
-                            }} /></div>
-                          <p className="mb-0 ms-3 text-1100 fw-bold">{u.fullName}</p>
-                        </div></td>
-                        <td className="email align-middle white-space-nowrap ps-3">{u.email}</td>
-                        <td className="total-orders align-middle white-space-nowrap fw-semi-bold text-end text-1000">{u.username}</td>
-                        <td className="total-spent align-middle white-space-nowrap fw-bold text-end ps-3 text-1100">{u.phone}</td>
-                        <td className="city align-middle white-space-nowrap text-1000 ">{formatDOB(u.birthday)}</td>
-                        <td className="last-seen align-middle white-space-nowrap text-700 ps-3">{u.address}</td>
-                        <td className="last-order align-middle white-space-nowrap text-700 text-end">{formatDate(u.createdAt)}</td>
-                        <td className="last-order align-middle white-space-nowrap text-700 text-end">{formatDate(u.updatedAt)}</td>
-                        {/* <td className="last-order align-middle white-space-nowrap text-700 text-center"><span className={u.roles == 'STUDENT' ? 'badge badge-phoenix fs--2 badge-phoenix-secondary' : 'badge badge-phoenix fs--2 badge-phoenix-info'}><span className="badge-label">{u.roles}</span></span></td> */}
-                        <td className="last-order align-middle white-space-nowrap text-700 text-end">
-                          <span className={u.status ? 'badge badge-phoenix fs--2 badge-phoenix-success' : 'badge badge-phoenix fs--2 badge-phoenix-danger'}><span className="badge-label">{u.status ? "Active" : "InActive"}</span></span>
-                        </td>
-                        <td className="last-order align-middle white-space-nowrap text-700 "> 
-                          <button className="btn btn-phoenix-secondary me-1 mb-1" type="button" onClick={() => info(u)}><i className="far fa-eye"></i></button>
-                          <button className="btn btn-phoenix-primary me-1 mb-1" type="button" onClick={() => editUser(u)}><i className="fa-solid fa-pen"></i></button>
-                          <button className="btn btn-phoenix-danger me-1 mb-1" type="button" onClick={() => deleteUser(u.id)}><i className="fa-solid fa-trash"></i></button>
-                        </td>
-                      </tr>
-                    })}
 
+                  <tbody className="list" id="customers-table-body">
+                    {listUser.map((u, index) => {
+                      const status = getStatus(u);
+                      const displayName = u.userName || u.email || 'N/A';
+                      const emailText = u.email || 'N/A';
+                      const phoneText = u.phoneNumber || 'N/A';
+                      const addressText = u.address || 'N/A';
+
+                      return (
+                        <tr className="hover-actions-trigger btn-reveal-trigger position-static" key={u.id}>
+                          {/* # */}
+                          <td className="align-middle white-space-nowrap text-700 text-end pe-3">
+                            {indexOfFirstItem + index + 1}
+                          </td>
+
+                          {/* Khách hàng (avatar + tên) */}
+                          <td className="customer align-middle pe-5">
+                            <div className="d-flex align-items-center text-1100">
+                              <div className="avatar avatar-m">
+                                <img
+                                  className="rounded-circle"
+                                  src={
+                                    u.avatar
+                                      ? `http://localhost:5069/api/Account/getImage/${u.avatar}`
+                                      : defaultPersonImage
+                                  }
+                                  alt="Avatar"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.onerror = null;
+                                    target.src = defaultPersonImage;
+                                  }}
+                                />
+                              </div>
+                              <p className="mb-0 ms-3 text-1100 fw-bold text-truncate" style={{ maxWidth: 220 }} title={displayName}>
+                                {displayName}
+                              </p>
+                            </div>
+                          </td>
+
+                          {/* Email */}
+                          <td className="email align-middle ps-3">
+                            {u.email ? (
+                              <a
+                                href={`mailto:${u.email}`}
+                                className="text-decoration-none text-1100 text-truncate d-inline-block"
+                                style={{ maxWidth: 240 }}
+                                title={emailText}
+                              >
+                                {emailText}
+                              </a>
+                            ) : (
+                              <span className="text-700">N/A</span>
+                            )}
+                          </td>
+
+                          {/* SĐT */}
+                          <td className="align-middle text-center fw-bold text-1100">
+                            {phoneText}
+                          </td>
+
+                          {/* Địa chỉ */}
+                          <td className="align-middle ps-3">
+                            <span
+                              className="text-700 d-inline-block text-truncate"
+                              style={{ maxWidth: 260 }}
+                              title={addressText}
+                            >
+                              {addressText}
+                            </span>
+                          </td>
+
+                          {/* Ngày tạo */}
+                          <td className="align-middle text-center text-700">
+                            {formatDate(u.createdAt)}
+                          </td>
+
+                          {/* Trạng thái */}
+                          <td className="align-middle text-center">
+                            <span className={`badge badge-phoenix fs--2 ${status.className}`}>
+                              <span className="badge-label">{status.label}</span>
+                            </span>
+                          </td>
+
+                          {/* Hành động */}
+                          <td className="align-middle text-center">
+                            <div className="btn-group" role="group" aria-label="Actions">
+                              <button
+                                className="btn btn-phoenix-secondary me-1 mb-1"
+                                type="button"
+                                onClick={() => info(u)}
+                                title="Xem chi tiết"
+                              >
+                                <i className="far fa-eye"></i>
+                              </button>
+                              <button
+                                className="btn btn-phoenix-primary me-1 mb-1"
+                                type="button"
+                                onClick={() => editUser(u)}
+                                title="Chỉnh sửa"
+                              >
+                                <i className="fa-solid fa-pen"></i>
+                              </button>
+                              <button
+                                className="btn btn-phoenix-danger me-1 mb-1"
+                                type="button"
+                                onClick={() => deleteUser(u.id)}
+                                title="Xóa"
+                              >
+                                <i className="fa-solid fa-trash"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
+
                 </table>
               </div>
+
               <div className="row align-items-center justify-content-between py-2 pe-0 fs--1">
                 <div className="col-auto d-flex">
-                  <p className="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"><span className='fw-bold'>Tổng số sinh viên: </span>  {totalUsers} </p>
+                  <p className="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900">
+                    <span className='fw-bold'>Tổng số khách hàng: </span> {totalUsers}
+                  </p>
                 </div>
                 <div className="col-auto d-flex">
-                  <Pagination totalPage={totalPage} currentPage={userSearchParams.page} handlePageClick={handlePageClick} prev={prev} next={next} />
+                  <Pagination
+                    totalPage={totalPage}
+                    currentPage={userSearchParams.pageNumber}
+                    handlePageClick={handlePageClick}
+                    prev={prev}
+                    next={next}
+                  />
                 </div>
               </div>
             </div>
-            <Dialog
-              baseZIndex={2000}
-              style={{ width: "1150px" }}
-              visible={open}
-              onHide={() => handleClickClose()}
-            >
+
+            <Dialog baseZIndex={2000} style={{ width: "1150px" }} visible={open} onHide={handleClickClose}>
               <CustomerForm
                 user={userRef.current}
                 closeForm={handleClickClose}
                 onSave={() => {
-                  setUserSearchParams((prev) => ({
-                    ...prev,
-                    timer: new Date().getTime(),
-                  }));
+                  setUserSearchParams(prev => ({ ...prev, timer: new Date().getTime() }));
                 }}
               />
             </Dialog>
-            <Dialog
-              baseZIndex={2000}
-              style={{ width: "1200px" }}
-              visible={openDetail}
-              onHide={() => handleClickCloseDetail()}
-            >
-              <InfoStudent info={userRef.current} setUserSearchParams={setUserSearchParams} closeDetail={handleClickCloseDetail} />
-            </Dialog>
 
+            <Dialog baseZIndex={2000} style={{ width: "1200px" }} visible={openDetail} onHide={handleClickCloseDetail}>
+              <InfoStudent
+                info={userRef.current}
+                setUserSearchParams={setUserSearchParams}
+                closeDetail={handleClickCloseDetail}
+              />
+            </Dialog>
           </div>
         </div>
+
         <footer className="footer position-absolute">
           <div className="row g-0 justify-content-between align-items-center h-100">
             <div className="col-12 col-sm-auto text-center">
-              <p className="mb-0 mt-2 mt-sm-0 text-900">ATWOM BOOk<span className="d-none d-sm-inline-block" /><span className="d-none d-sm-inline-block mx-1">|</span><br className="d-sm-none" />2024 ©</p>
+              <p className="mb-0 mt-2 mt-sm-0 text-900">
+                Admin<span className="d-none d-sm-inline-block" />
+                <span className="d-none d-sm-inline-block mx-1">|</span>
+                <br className="d-sm-none" />2025 ©
+              </p>
             </div>
             <div className="col-12 col-sm-auto text-center">
               <p className="mb-0 text-600">v1.1.0</p>
@@ -291,7 +467,6 @@ const formatDate = (date: any) => {
           </div>
         </footer>
       </div>
-
     </div>
   )
 }

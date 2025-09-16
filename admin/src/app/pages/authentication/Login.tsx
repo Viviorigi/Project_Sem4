@@ -26,12 +26,12 @@ export default function Login() {
   };
 
   useEffect(() => {
-    const storedUsername = cookie.get("username");
+    const storedEmail = cookie.get("email");
     const storedPassword = cookie.get("password");
-    if (storedUsername) {
+    if (storedEmail) {
       setLoginRequest(prev => ({
         ...prev,
-        username: storedUsername
+        email: storedEmail
       }));
     }
     if(storedPassword) {
@@ -50,13 +50,13 @@ export default function Login() {
     setLoginRequest((prev: LoginRequest) => {
       return {
         ...prev,
-        username: prev.username || "",
+        email: prev.email || "",
         password: prev.password || ""
       };
     });
   };
   const chk = () => {
-    if (loginRequest.username === undefined || loginRequest.username === "") {
+    if (loginRequest.email === undefined || loginRequest.email === "") {
       setLoginState();
       return false;
     }
@@ -88,17 +88,17 @@ export default function Login() {
         dispatch(setLoading(false))
         const expires = new Date();
         expires.setDate(expires.getDate() + AuthConstant.EXPIRES_TOKEN)
-        cookie.set(AuthConstant.ACCESS_TOKEN, resp.data.result.accessToken, { path: '/', expires: expires })
+        cookie.set(AuthConstant.ACCESS_TOKEN, resp.data.token, { path: '/', expires: expires })
         console.log(cookie.get(AuthConstant.ACCESS_TOKEN));
         
         // cookie.set('fullName', resp.data.fullName)
         // cookie.set('avatar', resp.data.avatar)
         navigate('/')
         if (rememberMe) {
-          cookie.set('username', resp.data.username)
+          cookie.set('email', loginRequest.email)
           cookie.set('password', encryptPassword(loginRequest.password,'1234'), { expires: expires})
         } else {
-          cookie.remove('username')
+          cookie.remove('email')
           cookie.remove('password')
         };
       }
@@ -124,10 +124,10 @@ export default function Login() {
                 <h5 className="text-1000 text-danger">{msg}</h5>
               </div>
               <div className="mb-3 text-start"><label className="form-label" htmlFor="email">Tài khoản</label>
-                <div className="form-icon-container"><input className="form-control form-icon-input" id="email" value={loginRequest.username || ""}
-                  onChange={handleChangeText} name='username' type="text" placeholder="Username" /><span className="fas fa-user text-900 fs--1 form-icon" /></div>
+                <div className="form-icon-container"><input className="form-control form-icon-input" id="email" value={loginRequest.email || ""}
+                  onChange={handleChangeText} name='email' type="text" placeholder="Email" /><span className="fas fa-user text-900 fs--1 form-icon" /></div>
                 <div
-                  className={`invalid-feedback ${loginRequest.username?.toString() === "" ? "d-block" : ""}`}
+                  className={`invalid-feedback ${loginRequest.email?.toString() === "" ? "d-block" : ""}`}
                   style={{ fontSize: "100%", color: "red" }}
                 >
                   Tài khoản không được để trống

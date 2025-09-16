@@ -12,7 +12,7 @@ import Banner from '../pages/banner/Banner';
 import Contact from '../pages/contact/Contact';
 import About from '../pages/about/About';
 import FeedBack from '../pages/feedback/FeedBack';
-import Notification from '../pages/notification/Notification';
+// import Notification from '../pages/notification/Notification';
 export const indexRouter: any = {
     path: '',
     element: (
@@ -28,7 +28,7 @@ export const indexRouter: any = {
         { path: 'banner', element: <Banner /> },
         { path: 'contact', element: <Contact /> },
         { path: 'about', element: <About /> },
-        { path: 'notification', element: <Notification /> },
+        // { path: 'notification', element: <Notification /> },
         { path: 'feedback', element: <FeedBack /> }
     ],
 };

@@ -14,7 +14,7 @@ export class AuthService {
   }
 
   public login(login: any) {
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/auth/login`);
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/Auth/login`);
     return axios.post(url, login, {
       headers: HeadersUtil.getHeaders()
     });
@@ -22,9 +22,9 @@ export class AuthService {
 
   public getList(modelSearch: any) {
     // const params: RequestParam[] = ParamUtil.toRequestParams(modelSearch);
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/users`);
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/Account/search`);
 
-    return axios.get(url, {
+    return axios.post(url, modelSearch, {
       headers: HeadersUtil.getHeadersAuth()
     });
   }
@@ -39,7 +39,7 @@ export class AuthService {
   }
 
   public create(auth:any){
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/auth/register`);
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/Account`);
     return axios.post(url,auth);
     // , {
     //   headers: HeadersUtil.getHeadersAuthFormData()
@@ -48,7 +48,7 @@ export class AuthService {
   
   public update(auth:any){
     
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/users/`+auth.id);
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/Account/`+auth.id);
     return axios.put(url,auth, {
       headers: HeadersUtil.getHeadersAuth()
     });
@@ -56,7 +56,7 @@ export class AuthService {
 
   public delete(id:any){
     
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/v1/users/`+ id );
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/Account/`+ id );
 
     return axios.delete(url, {
       headers: HeadersUtil.getHeadersAuth()

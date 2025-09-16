@@ -161,68 +161,75 @@ namespace AspnetApi.Controllers
             var json = JsonSerializer.Serialize(objectList);
             return JsonSerializer.Deserialize<List<T>>(json);
         }
-            [Authorize(Roles = "Admin")]
-            [HttpPut("{id}")]
-            public async Task<IActionResult> Update(int id, [FromForm] UpdateProductDTO prod)
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromForm] UpdateProductDTO prod)
+        {
+            try
             {
-                try
-                {
-                    Product? exist = await _context.Products.FirstOrDefaultAsync(t => t.Id == id);
+                var exist = await _context.Products.FirstOrDefaultAsync(t => t.Id == id);
+                if (exist == null)
+                    return NotFound($"Product with ID: {id} not found");
 
-                    if (exist == null)
-                    {
-                        return NotFound($"Product with ID: {id} not found");
-                    }
-                    var imageProduct = await _commonService.UploadFile(prod.Image);
-
-                    List<string> oldImages = string.IsNullOrEmpty(prod.OldImage)
-                        ? new List<string>()
-                        : JsonSerializer.Deserialize<List<string>>(prod.OldImage);
-
-                    string json = "";
-                    if (prod.Album != null && prod.Album.Count > 0)
-                    {
-                        List<string> images = await _commonService.UploadFiles(prod.Album);
-                        oldImages.AddRange(images);
-                        json = JsonSerializer.Serialize(oldImages);
-                    }
-                    else
-                    {
-                        json = JsonSerializer.Serialize(oldImages);
-                    }
-
-                    if (ModelState.IsValid)
-                    {
-                        exist.ProductName = prod.ProductName;
-                        exist.Price = prod.Price;
-                        exist.SalePrice = prod.SalePrice;
-                        exist.Category = await _context.Categories.FindAsync(prod.CategoryId);
-                        exist.Description = prod.Description;
-                        exist.Active = prod.Active != null && prod.Active.Equals("1");
-                        exist.Slug = SlugHelper.GenerateSlug(prod.ProductName);
-
-                        if (!string.IsNullOrEmpty(imageProduct))
-                        {
-                            exist.Image = imageProduct;
-                        }
-
-                        if (!string.IsNullOrEmpty(json))
-                        {
-                            exist.Album = json;
-                        }
-
-                        await _context.SaveChangesAsync();
-                        return Ok(exist);
-                    }
-
+                if (!ModelState.IsValid)
                     return BadRequest("Invalid data");
-                }
-                catch (Exception ex)
+
+                var newAvatar = await _commonService.UploadFile(prod.Image); 
+                if (!string.IsNullOrWhiteSpace(newAvatar))
                 {
-                    _logger.LogError(ex, "Error updating product with ID: {Id}", id);
-                    return StatusCode(500, "An internal error occurred");
+
+                    exist.Image = newAvatar;
                 }
+
+     
+                List<string> albumImages = new();
+
+                if (prod.Album != null && prod.Album.Count > 0)
+                {
+ 
+                    exist.Album = null;
+
+                    var uploaded = await _commonService.UploadFiles(prod.Album); 
+                    albumImages = uploaded ?? new List<string>();
+                }
+                else
+                {
+                    // Không upload mới => giữ nguyên album cũ
+                    if (!string.IsNullOrWhiteSpace(exist.Album))
+                    {
+                        try
+                        {
+                            albumImages = JsonSerializer.Deserialize<List<string>>(exist.Album) ?? new();
+                        }
+                        catch
+                        {
+                            albumImages = new();
+                        }
+                    }
+                }
+
+                exist.ProductName = prod.ProductName;
+                exist.Price = prod.Price;
+                exist.SalePrice = prod.SalePrice;
+                exist.Description = prod.Description;
+                exist.Active = prod.Active != null && prod.Active.Equals("1");
+                exist.Slug = SlugHelper.GenerateSlug(prod.ProductName);
+                exist.CategoryId = prod.CategoryId;
+
+                // Serialize lại album
+                exist.Album = JsonSerializer.Serialize(albumImages);
+
+                await _context.SaveChangesAsync();
+                return Ok(exist);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating product with ID: {Id}", id);
+                return StatusCode(500, "An internal error occurred");
+            }
+        }
+
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]

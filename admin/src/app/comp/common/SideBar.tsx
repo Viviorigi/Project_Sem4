@@ -21,11 +21,11 @@ export default function SideBar() {
                                             </Link>
                                             </li>
                                             <li className="nav-item mb-2"><Link className={location.pathname === "/category" ? "nav-link active" : "nav-link"} to="category" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-layer-group"></i> Quản lý Thể loại</span></div>
+                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-layer-group"></i> Quản lý Danh Mục</span></div>
                                             </Link>
                                             </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/book" ? "nav-link active" : "nav-link"} to="book" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-book"></i> Quản lý Sách</span></div>
+                                            <li className="nav-item mb-2"><Link className={location.pathname === "/product" ? "nav-link active" : "nav-link"} to="product" >
+                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-book"></i> Quản lý Sản phẩm</span></div>
                                             </Link>
                                             </li>
                                             <li className="nav-item mb-2"><Link className={location.pathname === "/order" ? "nav-link active" : "nav-link"} to="order" >

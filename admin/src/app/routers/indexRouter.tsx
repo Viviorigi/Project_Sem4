@@ -2,7 +2,7 @@ import React from 'react'
 import Layout from "../comp/layouts/Layout";
 import DashBoard from '../pages/DashBoard';
 import Category from '../pages/category/Category';
-import Book from '../pages/book/Book';
+import Product from '../pages/product/Product';
 import Student from '../pages/customer/Customer';
 import Order from '../pages/order/Order';
 import Return from '../pages/return/Return';
@@ -21,7 +21,7 @@ export const indexRouter: any = {
     children: [
         { path: 'dashboard', element:  <DashBoard />  },
         { path: 'category', element: <Category />  },
-        { path: 'book', element: <Book />  },
+        { path: 'product', element: <Product />  },
         { path: 'customer', element: <Student />  },
         { path: 'order', element: <Order />  },
         { path: 'returnbook', element: <Return /> },

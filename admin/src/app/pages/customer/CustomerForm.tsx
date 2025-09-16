@@ -81,7 +81,8 @@ export default function CustomerForm({ closeForm, onSave, user }: Props) {
   const validate = () => {
     if (!userSave.email.trim()) return toast.error("Email không được để trống"), false;
     if (!userSave.username.trim()) return toast.error("Username không được để trống"), false;
-    if (!userSave.password.trim()) return toast.error("Password không được để trống"), false;
+    if (isCreate && !userSave.password.trim()) 
+    return toast.error("Password không được để trống"), false;
     if (!userSave.role.trim()) return toast.error("Role không được để trống"), false;
     return true;
   };
@@ -90,7 +91,7 @@ export default function CustomerForm({ closeForm, onSave, user }: Props) {
     const fd = new FormData();
     fd.append("Email", dto.email);
     fd.append("Username", dto.username);
-    fd.append("Password", dto.password);
+    if (dto.password) fd.append("Password", dto.password);
     fd.append("Role", dto.role);
     if (dto.phone) fd.append("Phone", dto.phone);
     if (dto.address) fd.append("Address", dto.address);
@@ -181,7 +182,7 @@ export default function CustomerForm({ closeForm, onSave, user }: Props) {
 
           <div className="form-group mb-3">
             <label>
-              Password <span className="text-danger">(*)</span>
+              Password  {isCreate && <span className="text-danger">(*)</span>}
             </label>
             <input
               type="password"

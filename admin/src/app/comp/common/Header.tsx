@@ -157,61 +157,7 @@ export default function Header() {
                         </div>
                     </div> */}
                     <ul className="navbar-nav navbar-nav-icons flex-row">
-                        <li className="nav-item">
-                            <div className="theme-control-toggle fa-icon-wait px-2"><input className="form-check-input ms-0 theme-control-toggle-input" type="checkbox" data-theme-control="phoenixTheme" defaultValue="dark" id="themeControlToggle" /><label className="mb-0 theme-control-toggle-label theme-control-toggle-light" htmlFor="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Switch theme"><span className="fa-regular fa-moon" data-feather="moon" /></label><label className="mb-0 theme-control-toggle-label theme-control-toggle-dark" htmlFor="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Switch theme"><span className="fa-regular fa-sun" data-feather="sun" /></label></div>
-                        </li>
-                        <li className="nav-item dropdown">
-
-                           {total &&
-                            <a className="nav-link position-relative" href="index.html#" style={{ minWidth: '2.5rem' }} role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-auto-close="outside"><span className="far fa-bell" style={{ height: 20, width: 20 }} />
-                                {total ? 
-                                <span className="position-absolute top-auto start-85 translate-middle badge rounded-pill bg-danger">
-                                    {total.current}+
-                                    <span className="visually-hidden">Chưa đọc</span>
-                                </span>
-                                : ""}
-                            </a>} 
-                            
-                            <div className="dropdown-menu dropdown-menu-end notification-dropdown-menu py-0 shadow border border-300 navbar-dropdown-caret" id="navbarDropdownNotfication" aria-labelledby="navbarDropdownNotfication">
-                                <div className="card position-relative border-0">
-                                    <div className="card-header p-2">
-                                        <div className="d-flex justify-content-between">
-                                            <h5 className="text-black mb-0">Thông báo</h5><button className="btn btn-link p-0 fs--1 fw-normal" type="button">Đánh dấu tất cả đã xem</button>
-                                        </div>
-                                    </div>
-                                        <div className="card-body p-0">
-                                        <div className="scrollbar-overlay" style={{ height: '27rem' }}>
-                                            <div className="border-300">
-                                            {notifications.slice().reverse().map((n:any, index: any) => (
-                                                <div className="px-2 px-sm-3 py-3 border-300 notification-card position-relative read border-bottom" key={index}>
-                                                
-                                                    <div className="d-flex align-items-center justify-content-between position-relative">
-
-                                                        <div className="d-flex">
-                                                            <div className="avatar avatar-m status-online me-3"></div>
-                                                            <div className="flex-1 me-sm-3">
-                                                                <h4 className="fs--1 text-black">{n.message}</h4>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="font-sans-serif d-none d-sm-block"><button className="btn fs--2 btn-sm dropdown-toggle dropdown-caret-none transition-none notification-dropdown-toggle" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span className="fas fa-ellipsis-h fs--2 text-900" /></button>
-                                                            <div className="dropdown-menu dropdown-menu-end py-2"><a className="dropdown-item" href="index.html#!">Đánh dấu đã xem</a></div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    
-                                    <div className="card-footer p-0 border-top border-0">
-                                        <div className="my-2 text-center fw-bold fs--2 text-600"><Link className="fw-bolder" to="/notification">Notification history</Link></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>           
+                     
                         <li className="nav-item dropdown"><a className="nav-link lh-1 pe-0" id="navbarDropdownUser" href="index.html#!" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                             <div className="avatar avatar-l ">
                                 <img className="rounded-circle "  src={avatar?`${process.env.REACT_APP_API_URL}/api/auth/getImage?atchFleSeqNm=${avatar}`:defaultPersonImage} alt="" />

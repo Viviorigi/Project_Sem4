@@ -1,233 +1,195 @@
 import { useEffect, useState } from "react";
-import { CategoryDTO } from "../../model/CategoryDTO";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Dialog } from "primereact/dialog";
-import JoditEditor, { Jodit } from "jodit-react";
-import DOMPurify from 'dompurify';
 import { useAppDispatch } from "../../store/hook";
 import { setLoading } from "../../reducers/spinnerSlice";
+import { HeadersUtil } from "../../utils/Headers.Util";
 
-export default function AddCategory(props: any) {
-    const { hideForm, categoryDTO, onSave } = props;
-    const [category, setCategory] = useState<CategoryDTO>(new CategoryDTO());
-    const [editorContent, setEditorContent] = useState('');
-    const currentDate = new Date().toISOString();
+type CategoryDTO = {
+    id?: string;
+    categoryName?: string;
+    status?: string; // "1" (Active) | "0" (Inactive) - chỉ dùng ở FE
+};
+
+type Props = {
+    hideForm: (refresh: boolean) => void;
+    categoryDTO: CategoryDTO | null; // null = create, object = edit
+    onSave: () => void;
+};
+
+export default function AddCategory({ hideForm, categoryDTO, onSave }: Props) {
     const dispatch = useAppDispatch();
+    const [visible, setVisible] = useState(true);
+    const [category, setCategory] = useState<CategoryDTO>({
+        categoryName: "",
+        status: "1",
+    });
 
-    //xử lý text-editor 
-    const handleContentChange = (newContent: any) => {
-        setEditorContent(newContent);
-        setCategory({
-            ...category,
-            description: newContent,
-        });
-    };
+    const isEdit = !!categoryDTO?.id;
+    const baseUrl = `${process.env.REACT_APP_API_URL}/api/Category`;
 
-    // xử lý nhập ký tự không phải số
-    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'E' || e.key === 'e' || e.key === '.' || e.key === ',') {
-            e.preventDefault();
-        }
-    }
-
-    //xử lý active
-    const handleActiveChange = (e: any) => {
-        setCategory({
-            ...category,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    //xử lý edit
+    // nạp data khi edit / default khi create
     useEffect(() => {
-        if (categoryDTO != null) {
+        if (categoryDTO) {
             setCategory({
-                ...categoryDTO,
-                upd_dt: new Date().toISOString()
-            })
-            setEditorContent(categoryDTO.description || '');
+                id: categoryDTO.id,
+                categoryName: categoryDTO.categoryName ?? "",
+                status: categoryDTO.status ?? "1",
+            });
         } else {
-            setCategory({
-                ...categoryDTO,
-                active: true,
-                description: '',
-                cre_dt: new Date().toISOString(),
-                upd_dt: new Date().toISOString()
-            })
+            setCategory({ categoryName: "", status: "1" });
         }
-    }, [])
+    }, [categoryDTO]);
 
-    //lấy dữ liệu từ ô input
-    const handleChangeText = (event: any) => {
-        setCategory({
-            ...category,
-            [event.target.name]: event.target.value,
-        })
-    }
+    // đóng dialog
+    const close = (refresh?: boolean) => {
+        setVisible(false);
+        hideForm(!!refresh);
+    };
 
-    const handleChangeNumber = (event: any) => {
-        const newValue = event.target.value;
-        setCategory({
-            ...category,
-            [event.target.name]: newValue,
-        })
-    }
+    // input text
+    const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setCategory((prev) => ({ ...prev, [name]: value }));
+    };
 
-    //check input 
-    const chk = () => {
-        if (category.name === undefined || category.name === '') {
-            setCategoryState();
+    // select status ("1"/"0")
+    const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setCategory((prev) => ({ ...prev, status: e.target.value }));
+    };
+
+    // validate
+    const validate = () => {
+        if (!category.categoryName || !category.categoryName.trim()) {
+            toast.error("Tên danh mục không được để trống");
             return false;
         }
-        // if (category.description === undefined || category.description === '') {
-        //     setCategoryState();
-        //     return false;
-        // }
-        return true;
-    }
-
-    const setCategoryState = () => {
-        setCategory((prev: CategoryDTO) => {
-            return {
-                ...prev,
-                name: prev.name || '',
-                description: prev.description || ''
-            }
-        })
-    }
-
-    //Xử lý sự kiện save
-    const save = () => {
-        if (!chk()) {
-            return;
+        if (category.status !== "1" && category.status !== "0") {
+            toast.error("Trạng thái không hợp lệ");
+            return false;
         }
-        // setVisible(false);
-        // hideForm(true);
+        return true;
+    };
 
-        Swal.fire({
-            title: `Xác nhận`,
-            text: `Bạn có muốn thực hiện ...`,
-            icon: 'warning',
+    // save
+    const save = async () => {
+        if (!validate()) return;
+
+        const { value: ok } = await Swal.fire({
+            title: "Xác nhận",
+            text: isEdit ? "Bạn có muốn cập nhật danh mục?" : "Bạn có muốn tạo mới danh mục?",
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: '#89B449',
-            cancelButtonColor: '#E68A8C',
-            confirmButtonText: `Yes`,
-            cancelButtonText: `No`
-        }).then((result) => {
-            if (result.value) {
-                // logic
-                let url = `${process.env.REACT_APP_API_URL}/category/add`;
-                axios.post(url, category).then((resp: any) => {
-                    if (resp.data === "success") {
-                        dispatch(setLoading(true));
-                        setTimeout(() => {
-                            hideForm(true);
-                            dispatch(setLoading(false));
-                            toast.success("Lưu thể loại thành công");
-                            onSave()
-                        }, 1000);
-                    }
-                }).catch((err: any) => {
-                    dispatch(setLoading(false));
-                    // console.log(err);
+            confirmButtonColor: "#89B449",
+            cancelButtonColor: "#E68A8C",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+        });
+        if (!ok) return;
 
-                })
+        try {
+            dispatch(setLoading(true));
+
+            // Map đúng payload theo Swagger
+            const payload = {
+                categoryName: category.categoryName!.trim(),
+                active: category.status!, // "1" | "0"
+            };
+
+            const url = isEdit ? `${baseUrl}/${category.id}` : baseUrl;
+
+            // DÙNG HEADER AUTH (có Bearer token)
+            const headers = HeadersUtil.getHeadersAuth();
+
+            const resp = isEdit
+                ? await axios.put(url, payload, { headers })
+                : await axios.post(url, payload, { headers });
+
+            toast.success(isEdit ? "Cập nhật danh mục thành công" : "Thêm danh mục thành công");
+            close(true);
+            onSave?.();
+        } catch (err: any) {
+            // Ưu tiên hiển thị lỗi ModelState từ ASP.NET
+            const modelErrors = err?.response?.data?.errors;
+            if (modelErrors && typeof modelErrors === "object") {
+                const messages = Object.values(modelErrors).flat().join("\n");
+                toast.error(messages || "Có lỗi xảy ra");
+            } else if (err?.response?.status === 401) {
+                toast.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+            } else {
+                const msg =
+                    err?.response?.data?.message ||
+                    err?.response?.data?.title ||
+                    err?.message ||
+                    "Có lỗi xảy ra";
+                toast.error(msg);
             }
-        })
-    }
+        } finally {
+            dispatch(setLoading(false));
+        }
 
-    const cancel = () => {
-        hideForm(false);
-    }
-    const [visible, setVisible] = useState(true);
-    const showDialog = () => {
-        setVisible(true);
-    }
+    };
 
-    // Close dialog
-    const hideDialog = () => {
-        setVisible(false);
-        // hideForm(true);
-    }
+    const cancel = () => close(false);
 
     return (
         <div>
-            {/* <Button label="Show Form" icon="pi pi-plus" onClick={showDialog} /> */}
             <Dialog
                 visible={visible}
-                // onHide={hideDialog}
-                onHide={() => hideForm(true)}
-                style={{ width: '1150px', backgroundColor: '#f5f5f5' }}
-                baseZIndex={1100}>
+                onHide={() => close(false)}
+                style={{ width: "650px", backgroundColor: "#f5f5f5" }}
+                baseZIndex={1100}
+            >
+                <h3>{isEdit ? "Edit Danh mục" : "Add Danh mục"}</h3>
 
-                <h3>{categoryDTO === null ? "Add Category" : "Edit Category"}</h3>
                 <div className="row">
-                    {/* cột 1 */}
-                    <div className="col-md-6 mb-5">
+                    <div className="col-md-12 mb-5">
                         <div className="form-group">
                             <label>
-                                Tên thể loại<span className="text-danger">(*)</span>
+                                Tên danh mục <span className="text-danger">(*)</span>
                             </label>
-                            <input type='text'
+                            <input
+                                type="text"
                                 className="form-control"
-                                name="name"
-                                value={category.name || ""}
+                                name="categoryName"
+                                value={category.categoryName || ""}
                                 onChange={handleChangeText}
-                                placeholder="Nhập tên thể loại" />
-                            <div className={`invalid-feedback ${category.name?.toString() == '' ? "d-block" : ""}`} style={{ fontSize: "100%" }}>Không được để trống</div>
-                        </div>
-
-                        {categoryDTO !== null && (
-                            <div className="form-group">
-                                <label>
-                                    Active <span className="text-danger"></span>
-                                </label>
-                                <select
-                                    className="form-select"
-                                    value={category.active ? "true" : "false"}
-                                    onChange={handleActiveChange}
-                                    name="active"
-                                >
-                                    <option value="true">Active</option>
-                                    <option value="false">InActive</option>
-                                </select>
-                            </div>
-                        )}
-
-                    </div>
-
-                    <div className="col-md-6 mb-5">
-                        <div className="form-group">
-                            {/* <label>
-                                Description<span className="text-danger">(*)</span>
-                            </label>
-                            <input type='text'
-                                className="form-control"
-                                name="description"
-                                value={category.description || ""}
-                                onChange={handleChangeText}
-                                placeholder="Nhập tên danh mục" /> */}
-                            <label>
-                                Mô tả<span className="text-danger">(*)</span>
-                            </label>
-                            <JoditEditor
-                                value={editorContent}
-                                onChange={(newContent) => handleContentChange(newContent)}
+                                placeholder="Nhập tên danh mục"
                             />
-                            {/* <div className={`invalid-feedback ${category.description?.toString() == '' ? "d-block" : ""}`} style={{ fontSize: "100%" }}>Không được để trống</div> */}
+                            <div
+                                className={`invalid-feedback ${(category.categoryName ?? "") === "" ? "d-block" : ""
+                                    }`}
+                            >
+                                Không được để trống
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Trạng thái</label>
+                            <select
+                                className="form-select"
+                                value={category.status}
+                                onChange={handleStatusChange}
+                                name="status"
+                            >
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
                         </div>
                     </div>
-
                 </div>
 
                 <div className="text-center mt-3">
-                    <button onClick={save} className="btn btn-primary btn-sm me-2">Save</button>
-                    <button onClick={cancel} className="btn btn-danger btn-sm">Cancel</button>
+                    <button onClick={save} className="btn btn-primary btn-sm me-2">
+                        Save
+                    </button>
+                    <button onClick={cancel} className="btn btn-danger btn-sm">
+                        Cancel
+                    </button>
                 </div>
-
             </Dialog>
         </div>
-    )
+    );
 }

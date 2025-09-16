@@ -1,146 +1,129 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { CategorySearch } from './category-search'
+import React, { useEffect, useRef, useState } from 'react';
+import { CategorySearch } from './category-search';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import AddCategory from './AddCategory';
-import { Dialog } from 'primereact/dialog';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Pagination from '../../comp/common/Pagination';
-import { format } from 'date-fns';
-import { formatCurrency, formatDate } from "../../utils/FunctionUtils";
+import { formatDate } from "../../utils/FunctionUtils";
 import "../../../assets/css/category/cate.scss";
 import { useAppDispatch } from '../../store/hook';
 import { setLoading } from '../../reducers/spinnerSlice';
+import { HeadersUtil } from '../../utils/Headers.Util';
 
+type CategoryItem = {
+  id: number;
+  categoryName: string;
+  active: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
 
 export default function Book() {
-
-  const [searchDto, setSearchDto] = useState(new CategorySearch('', 1, 0, new Date().getTime()))
-  const [bookList, setBookList] = useState([]);
+  const [searchDto, setSearchDto] = useState(new CategorySearch('', 1, 0, Date.now()));
+  const [list, setList] = useState<CategoryItem[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
-  const categoryRef = useRef<any>();
-  const visible = useRef<any>(true);
+  const categoryRef = useRef<any>(null);
   const dispatch = useAppDispatch();
 
-  //phân trang
-  const handlePageClick = (pageNumber: any) => {
-    setSearchDto(() => ({
-      ...searchDto,
-      page: pageNumber,
-    }));
-  };
+  const [sortBy, setSortBy] = useState("CreatedAt");  // default
+  const [sortDir, setSortDir] = useState("desc");
 
+  const PAGE_SIZE = 5;
+  const indexOfFirstItem = (searchDto.page - 1) * PAGE_SIZE;
+
+  // phân trang
+  const handlePageClick = (pageNumber: number) => {
+    setSearchDto(prev => ({ ...prev, page: pageNumber }));
+  };
   const prev = () => {
-    if (searchDto.page > 1) {
-      setSearchDto(() => ({
-        ...searchDto,
-        page: searchDto.page - 1,
-      }));
-    }
+    if (searchDto.page > 1)
+      setSearchDto(prev => ({ ...prev, page: prev.page - 1 }));
   };
   const next = () => {
-    if (searchDto.page < totalPages) {
-      setSearchDto(() => ({
-        ...searchDto,
-        page: searchDto.page + 1,
-      }));
-    }
+    if (searchDto.page < totalPages)
+      setSearchDto(prev => ({ ...prev, page: prev.page + 1 }));
   };
 
-  // xử lý khi chữ thay đổi
-  const handleChangeText = (event: any) => {
-    setSearchDto({
-      ...searchDto,
-      [event.target.name]: event.target.value
-    });
-  }
-
-  // 
-  const handleKeyUpSearch = (e: any) => {
+  // tìm kiếm
+  const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSearchDto(prev => ({ ...prev, [name]: value }));
+  };
+  const handleKeyUpSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setSearchDto({
-        ...searchDto,
-        timer: new Date().getTime(),
-      });
+      setSearchDto(prev => ({ ...prev, page: 1, timer: Date.now() }));
     }
   };
 
-  // Thêm sách
-  const addCategory = () => {
-    categoryRef.current = null;
-    setShowForm(true);
-  }
+  // thêm/sửa
+  const addCategory = () => { categoryRef.current = null; setShowForm(true); };
+  const editCategory = (row: CategoryItem) => { categoryRef.current = row; setShowForm(true); };
 
-  // edit
-  const editCategory = (categoryDTO: any) => {
-    categoryRef.current = categoryDTO;
-    setShowForm(true);
-  }
-
-  //delete
-  //xóa
+  // xóa
   const delCategory = (id: number) => {
     Swal.fire({
       title: `Xác nhận`,
-      text: `Bạn có muốn thực hiện ...`,
+      text: `Bạn có muốn xóa danh mục này?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#89B449',
       cancelButtonColor: '#E68A8C',
       confirmButtonText: `Yes`,
       cancelButtonText: `No`
-    }).then((result) => {
-      if (result.value) {
+    }).then(async (res) => {
+      if (!res.value) return;
+      try {
         dispatch(setLoading(true));
-        let url = `${process.env.REACT_APP_API_URL}/category/delete?id=${id}`;
-        axios.delete(url).then((resp: any) => {
-          // if (resp.data === "success") {
-          dispatch(setLoading(false));
-          toast.success("Đã xóa");
-          // console.log(resp.data);
-          setSearchDto({
-            ...searchDto,
-            timer: new Date().getTime()
-          })
-          // }
-        }).catch((err: any) => {
-          dispatch(setLoading(false));
-          toast.error("Xóa thất bại");
-        })
+        const url = `${process.env.REACT_APP_API_URL}/api/Category/${id}`;
+        await axios.delete(url, { headers: HeadersUtil.getHeadersAuth() });
+        toast.success("Đã xóa");
+        setSearchDto(prev => ({ ...prev, timer: Date.now() }));
+      } catch {
+        toast.error("Xóa thất bại");
+      } finally {
+        dispatch(setLoading(false));
       }
     })
   }
 
-  //Lây du lieu
+  // Lấy dữ liệu
   useEffect(() => {
-    let url = `${process.env.REACT_APP_API_URL}/category/list?page=${searchDto.page}&keySearch=${searchDto.keySearch}`;
-    axios.get(url).then((resp: any) => {
-      // console.log(resp.data);
-      if (resp.data) {
-        setBookList(resp.data.content);
-        setTotalPages(resp.data.totalPages);
-        setTotalItems(resp.data.totalElements);
-        // console.log(bookList);
+    const fetchData = async () => {
+      try {
+        const url = `${process.env.REACT_APP_API_URL}/api/Category/search`;
+        const body = {
+          pageNumber: searchDto.page,
+          pageSize: PAGE_SIZE,
+          keyword: searchDto.keySearch || "",
+          status: "",       // dùng state filter status
+          sortBy: sortBy,       // state sortBy
+          sortDir: sortDir,
+        };
+        const resp = await axios.post(url, body, { headers: HeadersUtil.getHeadersAuth() });
+        const r = resp.data;
+
+        // map theo response mới
+        setList((r?.data ?? []) as CategoryItem[]);
+        setTotalItems(r?.totalRecords ?? 0);
+        const pages = Math.max(1, Math.ceil((r?.totalRecords ?? 0) / (r?.pageSize ?? PAGE_SIZE)));
+        setTotalPages(pages);
+      } catch (err) {
+        console.error("Search category error:", err);
       }
-    }).catch((err: any) => {
+    };
+    fetchData();
+  }, [searchDto.page, searchDto.timer, searchDto.keySearch]);
 
-    })
-  }, [searchDto.page, searchDto.timer])
-
-  // Ẩn hiện form 
-  const hideForm = (isCRUD: boolean) => {
+  // Ẩn/hiện form
+  const hideForm = (refresh?: boolean) => {
     setShowForm(false);
-    if (isCRUD) {
-      setSearchDto({
-        ...searchDto,
-        page: 1,
-        timer: new Date().getTime()
-      })
+    if (refresh) {
+      setSearchDto(prev => ({ ...prev, page: 1, timer: Date.now() }));
     }
-  }
-
+  };
 
   return (
     <div>
@@ -148,79 +131,119 @@ export default function Book() {
         <div className='card mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white'>
           <div className="row g-2 mb-4">
             <div className="col-auto">
-              {/* tiêu đề */}
-              <h2 className="mt-4">Danh Sách Thể Loại</h2>
+              <h2 className="mt-4">Danh Sách Danh Mục</h2>
             </div>
           </div>
-          <div id="products" data-list="{&quot;valueNames&quot;:[&quot;customer&quot;,&quot;email&quot;,&quot;total-orders&quot;,&quot;total-spent&quot;,&quot;city&quot;,&quot;last-seen&quot;,&quot;last-order&quot;],&quot;page&quot;:10,&quot;pagination&quot;:true}">
-            <div className="">
-              <div className="row g-3">
-                <div className="col-auto">
-                  {/* Hộp tìm kiếm */}
-                  <div className="search-box d-flex">
-                    {/* ô tìm kiếm */}
-                    <input className="form-control search-input search" type="search" placeholder="Tìm kiếm thể loại" name="keySearch" aria-label="Tìm kiếm"
-                      value={searchDto.keySearch || ""}
-                      onChange={handleChangeText}
-                      onKeyUp={handleKeyUpSearch}
-                    />
-                    <button className='btn btn-primary' onClick={() => {
-                      setSearchDto({
-                        ...searchDto,
-                        page: 1,
-                        timer: new Date().getTime(),
-                      });
-                    }}><span className="fas fa-search " /></button>
-                  </div>
-                </div>
-                <div className="col-auto scrollbar overflow-hidden-y flex-grow-1">
-                  {/* .............................................................. */}
-                </div>
-                <div className="col-auto scrollbar overflow-hidden-y flex-grow">
-                  <div className="col-auto">
-                    <button className="btn btn-primary" onClick={addCategory}><span className="fas fa-plus me-2" />Thêm thể loại</button>
-                  </div>
+
+          <div id="products">
+            <div className="row g-3">
+              <div className="col-auto">
+                <div className="search-box d-flex">
+                  <input
+                    className="form-control search-input search"
+                    type="search"
+                    placeholder="Tìm kiếm danh mục"
+                    name="keySearch"
+                    value={searchDto.keySearch || ""}
+                    onChange={handleChangeText}
+                    onKeyUp={handleKeyUpSearch}
+                  />
+                  <button
+                    className='btn btn-primary'
+                    onClick={() => setSearchDto(prev => ({ ...prev, page: 1, timer: Date.now() }))}
+                  >
+                    <span className="fas fa-search " />
+                  </button>
                 </div>
               </div>
+
+              <div className="col-auto">
+                <select
+                  className="form-select"
+                  value={sortBy}
+                  onChange={(e) => {
+                    setSortBy(e.target.value);
+                    setSearchDto(prev => ({
+                      ...prev,
+                      page: 1,
+                      timer: Date.now()
+                    }));
+                  }}
+                >
+                  <option value="CreatedAt">Ngày tạo</option>
+                  <option value="CategoryName">Tên danh mục</option>
+                </select>
+              </div>
+
+              <div className="col-auto">
+                <select
+                  className="form-select"
+                  value={sortDir}
+                  onChange={(e) => {
+                    setSortDir(e.target.value);
+                    setSearchDto(prev => ({
+                      ...prev,
+                      page: 1,
+                      timer: Date.now()
+                    }));
+                  }}
+                >
+                  <option value="ASC">Tăng dần</option>
+                  <option value="DESC">Giảm dần</option>
+                </select>
+              </div>
+
+
+              <div className="col-auto scrollbar overflow-hidden-y flex-grow-1" />
+              <div className="col-auto scrollbar overflow-hidden-y flex-grow">
+                <div className="col-auto">
+                  <button className="btn btn-primary" onClick={addCategory}>
+                    <span className="fas fa-plus me-2" />
+                    Thêm Danh Mục
+                  </button>
+                </div>
+
+              </div>
             </div>
+
+
+
             <div className="border-bottom border-200 position-relative top-1">
               <div className="table-responsive scrollbar-overlay mx-n1 px-1">
                 <table className="table table-bordered fs--1 mb-2 mt-5">
                   <thead>
                     <tr>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '3%' }}>#</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '11%' }}>TÊN</th>
-                      {/* <th className="sort align-middle text-center" scope="col" style={{ width: '13%' }}>MÔ TẢ</th> */}
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>SỐ SÁCH</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>NGÀY TẠO</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '6%' }}>NGÀY CẬP NHẬT</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '10%' }}>TRẠNG THÁI</th>
-                      <th className="sort align-middle text-center" scope="col" style={{ width: '9%' }}>HÀNH ĐỘNG</th>
+                      <th className="align-middle text-center" style={{ width: '6%' }}>#</th>
+                      <th className="align-middle text-center" style={{ width: '30%' }}>DANH MỤC</th>
+                      <th className="align-middle text-center" style={{ width: '25%' }}>NGÀY TẠO</th>
+                      {/* <th className="align-middle text-center" style={{ width: '18%' }}>NGÀY CẬP NHẬT</th> */}
+                      <th className="align-middle text-center" style={{ width: '10%' }}>TRẠNG THÁI</th>
+                      <th className="align-middle text-center" style={{ width: '20%' }}>HÀNH ĐỘNG</th>
                     </tr>
                   </thead>
+
                   <tbody className="list" id="customers-table-body">
-                    {bookList.map((u: any, index: number) => {
-                      return <tr className="hover-actions-trigger btn-reveal-trigger position-static" key={u.id}>
-                        <td className='align-middle text-center text-700'>{index + 1}</td>
+                    {list.map((u, idx) => (
+                      <tr className="hover-actions-trigger btn-reveal-trigger position-static" key={u.id}>
+                        <td className='align-middle text-center text-700'>
+                          {indexOfFirstItem + idx + 1}
+                        </td>
+
                         <td className="align-middle text-center">
-                          <div className="d-flex align-items-center">
-                            <p className="mb-0 ms-3 text-1100 fw-bold">{u.name}</p>
+                          <div className="d-flex justify-content-center">
+                            <p className="mb-0 text-1100 fw-bold">{u.categoryName}</p>
                           </div>
                         </td>
-                        {/* <td className="total-orders align-middle white-space-nowrap fw-semi-bold text-end text-1000" dangerouslySetInnerHTML={{ __html: u.description }} /> */}
-                        {/* <td
-                          className="total-orders align-middle white-space-nowrap fw-semi-bold text-end text-1000 truncated-text"
-                          dangerouslySetInnerHTML={{ __html: u.description }}
-                        /> */}
 
-                        <td className="align-middle text-center text-1000">{u.numOfBook}</td>
-                        <td className="align-middle text-center text-700">{formatDate(u.cre_dt)}</td>
-                        <td className="align-middle text-center text-700">{formatDate(u.upd_dt)}</td>
+                        <td className="align-middle text-center text-700">{formatDate(u.createdAt)}</td>
+                        {/* <td className="align-middle text-center text-700">{formatDate(u.updatedAt)}</td> */}
+
                         <td className="align-middle text-center">
                           <span className={u.active ? 'badge badge-phoenix fs--2 badge-phoenix-success' : 'badge badge-phoenix fs--2 badge-phoenix-danger'}>
                             <span className="badge-label">{u.active ? "Đang hoạt động" : "Không hoạt động"}</span>
                           </span>
                         </td>
+
                         <td className="align-middle text-center">
                           <button className="btn btn-phoenix-primary me-1 mb-1" type="button" onClick={() => editCategory(u)}>
                             <i className="fa-solid fa-pen"></i>
@@ -230,42 +253,54 @@ export default function Book() {
                           </button>
                         </td>
                       </tr>
-                    })}
-
+                    ))}
                   </tbody>
                 </table>
               </div>
+
               <div className="row align-items-center justify-content-between py-2 pe-0 fs--1">
                 <div className="col-auto d-flex">
-                  <p className="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"><span className='fw-bold'>Tổng số danh mục: </span>  {totalItems} </p>
+                  <p className="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900">
+                    <span className='fw-bold'>Tổng số danh mục: </span> {totalItems}
+                  </p>
                 </div>
                 <div className="col-auto d-flex">
-                  <Pagination totalPage={totalPages} currentPage={searchDto.page} handlePageClick={handlePageClick} prev={prev} next={next} />
+                  <Pagination
+                    totalPage={totalPages}
+                    currentPage={searchDto.page}
+                    handlePageClick={handlePageClick}
+                    prev={prev}
+                    next={next}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div>
-        </div>
-        {showForm && <AddCategory hideForm={hideForm} categoryDTO={categoryRef.current} onSave={() => {
-          setSearchDto((prev) => ({
-            ...prev,
-            timer: new Date().getTime(),
-          }));
-        }} />}
+
+        {showForm && (
+          <AddCategory
+            hideForm={hideForm}
+            categoryDTO={categoryRef.current}
+            onSave={() => setSearchDto(prev => ({ ...prev, timer: Date.now() }))}
+          />
+        )}
       </div>
 
       <footer className="footer position-absolute">
         <div className="row g-0 justify-content-between align-items-center h-100">
           <div className="col-12 col-sm-auto text-center">
-            <p className="mb-0 mt-2 mt-sm-0 text-900">ATWOM BOOk<span className="d-none d-sm-inline-block" /><span className="d-none d-sm-inline-block mx-1">|</span><br className="d-sm-none" />2024 ©</p>
+            <p className="mb-0 mt-2 mt-sm-0 text-900">
+              Admin<span className="d-none d-sm-inline-block" />
+              <span className="d-none d-sm-inline-block mx-1">|</span>
+              <br className="d-sm-none" />2025 ©
+            </p>
           </div>
           <div className="col-12 col-sm-auto text-center">
             <p className="mb-0 text-600">v1.1.0</p>
           </div>
         </div>
       </footer>
-    </div >
-  )
+    </div>
+  );
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CheckoutDetailDTO } from "../../model/CheckoutDetailDTO";
-import { BookSearch } from "../book/book-search";
+import { BookSearch } from "../product/book-search";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 

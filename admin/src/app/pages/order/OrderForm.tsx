@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { CheckoutService } from "../../services/checkout/CheckoutService";
 import Pagination from "../../comp/common/Pagination";
-import { BookSearch } from "../book/book-search";
+import { BookSearch } from "../product/book-search";
 import axios from "axios";
 import { formatCurrency, formatDate } from "../../utils/FunctionUtils";
 import defaultPersonImage from "../../../assets/images/imagePerson.png"

@@ -316,7 +316,7 @@ export default function Customer() {
                                   className="rounded-circle"
                                   src={
                                     u.avatar
-                                      ? `http://localhost:5069/api/Account/getImage/${u.avatar}`
+                                      ? `${process.env.REACT_APP_API_URL}/api/Account/getImage/${u.avatar}`
                                       : defaultPersonImage
                                   }
                                   alt="Avatar"

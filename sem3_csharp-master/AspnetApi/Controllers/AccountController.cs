@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Extensions;
 
 namespace AspnetApi.Controllers
 {
@@ -79,60 +80,89 @@ namespace AspnetApi.Controllers
             return Ok(item);
 
         }
-
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Add([FromForm] CreateAccountDTO acc)
         {
-            var checkExist = await _context.Users.FirstOrDefaultAsync(ct => ct.Email.Equals(acc.Email) );
-            if (checkExist != null)
-            {
-                return new JsonResult("Email is existed") { StatusCode = 400 };
-            }
-            //upload image
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            // Check email/username đã tồn tại
+            var emailExists = await _userManager.FindByEmailAsync(acc.Email);
+            if (emailExists != null)
+                return BadRequest(new { message = "Email is existed" });
+
+            var usernameExists = await _userManager.FindByNameAsync(acc.Username);
+            if (usernameExists != null)
+                return BadRequest(new { message = "Username is existed" });
+
+            // Upload avatar (có thể null)
             var avatar = await _commonService.UploadFile(acc.Avatar);
 
-            if (!acc.Equals(null))
+            // Tạo entity user
+            var item = new Account
             {
-                Account item = new Account()
-                {
-                    Email = acc.Email,
-                    UserName = acc.Username,
-                    PhoneNumber = acc.Phone,
-                    Address = acc.Address,
-                    Gender = acc.Gender!=null?(acc.Gender.Equals("1") ? true : false):false,
-                    Avatar = avatar
-                };
-                IdentityResult? result= await _userManager.CreateAsync(item, acc.Password);
-                var roleName = await _context.Roles.FindAsync(acc.Role);
-                if (result.Succeeded)
-                {
-                   
-                    await _userManager.AddToRoleAsync(item, roleName.Name);
+                Email = acc.Email,
+                UserName = acc.Username,
+                PhoneNumber = acc.Phone,
+                Address = acc.Address,
+                Gender = acc.Gender != null ? (acc.Gender.Equals("1") ? true : false) : false,
+                Avatar = avatar
+            };
 
-                    return CreatedAtAction("GetById", new { item.Id }, acc);
-                }
-                else
+            // Tạo user theo policy Identity
+            IdentityResult createResult = await _userManager.CreateAsync(item, acc.Password);
+            if (!createResult.Succeeded)
+            {
+                // Trả rõ các lỗi policy (password, duplicate, v.v.)
+                return BadRequest(new
                 {
-                    return new JsonResult("Created fails") { StatusCode = 500 };
-                }
-
-              
+                    message = "Create user failed",
+                    errors = createResult.Errors.Select(e => new { e.Code, e.Description })
+                });
             }
 
-            return new JsonResult("Something went wrong") { StatusCode = 500 };
+            // Tìm role theo Name trong AspNetRoles
+            var roleEntity = await _context.Roles.FirstOrDefaultAsync(r => r.Name == acc.Role);
+            if (roleEntity == null)
+            {
+                // Có thể cân nhắc xóa user vừa tạo nếu role không hợp lệ
+                await _userManager.DeleteAsync(item);
+                return BadRequest(new { message = $"Role '{acc.Role}' not found" });
+            }
+
+            // Gán role cho user
+            var roleResult = await _userManager.AddToRoleAsync(item, roleEntity.Name);
+            if (!roleResult.Succeeded)
+            {
+                // Rollback user nếu cần
+                await _userManager.DeleteAsync(item);
+                return BadRequest(new
+                {
+                    message = "AddToRole failed",
+                    errors = roleResult.Errors.Select(e => new { e.Code, e.Description })
+                });
+            }
+
+            // Thành công
+            return CreatedAtAction(nameof(GetById), new { id = item.Id }, new
+            {
+                id = item.Id,
+                email = item.Email,
+                username = item.UserName
+            });
         }
+
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id,[FromForm] UpdateAccountDTO acc)
+        public async Task<IActionResult> Update(string id, [FromForm] UpdateAccountDTO acc)
         {
             Account? exist = await _context.Users.FirstOrDefaultAsync(t => t.Id == id);
 
-
             if (exist == null)
             {
-                throw new ArgumentException($"Account with ID: {id} not found");
+                return NotFound($"Account with ID: {id} not found");
             }
 
             var avatar = await _commonService.UploadFile(acc.Avatar);
@@ -142,22 +172,33 @@ namespace AspnetApi.Controllers
                 exist.UserName = acc.Username;
                 exist.PhoneNumber = acc.Phone;
                 exist.Address = acc.Address;
-                exist.Gender = (acc.Gender != null) ?(acc.Gender.Equals("1") ? true : false): false;
-       
-                if (avatar != null && avatar.Length > 0)
+                exist.Gender = (acc.Gender != null) ? (acc.Gender.Equals("1") ? true : false) : false;
+
+                if (!string.IsNullOrEmpty(avatar))
                 {
                     exist.Avatar = avatar;
                 }
+
+                // xử lý role
                 var currentRoles = await _userManager.GetRolesAsync(exist);
-                var roleName = await _context.Roles.FindAsync(acc.Role);
-                await _userManager.RemoveFromRoleAsync(exist, currentRoles.First());
-                await _userManager.AddToRoleAsync(exist, roleName.Name);
+                if (currentRoles.Any())
+                {
+                    await _userManager.RemoveFromRolesAsync(exist, currentRoles);
+                }
+
+                var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == acc.Role);
+                if (role != null)
+                {
+                    await _userManager.AddToRoleAsync(exist, role.Name);
+                }
+
                 await _context.SaveChangesAsync();
                 return Ok(exist);
             }
 
-            return new JsonResult("Something went wrong") { StatusCode = 500 };
+            return BadRequest("Validation failed");
         }
+
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]

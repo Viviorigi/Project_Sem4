@@ -107,7 +107,7 @@ export default function InfoStudent({ info, setUserSearchParams, closeDetail }: 
                         className="rounded-circle"
                         src={
                           info.avatar
-                            ? `http://localhost:8080/api/auth/getImage?atchFleSeqNm=${info.avatar}`
+                            ? `${process.env.REACT_APP_API_URL}/api/Account/getImage/${info.avatar}`
                             : defaultPersonImage
                         }
                         alt="Avatar"

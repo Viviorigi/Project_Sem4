@@ -40,17 +40,16 @@ export class AuthService {
 
   public create(auth:any){
     const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/Account`);
-    return axios.post(url,auth);
-    // , {
-    //   headers: HeadersUtil.getHeadersAuthFormData()
-    // }
+    return axios.post(url,auth, {
+      headers: HeadersUtil.getHeadersAuthFormData()
+    });
   }
   
-  public update(auth:any){
+  public update(id:any,auth:any){
     
-    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/Account/`+auth.id);
+    const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + `/api/Account/`+id);
     return axios.put(url,auth, {
-      headers: HeadersUtil.getHeadersAuth()
+      headers: HeadersUtil.getHeadersAuthFormData()
     });
   }
 

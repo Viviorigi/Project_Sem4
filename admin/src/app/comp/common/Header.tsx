@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import Cookies from 'universal-cookie';
 import { AuthConstant } from '../../constants/AuthConstant';
 import defaultPersonImage from "../../../assets/images/imagePerson.png"
-import { NotificationService } from '../../services/notification/NotificationService';
 import { NotificationDTO } from '../../model/NotificationDTO';
 export default function Header() {
     const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
@@ -25,53 +24,6 @@ export default function Header() {
         if(storedAvatar){
             setAvatar(storedAvatar);
         }
-
-
-
-        if (!isDataFetched.current) {
-            NotificationService.getInstance()
-                .getNewest({
-                    keySearch: '',
-                    limit: 5,
-                    page: 1,
-                }).then((resp) => {
-                    const reversedNotifications = [...resp.data.notis].reverse();
-                    setNotifications(reversedNotifications);
-                    // console.log(resp.data.notis);
-                    
-                    isDataFetched.current = true;
-                }).catch(error => {
-                    console.error("Error fetching notifications:", error);
-                  });
-          }
-        
-          NotificationService.getInstance().getTotal().then((resp:any) => {
-            total.current = resp.data
-          }).catch((e:any) => {
-            // console.log(e);
-            
-          })
-
-        const events = new EventSource(`${process.env.REACT_APP_API_URL}/api/public/subscribe/admin`);  
-        events.onmessage = event => {
-            const newNotification = new NotificationDTO(event.data);
-            // console.log(event.data);
-            total.current = total.current + 1;
-            setNotifications(prevNotifications => {
-                const updatedNotifications = [...prevNotifications, newNotification];
-                
-                if (updatedNotifications.length > 10) {
-                    updatedNotifications.shift(); 
-                }
-                
-                return updatedNotifications;
-            });
-      }
-    //   console.log(notifications);
-      return () => {
-        events.close();
-    };
-      
       },[notifications,total])
     const logout = ()=>{
         cookie.remove(AuthConstant.ACCESS_TOKEN);

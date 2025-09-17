@@ -19,7 +19,7 @@ namespace AspnetApi.Models
         public string PostCategoryName { get; set; }
 
         [MaxLength(255)]
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         [JsonIgnore]
         public ICollection<Post>? Posts { get; set; }

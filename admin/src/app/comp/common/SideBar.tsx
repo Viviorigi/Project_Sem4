@@ -36,12 +36,12 @@ export default function SideBar() {
                                                 <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-rotate-left"></i> Quản lý Đơn trả</span></div>
                                             </Link>
                                             </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/banner" ? "nav-link active" : "nav-link"} to="banner" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-mask"></i> Quản lý Banner</span></div>
+                                            <li className="nav-item mb-2"><Link className={location.pathname === "/postCategory" ? "nav-link active" : "nav-link"} to="postCategory" >
+                                                <div className="d-flex align-items-start"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-mask"></i> Quản lý danh mục bài viết</span></div>
                                             </Link>
                                             </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/contact" ? "nav-link active" : "nav-link"} to="contact" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa fa-commenting-o" aria-hidden="true"></i> Quản lý Liên hệ</span></div>
+                                            <li className="nav-item mb-2"><Link className={location.pathname === "/post" ? "nav-link active" : "nav-link"} to="post" >
+                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa fa-commenting-o" aria-hidden="true"></i> Quản lý bài viết</span></div>
                                             </Link>
                                             </li>
                                             <li className="nav-item mb-2"><Link className={location.pathname === "/about" ? "nav-link active" : "nav-link"} to="about" >

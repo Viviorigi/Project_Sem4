@@ -160,7 +160,7 @@ export default function Header() {
                      
                         <li className="nav-item dropdown"><a className="nav-link lh-1 pe-0" id="navbarDropdownUser" href="index.html#!" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                             <div className="avatar avatar-l ">
-                                <img className="rounded-circle "  src={avatar?`${process.env.REACT_APP_API_URL}/api/auth/getImage?atchFleSeqNm=${avatar}`:defaultPersonImage} alt="" />
+                                <img className="rounded-circle "  src={avatar?`${process.env.REACT_APP_API_URL}/api/Account/getImage/${avatar}`:defaultPersonImage} alt="" />
                             </div>
                         </a>
                             <div className="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border border-300" aria-labelledby="navbarDropdownUser">
@@ -168,7 +168,7 @@ export default function Header() {
                                     <div className="card-body p-0">
                                         <div className="text-center pt-4 pb-3">
                                             <div className="avatar avatar-xl ">
-                                                <img className="rounded-circle " src={avatar?`${process.env.REACT_APP_API_URL}/api/auth/getImage?atchFleSeqNm=${avatar}`:defaultPersonImage} alt="" />
+                                                <img className="rounded-circle " src={avatar?`${process.env.REACT_APP_API_URL}/api/Account/getImage/${avatar}`:defaultPersonImage} alt="" />
                                             </div>
                                             <h6 className="mt-2 text-black">{fullName?fullName:"USER"}</h6>
                                         </div>
@@ -176,10 +176,10 @@ export default function Header() {
                                     <div className="overflow-auto scrollbar" style={{ height: '10rem' }}>
                                         <ul className="nav d-flex flex-column mb-2 pb-1">
                                             <li className="nav-item"><Link className="nav-link px-3" to="/dashboard"><span className="me-2 text-900" data-feather="pie-chart" />Dashboard</Link></li>
-                                            <li className="nav-item"><Link className="nav-link px-3" to="/student"> <span className="me-2 text-900" data-feather="lock" />Sinh viên </Link></li>
+                                            <li className="nav-item"><Link className="nav-link px-3" to="/customer"> <span className="me-2 text-900" data-feather="lock" />Khách hàng </Link></li>
                                             <li className="nav-item"><Link className="nav-link px-3" to="/category"> <span className="me-2 text-900" data-feather="lock" />Danh mục </Link></li>
-                                            <li className="nav-item"><Link className="nav-link px-3" to="/order"> <span className="me-2 text-900" data-feather="lock" />Đơn Đặt </Link></li>
-                                            <li className="nav-item"><Link className="nav-link px-3" to="/book"> <span className="me-2 text-900" data-feather="lock" />Sách</Link></li>
+                                            <li className="nav-item"><Link className="nav-link px-3" to="/post"> <span className="me-2 text-900" data-feather="lock" />Bài viết </Link></li>
+                                            <li className="nav-item"><Link className="nav-link px-3" to="/product"> <span className="me-2 text-900" data-feather="lock" />Sản phẩm</Link></li>
                                         </ul>
                                     </div>
                                     <div className="card-footer p-0 border-top">

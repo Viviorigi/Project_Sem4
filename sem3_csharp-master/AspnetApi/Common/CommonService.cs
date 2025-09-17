@@ -245,41 +245,82 @@ namespace AspnetApi.Common
             return new PagedResponse<T>(items, totalRecords, queryParams.PageNumber, queryParams.PageSize);
         }
 
-        public async Task<PagedResponse<T>> SearchPost(SearchPostFilter queryParams, string[] filterBy, Func<IQueryable<T>, IQueryable<T>> includeFunc = null)
+        public async Task<PagedResponse<T>> SearchPost(
+     SearchPostFilter queryParams,
+     string[] filterBy,
+     Func<IQueryable<T>, IQueryable<T>> includeFunc = null)
         {
+            // Base query từ GetQuery (giữ như bạn đang có)
             var query = await GetQuery(queryParams, filterBy);
 
-
-            // Apply filtering by categoryId
-            if (!string.IsNullOrEmpty(queryParams.PostCategoryId))
-            {
-                query = query.Where(p => EF.Property<string>(p, "PostCategoryId") == queryParams.PostCategoryId);
-            }
-
-            if (!string.IsNullOrEmpty(queryParams.IsPublish))
-            {
-                query = query.Where(p => EF.Property<string>(p, "Status") == queryParams.IsPublish);
-            }
-
-            query = query.Where(p => EF.Property<string>(p, "Status") != "DRAFT");
-
-            // Get total records
-            var totalRecords = await query.CountAsync();
-
+            // Include (nếu có)
             if (includeFunc != null)
             {
                 query = includeFunc(query);
             }
 
-            // Apply pagination
+            // ----- Filter theo Category -----
+            if (!string.IsNullOrWhiteSpace(queryParams.PostCategoryId)
+                && int.TryParse(queryParams.PostCategoryId, out var catId)
+                && catId > 0)
+            {
+                // PostCategoryId là int
+                query = query.Where(p => EF.Property<int>(p, "PostCategoryId") == catId);
+            }
+
+            // ----- Filter theo IsPublish (map sang Status) -----
+            if (!string.IsNullOrWhiteSpace(queryParams.IsPublish))
+            {
+                var v = queryParams.IsPublish.Trim().ToLowerInvariant();
+
+                if (v == "true" || v == "1")
+                {
+                    // chỉ lấy Published
+                    query = query.Where(p => EF.Property<string>(p, "Status") == "Published");
+                }
+                else if (v == "false" || v == "0")
+                {
+                    // chỉ lấy KHÔNG Published (Draft, Hidden, v.v…)
+                    query = query.Where(p => EF.Property<string>(p, "Status") != "Published");
+                }
+            }
+
+
+            // ----- Filter trực tiếp theo Status (hỗ trợ nhiều giá trị) -----
+            // Ví dụ: "DRAFT,UNPUBLISH,PUBLISH"
+            if (!string.IsNullOrWhiteSpace(queryParams.Status))
+            {
+                var statuses = queryParams.Status
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Select(s => s.ToUpperInvariant())
+                    .ToArray();
+
+                if (statuses.Length > 0)
+                {
+                    query = query.Where(p => statuses.Contains((EF.Property<string>(p, "Status") ?? "").ToUpper()));
+                }
+            }
+
+            // ⛔️ BỎ DÒNG LOẠI DRAFT MẶC ĐỊNH
+            // // query = query.Where(p => EF.Property<string>(p, "Status") != "DRAFT");
+
+            // ----- Tổng bản ghi sau khi filter -----
+            var totalRecords = await query.CountAsync();
+
+            // ----- Sort (tuỳ bạn đã làm trong GetQuery; nếu cần có thể bổ sung ở đây) -----
+
+            // ----- Paging an toàn -----
+            var pageNumber = queryParams.PageNumber <= 0 ? 1 : queryParams.PageNumber;
+            var pageSize = queryParams.PageSize <= 0 ? 10 : queryParams.PageSize;
+
             var items = await query
-                .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
-                .Take(queryParams.PageSize)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
-            // Create and return paginated response
-            return new PagedResponse<T>(items, totalRecords, queryParams.PageNumber, queryParams.PageSize);
+            return new PagedResponse<T>(items, totalRecords, pageNumber, pageSize);
         }
+
 
         public async Task<PagedResponse<T>> SearchRequestApprove(SearchRequestApproveFilter queryParams, string[] filterBy, Func<IQueryable<T>, IQueryable<T>> includeFunc = null)
         {

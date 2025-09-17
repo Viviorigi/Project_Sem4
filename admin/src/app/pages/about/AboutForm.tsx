@@ -7,8 +7,8 @@ import { AuthService } from "../../services/auth/AuthService";
 import { toast } from "react-toastify";
 import defaultPersonImage from "../../../assets/images/imagePerson.png"
 import noImageAvailable from "../../../assets/images/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg"
-import { ContactDTO } from "../../model/ContactDTO";
-import { ContactService } from "../../services/contact/ContactService";
+import { PostDTO } from "../../model/PostDTO";
+import { PostService } from "../../services/post/PostService";
 import { AboutDTO } from "../../model/AboutDTO";
 import { AboutService } from "../../services/about/AboutService";
 import DOMPurify from 'dompurify';

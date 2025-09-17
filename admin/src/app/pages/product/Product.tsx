@@ -9,6 +9,8 @@ import defaultPersonImage from '../../../assets/images/imagePerson.png';
 import { useAppDispatch } from '../../store/hook';
 import { setLoading } from '../../reducers/spinnerSlice';
 import { HeadersUtil } from '../../utils/Headers.Util';
+import ProductInfo from './ProductInfo';
+import { Dialog } from 'primereact/dialog';
 
 // ---------- Types ----------
 type ProductRow = {
@@ -56,6 +58,8 @@ export default function Product() {
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const productRef = useRef<any>(null);
+  const [openDetail, setOpenDetail] = useState(false);
+  const handleClickCloseDetail = () => setOpenDetail(false);
 
   const PAGE_SIZE = 5;
 
@@ -75,6 +79,11 @@ export default function Product() {
   const editProduct = (row: ProductRow) => {
     productRef.current = row;
     setShowForm(true);
+  };
+
+  const info = (row: ProductRow) => {
+    productRef.current = row;
+    setOpenDetail(true);
   };
 
   const delProduct = (id: number) => {
@@ -104,37 +113,37 @@ export default function Product() {
   };
 
   // ---------- Fetch categories (filter) ----------
-useEffect(() => {
-  const fetchCategories = async () => {
-    try {
-      const url = `${process.env.REACT_APP_API_URL}/api/Category/search`;
-      const body = {
-        pageNumber: 1,
-        pageSize: 200,
-        keyword: "",
-        status: "1",          // nếu BE hiểu "1" = active
-        sortBy: "CategoryName",
-        sortDir: "asc",
-      };
-      const resp = await axios.post(url, body, {
-        headers: HeadersUtil.getHeadersAuth(),
-      });
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const url = `${process.env.REACT_APP_API_URL}/api/Category/search`;
+        const body = {
+          pageNumber: 1,
+          pageSize: 200,
+          keyword: "",
+          status: "1",          // nếu BE hiểu "1" = active
+          sortBy: "CategoryName",
+          sortDir: "asc",
+        };
+        const resp = await axios.post(url, body, {
+          headers: HeadersUtil.getHeadersAuth(),
+        });
 
-      const data = resp.data?.data ?? resp.data?.content ?? [];
-      setCategoryList(
-        data.map((c: any) => ({
-          id: c.id,
-          categoryName: c.categoryName ?? c.name ?? "",
-        }))
-      );
-    } catch (err) {
-      console.error("Load categories error:", err);
-      setCategoryList([]);
-    }
-  };
+        const data = resp.data?.data ?? resp.data?.content ?? [];
+        setCategoryList(
+          data.map((c: any) => ({
+            id: c.id,
+            categoryName: c.categoryName ?? c.name ?? "",
+          }))
+        );
+      } catch (err) {
+        console.error("Load categories error:", err);
+        setCategoryList([]);
+      }
+    };
 
-  fetchCategories();
-}, []);
+    fetchCategories();
+  }, []);
 
 
   // ---------- Fetch products ----------
@@ -260,14 +269,14 @@ useEffect(() => {
                     onChange={handleChangeText}
                     onKeyUp={handleKeyUpSearch}
                   />
-                  <button className="btn btn-primary ms-2" onClick={triggerReload}>
+                  <button className="btn btn-primary " onClick={triggerReload}>
                     <span className="fas fa-search" />
                   </button>
                 </div>
               </div>
 
               {/* Category */}
-              <div className="col-md-3">
+              <div className="col-md-1">
                 <label className="form-label">Danh mục</label>
                 <select
                   className="form-select"
@@ -326,19 +335,21 @@ useEffect(() => {
                   min={0}
                 />
               </div>
-
-              {/* Actions */}
-              <div className="col-md-3 d-flex gap-5">
-                <button className="btn btn-outline-secondary mt-3" onClick={clearFilters}>
-                  Xóa lọc
-                </button>
-                <button className="btn btn-primary mt-3" onClick={addProduct}>
-                  <span className="fas fa-plus me-2" />
-                  Thêm Sản Phẩm
-                </button>
+              <div className="col-auto scrollbar overflow-hidden-y flex-grow-1" />
+              <div className="col-auto">
+                <div className="btn-group" role="group" aria-label="Actions">
+                  <button className="btn btn-outline-secondary" onClick={clearFilters} title="Xóa lọc">
+                    <i className="fa-solid fa-rotate-left me-2" />
+                    Xóa lọc
+                  </button>
+                  <button className="btn btn-primary" onClick={addProduct} title="Thêm sản phẩm">
+                    <span className="fas fa-plus me-2" />
+                    Thêm Sản Phẩm
+                  </button>
+                </div>
               </div>
-            </div>
 
+            </div>
             {/* Table */}
             <div className="border-bottom border-200 position-relative top-1">
               <div className="table-responsive scrollbar-overlay mx-n1 px-1">
@@ -356,8 +367,8 @@ useEffect(() => {
                     </tr>
                   </thead>
                   <tbody>
-                    {list.map((u, idx) => (
-                      <tr key={u.id}>
+                    {list.map((p, idx) => (
+                      <tr key={p.id}>
                         <td className="align-middle text-center">
                           {(searchDto.page - 1) * PAGE_SIZE + idx + 1}
                         </td>
@@ -367,7 +378,7 @@ useEffect(() => {
                             <div className="avatar avatar-m">
                               <img
                                 className="rounded-circle"
-                                src={buildImg(u.image)}
+                                src={buildImg(p.image)}
                                 alt="Product"
                                 onError={e => {
                                   const t = e.currentTarget as HTMLImageElement;
@@ -376,34 +387,37 @@ useEffect(() => {
                                 }}
                               />
                             </div>
-                            <p className="mb-0 ms-3 text-1100 fw-bold">{u.productName}</p>
+                            <p className="mb-0 ms-3 text-1100 fw-bold">{p.productName}</p>
                           </div>
                         </td>
 
-                        <td className="align-middle text-center">{u.price?.toLocaleString?.('vi-VN')}</td>
-                        <td className="align-middle text-center">{u.salePrice?.toLocaleString?.('vi-VN')}</td>
-                        <td className="align-middle text-center">{u.category?.categoryName ?? ''}</td>
-                        <td className="align-middle text-center">{formatDate(u.createdAt)}</td>
+                        <td className="align-middle text-center">{p.price?.toLocaleString?.('vi-VN')}</td>
+                        <td className="align-middle text-center">{p.salePrice?.toLocaleString?.('vi-VN')}</td>
+                        <td className="align-middle text-center">{p.category?.categoryName ?? ''}</td>
+                        <td className="align-middle text-center">{formatDate(p.createdAt)}</td>
 
                         <td className="align-middle text-center">
                           <span
                             className={
-                              u.active
+                              p.active
                                 ? 'badge badge-phoenix fs--2 badge-phoenix-success'
                                 : 'badge badge-phoenix fs--2 badge-phoenix-danger'
                             }
                           >
                             <span className="badge-label">
-                              {u.active ? 'Đang hoạt động' : 'Không hoạt động'}
+                              {p.active ? 'Đang hoạt động' : 'Không hoạt động'}
                             </span>
                           </span>
                         </td>
 
                         <td className="align-middle text-center">
-                          <button className="btn btn-phoenix-primary me-1 mb-1" onClick={() => editProduct(u)}>
-                            <i className="fa-solid fa-pen"></i>
+                          <button className="btn btn-phoenix-primary me-1 mb-1" onClick={() => info(p)}>
+                            <i className="far fa-eye"></i>
                           </button>
-                          <button className="btn btn-phoenix-danger me-1 mb-1" onClick={() => delProduct(u.id)}>
+                          <button className="btn btn-phoenix-primary me-1 mb-1" onClick={() => editProduct(p)}>
+                            <i className="fa-solid fa-pen">abc</i>
+                          </button>
+                          <button className="btn btn-phoenix-danger me-1 mb-1" onClick={() => delProduct(p.id)}>
                             <i className="fa-solid fa-trash"></i>
                           </button>
                         </td>
@@ -444,6 +458,14 @@ useEffect(() => {
             onSave={triggerReload}
           />
         )}
+
+        <Dialog baseZIndex={2000} style={{ width: "1200px" }} visible={openDetail} onHide={handleClickCloseDetail}>
+          <ProductInfo
+            info={productRef.current}
+            onRefresh={triggerReload}
+            closeDetail={handleClickCloseDetail}
+          />
+        </Dialog>
       </div>
       <footer className="footer position-absolute">
         <div className="row g-0 justify-content-between align-items-center h-100">
@@ -460,6 +482,6 @@ useEffect(() => {
         </div>
       </footer>
     </div>
-    
+
   );
 }

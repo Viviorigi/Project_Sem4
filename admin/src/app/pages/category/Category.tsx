@@ -10,6 +10,8 @@ import "../../../assets/css/category/cate.scss";
 import { useAppDispatch } from '../../store/hook';
 import { setLoading } from '../../reducers/spinnerSlice';
 import { HeadersUtil } from '../../utils/Headers.Util';
+import { Dialog } from 'primereact/dialog';
+import CategoryInfo from './CategoryInfo';
 
 type CategoryItem = {
   id: number;
@@ -30,6 +32,8 @@ export default function Book() {
 
   const [sortBy, setSortBy] = useState("CreatedAt");  // default
   const [sortDir, setSortDir] = useState("desc");
+  const [openDetail, setOpenDetail] = useState(false);
+  const handleClickCloseDetail = () => setOpenDetail(false);
 
   const PAGE_SIZE = 5;
   const indexOfFirstItem = (searchDto.page - 1) * PAGE_SIZE;
@@ -61,6 +65,11 @@ export default function Book() {
   // thêm/sửa
   const addCategory = () => { categoryRef.current = null; setShowForm(true); };
   const editCategory = (row: CategoryItem) => { categoryRef.current = row; setShowForm(true); };
+  const info = (row: CategoryItem) => {
+    categoryRef.current = row;
+    setOpenDetail(true);
+  };
+
 
   // xóa
   const delCategory = (id: number) => {
@@ -223,32 +232,35 @@ export default function Book() {
                   </thead>
 
                   <tbody className="list" id="customers-table-body">
-                    {list.map((u, idx) => (
-                      <tr className="hover-actions-trigger btn-reveal-trigger position-static" key={u.id}>
+                    {list.map((c, idx) => (
+                      <tr className="hover-actions-trigger btn-reveal-trigger position-static" key={c.id}>
                         <td className='align-middle text-center text-700'>
                           {indexOfFirstItem + idx + 1}
                         </td>
 
                         <td className="align-middle text-center">
                           <div className="d-flex justify-content-center">
-                            <p className="mb-0 text-1100 fw-bold">{u.categoryName}</p>
+                            <p className="mb-0 text-1100 fw-bold">{c.categoryName}</p>
                           </div>
                         </td>
 
-                        <td className="align-middle text-center text-700">{formatDate(u.createdAt)}</td>
+                        <td className="align-middle text-center text-700">{formatDate(c.createdAt)}</td>
                         {/* <td className="align-middle text-center text-700">{formatDate(u.updatedAt)}</td> */}
 
                         <td className="align-middle text-center">
-                          <span className={u.active ? 'badge badge-phoenix fs--2 badge-phoenix-success' : 'badge badge-phoenix fs--2 badge-phoenix-danger'}>
-                            <span className="badge-label">{u.active ? "Đang hoạt động" : "Không hoạt động"}</span>
+                          <span className={c.active ? 'badge badge-phoenix fs--2 badge-phoenix-success' : 'badge badge-phoenix fs--2 badge-phoenix-danger'}>
+                            <span className="badge-label">{c.active ? "Đang hoạt động" : "Không hoạt động"}</span>
                           </span>
                         </td>
 
                         <td className="align-middle text-center">
-                          <button className="btn btn-phoenix-primary me-1 mb-1" type="button" onClick={() => editCategory(u)}>
+                             <button className="btn btn-phoenix-primary me-1 mb-1" onClick={() => info(c)}>
+                            <i className="far fa-eye"></i>
+                          </button>
+                          <button className="btn btn-phoenix-primary me-1 mb-1" type="button" onClick={() => editCategory(c)}>
                             <i className="fa-solid fa-pen"></i>
                           </button>
-                          <button className="btn btn-phoenix-danger me-1 mb-1" type="button" onClick={() => delCategory(u.id)}>
+                          <button className="btn btn-phoenix-danger me-1 mb-1" type="button" onClick={() => delCategory(c.id)}>
                             <i className="fa-solid fa-trash"></i>
                           </button>
                         </td>
@@ -285,6 +297,15 @@ export default function Book() {
             onSave={() => setSearchDto(prev => ({ ...prev, timer: Date.now() }))}
           />
         )}
+
+        <Dialog baseZIndex={2000} style={{ width: "1200px" }} visible={openDetail} onHide={handleClickCloseDetail}>
+          <CategoryInfo
+            info={categoryRef.current}
+            onRefresh={() => setSearchDto(prev => ({ ...prev, timer: Date.now() }))}
+            closeDetail={handleClickCloseDetail}
+          />
+        </Dialog>
+        
       </div>
 
       <footer className="footer position-absolute">

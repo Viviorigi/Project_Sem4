@@ -3,31 +3,81 @@ import { Link } from 'react-router-dom'
 import Cookies from 'universal-cookie';
 import { AuthConstant } from '../../constants/AuthConstant';
 import defaultPersonImage from "../../../assets/images/imagePerson.png"
-import { NotificationDTO } from '../../model/NotificationDTO';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+
+type JwtPayload = {
+  Id?: string;        // theo ảnh JWT của bạn là "Id"
+  id?: string;
+  sub?: string;
+  role?: string | string[];
+  exp?: number;
+  iat?: number;
+  email?: string;
+  name?: string;
+};
+
 export default function Header() {
-    const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
     const cookie = new Cookies();
     const [fullName,setFullName] = useState("");
     const [avatar,setAvatar] = useState("")
     // const [total, setTotal] = useState(0);
     const total = useRef(0)
-    const [timer, setTimer] = useState(0)
 
-    const isDataFetched = useRef(false);
+useEffect(() => {
+  const token = cookie.get("access_token"); // hoặc AuthConstant.ACCESS_TOKEN
+  if (!token) {
+    // chưa đăng nhập
+    return;
+  }
 
-    useEffect(()=>{
-        const storedFullName = cookie.get("fullName");
-        const storedAvatar = cookie.get("avatar");
-        if (storedFullName) {
-            setFullName(storedFullName)
-        }
-        if(storedAvatar){
-            setAvatar(storedAvatar);
-        }
-      },[notifications,total])
+  let payload: JwtPayload;
+  try {
+    payload = jwtDecode<JwtPayload>(token);
+  } catch {
+    // token lỗi -> logout
+    cookie.remove("access_token");
+    window.location.href = process.env.REACT_APP_ADMIN_URL + "/";
+    return;
+  }
+
+  // check hết hạn
+  if (payload.exp && payload.exp * 1000 < Date.now()) {
+    cookie.remove("access_token");
+    window.location.href = process.env.REACT_APP_ADMIN_URL + "/";
+    return;
+  }
+
+  const userId = payload.Id || payload.id || payload.sub;
+  if (!userId) return;
+
+  // gọi API lấy thông tin user
+  axios.get(`${process.env.REACT_APP_API_URL}/api/Account/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  .then(res => {
+    const { userName, avatar } = res.data || {};
+    if (userName) {
+      cookie.set("fullName", userName, { path: "/" });
+      setFullName(userName);
+    }
+    if (avatar) {
+      cookie.set("avatar", avatar, { path: "/" });
+      setAvatar(avatar);
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    // nếu 401/403 thì logout
+    if (err?.response?.status === 401 || err?.response?.status === 403) {
+      cookie.remove("access_token");
+      window.location.href = process.env.REACT_APP_ADMIN_URL + "/";
+    }
+  });
+  // chạy 1 lần khi mount
+}, []);
     const logout = ()=>{
         cookie.remove(AuthConstant.ACCESS_TOKEN);
-        cookie.remove("fullName");
         window.location.href = process.env.REACT_APP_ADMIN_URL + "/"
     }
 

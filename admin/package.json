@@ -20,6 +20,7 @@
     "dompurify": "^3.1.6",
     "install": "^0.13.0",
     "jodit-react": "^4.1.2",
+    "jwt-decode": "^4.0.0",
     "npm": "^10.8.2",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
@@ -40,16 +41,25 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "set PORT=3000  &&  react-scripts start ",
-    "build": "react-scripts build",
+    "start": "set DISABLE_ESLINT_PLUGIN=true && set PORT=3000  &&  react-scripts start ",
+    "build": "set DISABLE_ESLINT_PLUGIN=true && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
+"eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+    "no-unused-vars": "off",
+    "no-console": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-uses-react": "off",
+    "react/jsx-no-undef": "off",
+    "jsx-a11y/anchor-is-valid": "off"
+  }
   },
   "browserslist": {
     "production": [

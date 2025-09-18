@@ -189,7 +189,7 @@ export default function PostForm({ closeForm, onSave, post }: Props) {
         <div className="col-md-8 mb-3">
           <label>Ảnh</label>
           <input type="file" accept="image/*" className="form-control" onChange={onFile} />
-          {preview && <img alt="preview" src={preview} className="mt-2" style={{ maxHeight: 120 }} />}
+          {preview && <img alt="preview" src={`${process.env.REACT_APP_API_URL}/api/Account/getImage/${preview}`} className="mt-2" style={{ maxHeight: 120 }} />}
         </div>
       </div>
 

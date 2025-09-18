@@ -44,12 +44,12 @@ export default function SideBar() {
                                                 <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa fa-commenting-o" aria-hidden="true"></i> Quản lý bài viết</span></div>
                                             </Link>
                                             </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/about" ? "nav-link active" : "nav-link"} to="about" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-boxes-stacked"></i> Quản lý về chúng tôi</span></div>
+                                            <li className="nav-item mb-2"><Link className={location.pathname === "/requestApproval" ? "nav-link active" : "nav-link"} to="requestApproval" >
+                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa fa-comments"></i>Xử lý Bình luận</span></div>
                                             </Link>
                                             </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/feedback" ? "nav-link active" : "nav-link"} to="feedback" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa fa-comments"></i> Quản Lý feed back</span></div>
+                                            <li className="nav-item mb-2"><Link className={location.pathname === "/about" ? "nav-link active" : "nav-link"} to="about" >
+                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-boxes-stacked"></i> Quản lý về chúng tôi</span></div>
                                             </Link>
                                             </li>
                                         </ul>

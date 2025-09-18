@@ -9,7 +9,7 @@ import Return from '../pages/return/Return';
 import AuthGuard from '../guard/AuthGuard';
 import RoleGuard from '../guard/roleGuard';
 import About from '../pages/about/About';
-import FeedBack from '../pages/feedback/FeedBack';
+import RequestApproval from '../pages/requestApproval/RequestApproval';
 import PostCategory from '../pages/postCategory/PostCategory';
 import Post from '../pages/post/Post'; 
 
@@ -31,6 +31,6 @@ export const indexRouter: any = {
         { path: 'post', element: <Post /> },     
         { path: 'about', element: <About /> },
         // { path: 'notification', element: <Notification /> },
-        { path: 'feedback', element: <FeedBack /> }
+        { path: 'requestapproval', element: <RequestApproval /> }
     ],
 };

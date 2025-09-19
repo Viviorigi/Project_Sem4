@@ -10,7 +10,8 @@ namespace AspnetApi.Common
     public interface ICommonService<T> where T : class
     {
         Task<PagedResponse<T>> GetPagedDataAsync(QueryParams queryParams, string[] filterBy, Func<IQueryable<T>, IQueryable<T>> includeFunc=null);
-        Task<PagedResponse<T>> SearchAccount(SearchAccountFilter queryParams, string[] filterBy);
+    
+        Task<PagedResponse<AccountDto>> SearchAccount(SearchAccountFilter queryParams, string[] filterBy);
 
         Task<PagedResponse<T>> SearchProduct(SearchProductFilter queryParams, string[] filterBy, Func<IQueryable<T>, IQueryable<T>> includeFunc = null);
         Task<PagedResponse<T>> SearchPost(SearchPostFilter queryParams, string[] filterBy, Func<IQueryable<T>, IQueryable<T>> includeFunc = null);

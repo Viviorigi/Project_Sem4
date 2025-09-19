@@ -16,6 +16,7 @@ type ApiUser = {
   avatar: string | null;
   createdAt: string | null;
   lockoutEnd: string | null;
+  roleName: string | null;
 };
 
 type Props = {
@@ -177,7 +178,14 @@ export default function InfoStudent({ info, setUserSearchParams, closeDetail }: 
                   </div>
                 </div>
               </div>
-
+              <div className="row justify-content-between">
+                <div className="col-auto">
+                  <h5 className="text-1000 mb-0">Vai trò</h5>
+                </div>
+                <div className="col-auto">
+                  <p className="mb-0">{info.roleName || 'N/A'}</p>
+                </div>
+              </div>
               {/* Có thể thêm các trường khác nếu backend bổ sung */}
             </div>
           </div>

@@ -125,42 +125,50 @@ namespace AspnetApi.Common
             return query.Where(lambda);
         }
 
-        public async Task<PagedResponse<T>> SearchAccount(SearchAccountFilter queryParams, string[] filterBy)
+        public async Task<PagedResponse<AccountDto>> SearchAccount(
+            SearchAccountFilter queryParams, string[] filterBy)
         {
-            var query =await GetQuery(queryParams, filterBy);
-            var roleId = queryParams.RoleId;
-            
+            // GetQuery phải trả IQueryable<Account> hoặc có thể Cast<Account>()
+            var accounts = (await GetQuery(queryParams, filterBy)).Cast<Account>();
 
-            if (!string.IsNullOrWhiteSpace(roleId) && typeof(T) == typeof(Account))
-            {
-                var accountQuery = query.Cast<Account>();
+            // JOIN: Account -> AspNetUserRoles -> AspNetRoles
+            var q =
+                from a in accounts
+                join ur in _context.UserRoles on a.Id equals ur.UserId
+                join r in _context.Roles on ur.RoleId equals r.Id
+                select new AccountDto
+                {
+                    Id = a.Id,
+                    UserName = a.UserName,
+                    NormalizedUserName = a.NormalizedUserName,
+                    Email = a.Email,
+                    NormalizedEmail = a.NormalizedEmail,
+                    PhoneNumber = a.PhoneNumber,
+                    Address = a.Address,
+                    Gender = a.Gender,
+                    Avatar = a.Avatar,
+                    CreatedAt = a.CreatedAt,
+                    RoleId = r.Id,
+                    RoleName = r.Name
+                };
 
-             
-                accountQuery = accountQuery
-                    .Join(_context.UserRoles, 
-                          account => account.Id,  
-                          userRole => userRole.UserId,
-                          (account, userRole) => new { account, userRole })  
-                    .Join(_context.Roles,  
-                          combined => combined.userRole.RoleId,  
-                          role => role.Id,  // Match on Role Id
-                          (combined, role) => combined.account) 
-                    .Where(account => _context.UserRoles.Any(ur => ur.RoleId == roleId && ur.UserId == account.Id)); // Filter accounts by RoleId
+            // (tuỳ chọn) lọc theo role nếu có truyền
+            if (!string.IsNullOrWhiteSpace(queryParams.RoleId))
+                q = q.Where(x => x.RoleId == queryParams.RoleId);
 
-               
-                query = accountQuery.Cast<T>();
-            }
+            // tổng + phân trang
+            var total = await q.CountAsync();
 
+            var items = await q
+                .OrderByDescending(x => x.CreatedAt)                  // sắp xếp nếu cần
+                .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                .Take(queryParams.PageSize)
+                .AsNoTracking()
+                .ToListAsync();
 
-            int totalRecords = await query.CountAsync();
-            var items = await query
-               .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
-               .Take(queryParams.PageSize)
-               .ToListAsync();
-
-            // Create and return paginated response
-            return new PagedResponse<T>(items, totalRecords, queryParams.PageNumber, queryParams.PageSize);
+            return new PagedResponse<AccountDto>(items, total, queryParams.PageNumber, queryParams.PageSize);
         }
+
 
         private async Task<IQueryable<T>> GetQuery(QueryParams queryParams, string[] filterBy)
         {

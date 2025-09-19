@@ -38,7 +38,7 @@ export default function PostForm({ closeForm, onSave, post }: Props) {
   // 👇 state danh mục
   const [categories, setCategories] = useState<PostCategoryItem[]>([]);
   const [loadingCats, setLoadingCats] = useState<boolean>(false);
-  const [catMap, setCatMap] = useState<Record<number, string>>({});
+
   // Load danh mục để chọn
   useEffect(() => {
     setLoadingCats(true);

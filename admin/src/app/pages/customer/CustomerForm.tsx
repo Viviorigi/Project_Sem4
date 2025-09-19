@@ -36,7 +36,7 @@ export default function CustomerForm({ closeForm, onSave, user }: Props) {
           email: user.email ?? "",
           username: user.userName ?? "",
           password: "", // để trống -> bắt nhập lại khi update
-          role: user.role ?? "User",
+          role: user.roleName ?? "User",
           phone: user.phone ?? user.phoneNumber ?? "",
           address: user.address ?? "",
           gender: user.gender === true ? "1" : user.gender === false ? "0" : "",

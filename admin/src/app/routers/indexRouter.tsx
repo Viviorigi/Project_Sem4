@@ -8,7 +8,7 @@ import Order from '../pages/order/Order';
 import Return from '../pages/return/Return';
 import AuthGuard from '../guard/AuthGuard';
 import RoleGuard from '../guard/roleGuard';
-import About from '../pages/about/About';
+import CommentList from '../pages/comments/CommentList';
 import RequestApproval from '../pages/requestApproval/RequestApproval';
 import PostCategory from '../pages/postCategory/PostCategory';
 import Post from '../pages/post/Post'; 
@@ -29,7 +29,7 @@ export const indexRouter: any = {
         { path: 'returnbook', element: <Return /> },
         { path: 'postCategory', element: <PostCategory /> },
         { path: 'post', element: <Post /> },     
-        { path: 'about', element: <About /> },
+        { path: 'comments', element: <CommentList /> },
         // { path: 'notification', element: <Notification /> },
         { path: 'requestapproval', element: <RequestApproval /> }
     ],

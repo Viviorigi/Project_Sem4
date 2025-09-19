@@ -25,7 +25,7 @@ type ApiUser = {
   avatar: string | null;
   createdAt: string | null;
   lockoutEnd: string | null;
-  // ... các field khác nếu cần
+  roleName:string |null;
 };
 
 type ApiResponse = {

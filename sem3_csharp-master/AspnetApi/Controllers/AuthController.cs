@@ -79,37 +79,37 @@ namespace AspnetApi.Controllers
 
 
         [HttpPost("login")]
-public async Task<IActionResult> Login(LoginUserDTO user)
-{
-if (ModelState.IsValid)
-{
-  IdentityUser existingUser = await _userManager.FindByEmailAsync(user.Email);
+        public async Task<IActionResult> Login(LoginUserDTO user)
+        {
+        if (ModelState.IsValid)
+        {
+          IdentityUser existingUser = await _userManager.FindByEmailAsync(user.Email);
 
-  if (existingUser == null)
-  {
-      return BadRequest(new RegisterResponseDTO()
-      {
-          Errors = new List<string>() { "Email address is not registered." },
-          Success = false
-      });
-  }
-  var login = _mapper.Map<Account>(existingUser);
-  bool isUserCorrect = await _userManager.CheckPasswordAsync(login, user.Password);
-  if (isUserCorrect)
-  {
-      AuthResult authResult = await _jwtService.GenerateToken(login);
-      //return a token
-      return Ok(authResult);
-  }
-  else
-  {
-      return BadRequest(new RegisterResponseDTO()
-      {
-          Errors = new List<string>() { "Wrong password" },
-          Success = false
-      });
-  }
-}
+          if (existingUser == null)
+          {
+              return BadRequest(new RegisterResponseDTO()
+              {
+                  Errors = new List<string>() { "Email address is not registered." },
+                  Success = false
+              });
+          }
+          var login = _mapper.Map<Account>(existingUser);
+          bool isUserCorrect = await _userManager.CheckPasswordAsync(login, user.Password);
+          if (isUserCorrect)
+          {
+              AuthResult authResult = await _jwtService.GenerateToken(login);
+              //return a token
+              return Ok(authResult);
+          }
+          else
+          {
+              return BadRequest(new RegisterResponseDTO()
+              {
+                  Errors = new List<string>() { "Wrong password" },
+                  Success = false
+              });
+          }
+        }
 
 return BadRequest(new RegisterResponseDTO()
 {

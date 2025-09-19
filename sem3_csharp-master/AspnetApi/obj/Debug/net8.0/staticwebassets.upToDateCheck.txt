@@ -129,3 +129,4 @@ wwwroot\images\8edfc9a7-99ae-4e58-9c40-b11684b3e995.jpg
 wwwroot\images\b3f305ef-7dc8-437c-a743-7233d26d7b98.jpg
 wwwroot\images\daa881dd-8092-4df3-a11f-4ffbbd58cc87.png
 wwwroot\images\a7c43f17-dac0-41f9-a50e-6583bd09c0ce.png
+wwwroot\images\eff37834-5acb-4a39-a62f-0195d7b8a42a.jpg

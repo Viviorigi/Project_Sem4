@@ -3,7 +3,6 @@ import axios from "axios";
 import { CheckoutDetailDTO } from "../../model/CheckoutDetailDTO";
 import Pagination from "../../comp/common/Pagination";
 import Swal from "sweetalert2";
-import AddDetailForm from "./AddDetailForm";
 import { Dialog } from "primereact/dialog";
 
 const BASE_URL = process.env.REACT_APP_API_URL + "/api/checkoutdt";
@@ -157,12 +156,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ orderId, onHide, tab }) => {
           onPageChange={handlePageClick}
         />
       </div>
-      {tab === "ORDER" ? 
-      <AddDetailForm  checkoutId={orderId} onClose={function (status: boolean): void {
-        throw new Error("Function not implemented.");
-      } } mode={"add"} />
-      :""
-    }
+     
     </div>
   );
 };

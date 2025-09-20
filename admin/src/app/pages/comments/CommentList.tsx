@@ -154,15 +154,14 @@ export default function CommentList() {
       <div className="card mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white">
         <div className="row g-2 mb-4">
           <div className="col-auto d-flex align-items-center gap-2 mt-4">
-            <i className="fa-solid fa-comments" />
-            <h2 className="m-0">List Comments</h2>
+            <h2 className="m-0">Danh Sách Bình luận</h2>
           </div>
         </div>
 
         {/* Filter theo ngày (dd/MM/yyyy) */}
         <div className="row g-3 align-items-end">
           <div className="col-auto">
-            <label className="form-label mb-1">Start Date (dd/MM/yyyy)</label>
+            <label className="form-label mb-1">Ngày bắt đầu (dd/mm/yyyy)</label>
             <input
               type="text"
               className="form-control"
@@ -173,7 +172,7 @@ export default function CommentList() {
             />
           </div>
           <div className="col-auto">
-            <label className="form-label mb-1">End Date (dd/MM/yyyy)</label>
+            <label className="form-label mb-1">Ngày kết thúc (dd/mm/yyyy)</label>
             <input
               type="text"
               className="form-control"
@@ -368,6 +367,21 @@ export default function CommentList() {
           </div>
         ) : null}
       </Dialog>
+
+            <footer className="footer position-absolute">
+        <div className="row g-0 justify-content-between align-items-center h-100">
+          <div className="col-12 col-sm-auto text-center">
+            <p className="mb-0 mt-2 mt-sm-0 text-900">
+              Admin<span className="d-none d-sm-inline-block" />
+              <span className="d-none d-sm-inline-block mx-1">|</span>
+              <br className="d-sm-none" />2025 ©
+            </p>
+          </div>
+          <div className="col-12 col-sm-auto text-center">
+            <p className="mb-0 text-600">v1.1.0</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

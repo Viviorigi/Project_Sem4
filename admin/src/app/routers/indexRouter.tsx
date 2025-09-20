@@ -5,7 +5,6 @@ import Category from '../pages/category/Category';
 import Product from '../pages/product/Product';
 import Student from '../pages/customer/Customer';
 import Order from '../pages/order/Order';
-import Return from '../pages/return/Return';
 import AuthGuard from '../guard/AuthGuard';
 import RoleGuard from '../guard/roleGuard';
 import CommentList from '../pages/comments/CommentList';
@@ -26,7 +25,6 @@ export const indexRouter: any = {
         { path: 'product', element: <Product /> },
         { path: 'customer', element: <Student /> },
         { path: 'order', element: <Order /> },
-        { path: 'returnbook', element: <Return /> },
         { path: 'postCategory', element: <PostCategory /> },
         { path: 'post', element: <Post /> },     
         { path: 'comments', element: <CommentList /> },

@@ -234,14 +234,14 @@ export default function RequestComments() {
         <div className="card mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white">
           <div className="row g-2 mb-4">
             <div className="col-auto">
-              <h2 className="mt-4">List Request Comments</h2>
+              <h2 className="mt-4">Danh sách Xử lý Bình luận</h2>
             </div>
           </div>
 
           {/* Filters */}
           <div className="row g-3 align-items-end">
             <div className="col-md-3">
-              <label className="form-label">Start Date</label>
+              <label className="form-label">Ngày bắt đầu</label>
               <input
                 type="text"
                 placeholder="dd/mm/yyyy"
@@ -252,7 +252,7 @@ export default function RequestComments() {
               />
             </div>
             <div className="col-md-3">
-              <label className="form-label">End Date</label>
+              <label className="form-label">Ngày kết thúc</label>
               <input
                 type="text"
                 placeholder="dd/mm/yyyy"
@@ -274,10 +274,10 @@ export default function RequestComments() {
                 <thead>
                   <tr>
                     <th className="align-middle text-center" style={{ width: '6%' }}>#</th>
-                    <th className="align-middle text-center" style={{ width: '32%' }}>COMMENT CONTENT</th>
-                    <th className="align-middle text-center" style={{ width: '18%' }}>CREATED AT</th>
-                    <th className="align-middle text-center" style={{ width: '34%' }}>POST NAME</th>
-                    <th className="align-middle text-center" style={{ width: '10%' }}>ACTION</th>
+                    <th className="align-middle text-center" style={{ width: '32%' }}>Nội dụng bình luận</th>
+                    <th className="align-middle text-center" style={{ width: '18%' }}>Ngày tạo</th>
+                    <th className="align-middle text-center" style={{ width: '34%' }}>Người tạo</th>
+                    <th className="align-middle text-center" style={{ width: '10%' }}>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -362,6 +362,20 @@ export default function RequestComments() {
           <div className="p-3">Không có dữ liệu.</div>
         )}
       </Dialog>
+            <footer className="footer position-absolute">
+        <div className="row g-0 justify-content-between align-items-center h-100">
+          <div className="col-12 col-sm-auto text-center">
+            <p className="mb-0 mt-2 mt-sm-0 text-900">
+              Admin<span className="d-none d-sm-inline-block" />
+              <span className="d-none d-sm-inline-block mx-1">|</span>
+              <br className="d-sm-none" />2025 ©
+            </p>
+          </div>
+          <div className="col-12 col-sm-auto text-center">
+            <p className="mb-0 text-600">v1.1.0</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -89,16 +89,24 @@ namespace AspnetApi.Controllers
             var order = await _context.Order.FindAsync(id);
             if (order == null) return NotFound();
 
-            // Check if the status transition is valid
-            if (!IsValidStatusTransition(order.Status, orderChange.NewStatus))
-            {
-                throw new Exception("Lỗi chuyển đổi trạng thái !");
-            };
-            order.Status = orderChange.NewStatus.ToString();
+            var newStatus = orderChange.NewStatus?.Trim();
+            if (string.IsNullOrWhiteSpace(newStatus))
+                return BadRequest("newStatus is required.");
+
+            if (!IsValidStatusTransition(order.Status, newStatus))
+                return BadRequest("Lỗi chuyển đổi trạng thái !");
+
+            // Lưu dưới dạng chuẩn PascalCase theo enum (đẹp & đồng bộ)
+            if (!Enum.TryParse<OrderStatus>(newStatus, true, out var statusEnum))
+                return BadRequest("Trạng thái không hợp lệ.");
+
+            order.Status = statusEnum.ToString(); // "Pending", "Ordered", ...
             _context.Order.Update(order);
             await _context.SaveChangesAsync();
+
             return Ok(order);
         }
+
 
         // Get orders by user ID
         [HttpGet("user-orders/{userId}")]
@@ -138,38 +146,66 @@ namespace AspnetApi.Controllers
         [HttpPost("search")]
         public async Task<IActionResult> Get([FromBody] QueryParams queryParams)
         {
-             // Define the query and include related entities
-              var query = _context.Order.AsQueryable();
-            var includeFunc = new Func<IQueryable<Order>, IQueryable<Order>>(query =>
-          query.Include(o => o.Account)
-             .Include(o => o.OrderItems)
-                 .ThenInclude(oi => oi.Product));
-            // Get paged data from the common service
-            var pagedData = await _commonService.GetPagedDataAsync(queryParams, new[] { "" }, includeFunc);
-            var projectedItems = pagedData.Data.Select(order => new OrderDetailResponse
+            var query = _context.Order
+                .AsNoTracking()
+                .Include(o => o.Account)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
+                .AsQueryable();
+
+            // Lọc theo Status
+            if (!string.IsNullOrWhiteSpace(queryParams.Status))
             {
-                OrderId = order.Id,
-                OrderDate = order.OrderDate,
-                Status = order.Status,
-                ShippingAddress = order.ShippingAddress,
-                UserName = order.Account.UserName,
-                Email = order.Account.Email,
-                OrderItems =order.OrderItems.Select(item=>new OrderItemDetail
-                { 
-                    ProductName = item.Product.ProductName,
-                    Quantity = item.Quantity,
-                    Price = item.Price,
-                }).ToList(),
-                TotalPrice = order.OrderItems.Sum(oi => oi.Quantity * oi.Price)
-            }).ToList();
+                query = query.Where(o => o.Status == queryParams.Status);
+            }
 
+            // Lọc theo Keyword
+            if (!string.IsNullOrWhiteSpace(queryParams.Keyword))
+            {
+                var kw = queryParams.Keyword.Trim();
+                query = query.Where(o =>
+                    (o.Account.UserName != null && o.Account.UserName.Contains(kw)) ||
+                    (o.Account.Email != null && o.Account.Email.Contains(kw)) ||
+                    (o.ShippingAddress != null && o.ShippingAddress.Contains(kw)) ||
+                    o.OrderItems.Any(oi => oi.Product.ProductName.Contains(kw))
+                );
+            }
 
+            // Lọc theo ngày (nếu bạn có field StartDate, EndDate trong QueryParams thì parse như ví dụ trước)
+            // ...
 
-            PageResponseOrder response = new PageResponseOrder(pagedData.PageNumber, pagedData.PageSize, pagedData.TotalRecords, projectedItems);
-         
+            // Mặc định sort theo OrderDate DESC
+            query = query.OrderByDescending(o => o.OrderDate);
+
+            // Paging 1-based
+            var page = Math.Max(1, queryParams.PageNumber);
+            var size = Math.Max(1, queryParams.PageSize);
+            var totalRecords = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * size)
+                .Take(size)
+                .Select(order => new OrderDetailResponse
+                {
+                    OrderId = order.Id,
+                    OrderDate = order.OrderDate,
+                    Status = order.Status,
+                    ShippingAddress = order.ShippingAddress,
+                    UserName = order.Account.UserName,
+                    Email = order.Account.Email,
+                    OrderItems = order.OrderItems.Select(item => new OrderItemDetail
+                    {
+                        ProductName = item.Product.ProductName,
+                        Quantity = item.Quantity,
+                        Price = item.Price
+                    }).ToList(),
+                    TotalPrice = order.OrderItems.Sum(oi => oi.Quantity * oi.Price)
+                })
+                .ToListAsync();
+
+            var response = new PageResponseOrder(page, size, totalRecords, items);
             return Ok(response);
-        
         }
+
 
         //detail order get information of the account and product totalPrice
         [HttpGet("detail/{orderId}")]
@@ -210,20 +246,24 @@ namespace AspnetApi.Controllers
             return Ok(orderDetailResponse);
         }
 
-        private bool IsValidStatusTransition(string currentStatus, string newStatus)
+        private static bool IsValidStatusTransition(string currentStatus, string newStatus)
         {
-            // Implement status transition rules
-            switch (currentStatus)
+            // Chuẩn hóa, bỏ phân biệt hoa/thường
+            bool TryParse(string s, out OrderStatus e) =>
+                Enum.TryParse(s, true, out e);
+
+            if (!TryParse(currentStatus, out var cur) || !TryParse(newStatus, out var next))
+                return false;
+
+            return cur switch
             {
-                case nameof(OrderStatus.Ordered):
-                    return newStatus == "Shipping";
-                case nameof(OrderStatus.Shipping):
-                    return newStatus == "Delivered";
-                case nameof(OrderStatus.Delivered):
-                    return false; // No further status changes allowed
-                default:
-                    return false;
-            }
+                OrderStatus.Pending => next is OrderStatus.Ordered or OrderStatus.Cancelled,
+                OrderStatus.Ordered => next is OrderStatus.Shipping or OrderStatus.Cancelled,
+                OrderStatus.Shipping => next is OrderStatus.Completed,
+                OrderStatus.Completed => false,     // đã hoàn tất, không đổi
+                OrderStatus.Cancelled => false,     // đã hủy, không đổi
+                _ => false
+            };
         }
     }
 }

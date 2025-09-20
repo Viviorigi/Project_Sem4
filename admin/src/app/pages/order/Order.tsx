@@ -1,398 +1,418 @@
-import React, { useEffect, useState, useRef } from "react";
-import { CheckoutDTO, CheckoutStatus } from "../../model/CheckoutDTO";
+import React, { useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
-import OrderForm from "./OrderForm";
 import Pagination from "../../comp/common/Pagination";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../../store/hook";
-import { setLoading } from "../../reducers/spinnerSlice";
-import { CheckoutService } from "../../services/checkout/CheckoutService";
-import OrderDetail from "./OrderDetail";
 import { Dialog } from "primereact/dialog";
-import { AuthService } from "../../services/auth/AuthService";
-import { UserDTO } from "../../model/UserDTO";
+import { OrderService } from "../../services/order/OrderService";
 
-const Order = () => {
-  const [orders, setOrders] = useState<CheckoutDTO[]>([]);
-  const [totalOrders, setTotalOrders] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [open, setOpen] = useState(false);
-  const [orderDetailOpen, setOrderDetailOpen] = useState(false);
-  const [searchDto, setSearchDto] = useState({
-    keySearch: "",
-    page: 1,
-    limit: 5,
-    timer: new Date().getTime(),
+type OrderRow = {
+  orderId: number;
+  userName: string;
+  email: string;
+  orderDate: string;
+  status: string;
+};
+
+type OrderDetail = {
+  orderId: number;
+  userName: string;
+  email: string;
+  phone?: string | null;
+  gender?: string | null;
+  orderDate: string;
+  status: string;
+  shippingAddress?: string | null;
+  orderItems: Array<{
+    productName: string;
+    quantity: number;
+    price: number;
+    subTotal: number;
+  }>;
+  totalPrice: number;
+};
+
+// --- STATUS + RULES ---
+const STATUS_OPTIONS = ["Pending", "Ordered", "Shipping", "Completed", "Cancelled"] as const;
+type Status = typeof STATUS_OPTIONS[number];
+
+const getNextStatusOptions = (current: Status): Status[] => {
+  switch (current) {
+    case "Pending": return ["Ordered", "Cancelled"];
+    case "Ordered": return ["Shipping", "Cancelled"];
+    case "Shipping": return ["Completed"];
+    case "Completed": return [];
+    case "Cancelled": return [];
+    default: return [];
+  }
+};
+
+const confirmChangeStatus = async (from: Status, to: Status) => {
+  const rs = await Swal.fire({
+    title: "Xác nhận đổi trạng thái?",
+    text: `Từ "${from}" → "${to}"`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Đồng ý",
+    cancelButtonText: "Hủy",
   });
-  const [statusFilter, setStatusFilter] = useState<CheckoutStatus>(CheckoutStatus.REQUESTED);
-  const [users, setUsers] = useState<UserDTO[]>([]);
-  const [mode, setMode] = useState<"add" | "edit">("add");
-  const [totalUsers, setTotalUsers] = useState<number>(0);
-  const indexOfLastItem = searchDto.page * searchDto.limit;
-  const indexOfFirstItem = indexOfLastItem - searchDto.limit;
+  return rs.isConfirmed;
+};
+
+export default function Order() {
+  const [rows, setRows] = useState<OrderRow[]>([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [search, setSearch] = useState({ keyword: "", page: 1, limit: 10, timer: Date.now() });
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [detailOpen, setDetailOpen] = useState(false);
+  const detailRef = useRef<OrderDetail | null>(null);
+
   const dispatch = useAppDispatch();
-  const orderRef = useRef<CheckoutDTO | null>(null);
+  const indexOfLast = search.page * search.limit;
+  const indexOfFirst = indexOfLast - search.limit;
 
+  // fetch list
   useEffect(() => {
-    fetchOrders();
-  }, [searchDto.page, searchDto.timer, statusFilter]);
+    const body: any = {
+      pageNumber: search.page, // 1-based
+      pageSize: search.limit,
+      keyword: search.keyword || "",
+      sortBy: "",
+      sortDir: "",
+    };
+    if (statusFilter) body.status = statusFilter;
 
-  const fetchOrders = async () => {
+    OrderService.getInstance()
+      .search(body)
+      .then((res) => {
+        const data = res.data || {};
+        const items = Array.isArray(data.data) ? data.data : [];
+        const mapped: OrderRow[] = items.map((i: any) => ({
+          orderId: i.orderId,
+          userName: i.userName,
+          email: i.email,
+          orderDate: i.orderDate,
+          status: i.status,
+        }));
+        setRows(mapped);
+        setTotal(data.totalRecords ?? 0);
+        setTotalPages(Math.ceil((data.totalRecords ?? 0) / search.limit));
+      })
+      .catch((err) => console.error(err));
+  }, [search.page, search.limit, search.timer, statusFilter, search.keyword]);
+
+  const handlePageClick = (p: number) => setSearch((s) => ({ ...s, page: p }));
+  const prev = () => search.page > 1 && setSearch((s) => ({ ...s, page: s.page - 1 }));
+  const next = () => search.page < totalPages && setSearch((s) => ({ ...s, page: s.page + 1 }));
+
+  const openDetail = async (orderId: number) => {
     try {
-      const params = {
-        keySearch: searchDto.keySearch,
-        status: statusFilter,
-        limit: searchDto.limit,
-        page: searchDto.page - 1,
-      };
-
-      const data = await CheckoutService.findAll(params);
-
-      setOrders(data.content);
-      setTotalOrders(data.totalElements);
-      setTotalPages(data.totalPages);
-    } catch (error) {
-      console.error("Lỗi lấy dữ liệu đơn mượn", error);
-      dispatch(setLoading(false));
+      const res = await OrderService.getInstance().detail(orderId);
+      detailRef.current = res.data as OrderDetail;
+      setDetailOpen(true);
+    } catch (e: any) {
+      toast.error(e?.response?.data?.message || "Không lấy được chi tiết đơn");
     }
   };
 
-  const fetchAllUsers = async () => {
+  const changeStatus = async (orderId: number, status: string) => {
     try {
-      const modelSearch = {
-        keySearch: "",
-        page: 1,
-        limit: 50,
-      };
-
-      const response = await AuthService.getInstance().getListActive(modelSearch);
-      const { users, totalUsers } = response.data;
-
-      setUsers(users);
-      setTotalUsers(totalUsers);
-    } catch (error) {
-      console.error("Error fetching all users", error);
+      await OrderService.getInstance().changeStatus(orderId, status);
+      toast.success("Đã cập nhật trạng thái");
+      setSearch((s) => ({ ...s, timer: Date.now() }));
+    } catch (e: any) {
+      toast.error(e?.response?.data?.message || "Cập nhật trạng thái thất bại");
     }
   };
 
-  useEffect (() => {
-    fetchAllUsers();
-  }, []);
-
-  const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchDto((prevParams) => ({
-      ...prevParams,
-      keySearch: event.target.value,
-      page: 1,
-    }));
-  };
-
-  const handleKeyUpSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setSearchDto((prevParams) => ({
-        ...prevParams,
-        page: 1,
-      }));
-    }
-  };
-
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setStatusFilter(event.target.value as CheckoutStatus);
-  };
-
-  const addOrder = () => {
-    setMode("add");
-    orderRef.current = null;
-    setOpen(true);
-  };
-
-  const editOrder = (order: CheckoutDTO) => {
-    setMode("edit");
-    orderRef.current = order;
-    setOpen(true);
-  };
-
-  const viewOrderDetail = (order: CheckoutDTO) => {
-    orderRef.current = order;
-    setOrderDetailOpen(true);
-  };
-
-  const deleteOrder = (id: number) => {
+  const remove = (orderId: number) => {
     Swal.fire({
       title: "Confirm",
-      text: "Xóa đơn mượn này?",
+      text: "Xóa đơn hàng này?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#89B449",
       cancelButtonColor: "#E68A8C",
       confirmButtonText: "Yes",
       cancelButtonText: "No",
-    }).then(async (result) => {
-      if (result.value) {
-        dispatch(setLoading(true));
+    }).then(async (rs) => {
+      if (rs.value) {
         try {
-          await CheckoutService.deleteById(id);
-          dispatch(setLoading(false));
-          setSearchDto((prevParams) => ({
-            ...prevParams,
-            page: 1,
-            timer: new Date().getTime(),
-          }));
-          toast.success("Đã xóa thành công đơn mượn!");
-        } catch (error) {
-          dispatch(setLoading(false));
-          toast.error("Error deleting order");
+          await OrderService.getInstance().remove(orderId);
+          toast.success("Đã xóa đơn hàng");
+          setSearch((s) => ({ ...s, page: 1, timer: Date.now() }));
+        } catch (e: any) {
+          toast.error(e?.response?.data?.message || "Xóa thất bại");
         }
       }
     });
   };
 
-  const handlePageClick = (pageNumber: number) => {
-    setSearchDto((prevParams) => ({
-      ...prevParams,
-      page: pageNumber,
-    }));
-  };
-
-  const handlePrevClick = () => {
-    if (searchDto.page > 1) {
-      setSearchDto((prevParams) => ({
-        ...prevParams,
-        page: searchDto.page - 1,
-      }));
-    }
-  };
-
-  const handleNextClick = () => {
-    if (searchDto.page < totalPages) {
-      setSearchDto((prevParams) => ({
-        ...prevParams,
-        page: searchDto.page + 1,
-      }));
-    }
+  // confirm & apply filter (giữ như bạn đang dùng)
+  const applyStatusFilter = (newStatus: string) => {
+    setStatusFilter(newStatus);
+    setSearch((s) => ({ ...s, page: 1 }));
   };
 
   return (
-    <div>
-      <div className="mb-9">
-        <div className="card mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white">
-          <div className="row g-2 mb-4">
-            <div className="col-auto">
-              <h2 className="mt-4">Danh sách đơn mượn</h2>
-            </div>
+    <div className="mb-9">
+      <div className="card mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white">
+        <div className="row g-2 mb-4">
+          <div className="col-auto">
+            <h2 className="mt-4">List Orders</h2>
           </div>
-          <div className="row g-3">
-            <div className="col-auto">
-              <div className="search-box d-flex">
-                <input
-                  className="form-control search-input search"
-                  type="search"
-                  placeholder="Search orders by Student"
-                  name="keySearch"
-                  aria-label="Search"
-                  value={searchDto.keySearch || ""}
-                  onChange={handleChangeSearch}
-                  onKeyUp={handleKeyUpSearch}
-                />
-                <button
-                  className="btn btn-primary"
-                  onClick={() =>
-                    setSearchDto((prevParams) => ({
-                      ...prevParams,
-                      page: 1,
-                    }))
-                  }
-                >
-                  <span className="fas fa-search" />
-                </button>
-              </div>
-            </div>
-            <div className="col-auto">
-              <select
-                className="form-select"
-                value={statusFilter}
-                onChange={handleStatusChange}
-              >
-                <option value={CheckoutStatus.REQUESTED}>Requested</option>
-                <option value={CheckoutStatus.APPROVED}>Approved</option>
-                <option value={CheckoutStatus.REJECTED}>Rejected</option>
-              </select>
-            </div>
-            <div className="col-auto">
-              <button className="btn btn-primary" onClick={addOrder}>
-                <span className="fas fa-plus me-2" />
-                Tạo đơn mượn
+        </div>
+
+        {/* Search + status filter */}
+        <div className="row g-3">
+          <div className="col-auto">
+            <div className="search-box d-flex">
+              <input
+                className="form-control search-input search"
+                type="search"
+                placeholder="Search by user/email"
+                value={search.keyword}
+                onChange={(e) => setSearch({ ...search, keyword: e.target.value, page: 1 })}
+                onKeyDown={(e) => e.key === "Enter" && setSearch({ ...search, page: 1, timer: Date.now() })}
+              />
+              <button className="btn btn-primary" onClick={() => setSearch({ ...search, page: 1, timer: Date.now() })}>
+                <span className="fas fa-search" />
               </button>
             </div>
           </div>
 
-          <div className="table-responsive scrollbar-overlay mx-n1 px-1 mt-5">
+          <div className="col-auto">
+            <select
+              className="form-select"
+              value={statusFilter}
+              onChange={(e) => applyStatusFilter(e.target.value)}
+            >
+              <option value="">All statuses</option>
+              {STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="table-responsive scrollbar-overlay mx-n1 px-1 mt-4">
           <table className="table table-bordered fs--1 mb-2">
-              <thead>
-                <tr>
-                  <th
-                    className="sort align-middle text-center"
-                    scope="col"
-                    style={{ width: "3%" }}
-                  >
-                    #
-                  </th>
-                  <th
-                    className="sort align-middle text-center"
-                    scope="col"
-                    style={{ width: "10%" }}
-                  >
-                    Người mượn
-                  </th>
-                  <th
-                    className="sort align-middle text-center"
-                    scope="col"
-                    style={{ width: "5%" }}
-                  >
-                    Trạng thái
-                  </th>
-                  <th
-                    className="sort align-middle text-center"
-                    scope="col"
-                    style={{ width: "10%" }}
-                  >
-                    Ngày mượn
-                  </th>
-                  <th
-                    className="sort align-middle text-center"
-                    scope="col"
-                    style={{ width: "10%" }}
-                  >
-                    Cập nhật
-                  </th>
-                  <th
-                    className="sort align-middle text-center"
-                    scope="col"
-                    style={{ width: "5%" }}
-                  >
-                    Ngày trả
-                  </th>
-                  <th
-                    className="sort align-middle text-center"
-                    scope="col"
-                    style={{ width: "10%" }}
-                  >
-                    Hành động
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order, index) => (
-                  <tr key={order.id}>
-                    <td className="align-middle text-center">{indexOfFirstItem + index + 1}</td>
-                    <td className="align-middle text-center">{order.user?.fullName}</td>
+            <thead>
+              <tr>
+                <th className="align-middle text-center" style={{ width: "10%" }}>MÃ ĐƠN</th>
+                <th className="align-middle text-start" style={{ width: "20%" }}>TÊN NGƯỜI DÙNG</th>
+                <th className="align-middle text-start" style={{ width: "25%" }}>EMAIL</th>
+                <th className="align-middle text-center" style={{ width: "20%" }}>NGÀY ĐẶT</th>
+                <th className="align-middle text-center" style={{ width: "15%" }}>TRẠNG THÁI</th>
+                <th className="align-middle text-center" style={{ width: "10%" }}>HÀNH ĐỘNG</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => {
+                const current = r.status as Status;
+                const nextOptions = getNextStatusOptions(current);
+                return (
+                  <tr key={r.orderId}>
+                    <td className="align-middle text-center">{r.orderId}</td>
+                    <td className="align-middle text-start">{r.userName}</td>
+                    <td className="align-middle text-start">{r.email}</td>
                     <td className="align-middle text-center">
-                      <span
-                        className={`badge ${
-                          order.status === CheckoutStatus.REQUESTED
-                            ? "bg-info"
-                            : order.status === CheckoutStatus.APPROVED
-                            ? "bg-warning"
-                            : order.status === CheckoutStatus.REJECTED
-                            ? "bg-danger"
-                            : ""
-                        }`}
+                      {r.orderDate ? format(new Date(r.orderDate), "dd/MM/yy, HH:mm") : "—"}
+                    </td>
+                    <td className="align-middle text-center">
+                      <select
+                        className="form-select form-select-sm"
+                        value={current}
+                        onChange={async (e) => {
+                          const next = e.target.value as Status;
+                          if (next === current) return;
+
+                          if (!nextOptions.includes(next)) {
+                            toast.warn("Chuyển trạng thái không hợp lệ");
+                            e.target.value = current;
+                            return;
+                          }
+
+                          const ok = await confirmChangeStatus(current, next);
+                          if (!ok) {
+                            e.target.value = current;
+                            return;
+                          }
+
+                          await changeStatus(r.orderId, next);
+                        }}
+                        style={{ minWidth: 140 }}
                       >
-                        {order.status}
-                      </span>
-                      </td>
-                    <td className="align-middle text-center">
-                      {format(new Date(order.startTime), "dd/MM/yyyy, hh:mm")}
+                        {/* trạng thái hiện tại - disabled */}
+                        <option value={current} disabled>
+                          {current} (hiện tại)
+                        </option>
+
+                        {/* các trạng thái tiếp theo hợp lệ */}
+                        {nextOptions.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
                     </td>
                     <td className="align-middle text-center">
-                      {format(new Date(order.endTime), "dd/MM/yyyy, hh:mm")}
-                    </td>
-                    <td className="align-middle text-center text-900">
-                      {order.endTime
-                        ? format(new Date(order.endTime), "dd/MM/yyyy")
-                        : "N/A"}
-                    </td>
-                    <td className="align-middle text-center">
-                      <button aria-label='d' className="btn btn-phoenix-primary me-1 mb-1" type="button" 
-                        onClick={() => editOrder(order)}><i className="fa-solid fa-pen"></i>
+                      <button className="btn  btn-phoenix-secondary p-0" onClick={() => openDetail(r.orderId)}>
+                        <i className="far fa-eye" /> Chi tiết
                       </button>
-                      <button aria-label='d' className="btn btn-phoenix-danger me-1 mb-1" type="button" 
-                        onClick={() => deleteOrder(order.id)}><i className="fa-solid fa-trash"></i>
-                      </button>
-                      <button aria-label='d' className="btn btn-phoenix-secondary me-1 mb-1" type="button" 
-                        onClick={() => viewOrderDetail(order)}><i className="far fa-eye"></i>
+                      <button className="btn btn-phoenix-danger btn-sm ms-2" onClick={() => remove(r.orderId)}>
+                        <i className="fa-solid fa-trash" /> Xóa
                       </button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                );
+              })}
+              {!rows.length && (
+                <tr>
+                  <td className="text-center" colSpan={6}>Không có đơn hàng</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-          <div className="row align-items-center justify-content-between py-2 pe-0 fs--1">
-            <div className="col-auto d-flex">
-              <p className="mb-0">
-                Tổng số đơn mượn: <strong>{totalOrders}</strong>
-              </p>
-            </div>
-            <div className="col-auto d-flex">
-            <Pagination totalPage={totalPages} currentPage={searchDto.page} handlePageClick={handlePageClick} prev={handlePrevClick} next={handleNextClick} />
-            </div>
+
+        {/* Footer: total + pagination */}
+        <div className="row align-items-center justify-content-between py-2 pe-0 fs--1">
+          <div className="col-auto d-flex">
+            <p className="mb-0">Tổng số đơn hàng: <strong>{total}</strong></p>
+          </div>
+          <div className="col-auto d-flex">
+            <Pagination
+              totalPage={totalPages}
+              currentPage={search.page}
+              handlePageClick={handlePageClick}
+              prev={prev}
+              next={next}
+            />
           </div>
         </div>
       </div>
-      <footer className="footer position-absolute">
-        <div className="row g-0 justify-content-between align-items-center h-100">
-          <div className="col-12 col-sm-auto text-center">
-            <p className="mb-0 mt-2 mt-sm-0 text-900">ATWOM BOOk<span className="d-none d-sm-inline-block" /><span className="d-none d-sm-inline-block mx-1">|</span><br className="d-sm-none" />2024 ©</p>
-          </div>
-          <div className="col-12 col-sm-auto text-center">
-            <p className="mb-0 text-600">v1.1.0</p>
-          </div>
-        </div>
-      </footer>
 
+      {/* Detail Modal */}
       <Dialog
-        visible={open}
-        onHide={() => {
-          setOpen(false);
-          fetchOrders();
-          fetchAllUsers();
-        }}
-        style={{ width: "1150px" }}
-        header={mode === "add" ? "Add New Order" : "Edit Order"}
+        visible={detailOpen}
+        onHide={() => setDetailOpen(false)}
+        style={{ width: "950px" }}
+        header="Chi tiết đơn hàng"
       >
-        <OrderForm
-          mode={mode}
-          order={orderRef.current}
-          onClose={() => {
-            setOpen(false);
-            fetchOrders();
-            fetchAllUsers();
-          }}
-          onSave={() => {
-            setOpen(false);
-            fetchOrders();
-          }}
-          users={users}
-        />
+        {detailRef.current && (
+          <div className="p-2">
+            {/* Header Order Info */}
+            <div className="mb-4 p-3 bg-light border rounded">
+              <div className="d-flex justify-content-between align-items-center">
+                <h5 className="mb-0">
+                  <i className="fa-solid fa-receipt me-2 text-primary" />
+                  Mã đơn:{" "}
+                  <span className="fw-bold text-dark">
+                    {detailRef.current.orderId}
+                  </span>
+                </h5>
+                <span
+                  className={`badge px-3 py-2 fs--1 ${detailRef.current.status === "Pending"
+                      ? "bg-warning text-dark"
+                      : detailRef.current.status === "Ordered"
+                        ? "bg-info"
+                        : detailRef.current.status === "Shipping"
+                          ? "bg-primary"
+                          : detailRef.current.status === "Completed"
+                            ? "bg-success"
+                            : "bg-danger"
+                    }`}
+                >
+                  {detailRef.current.status}
+                </span>
+              </div>
+            </div>
+
+            {/* Customer Info */}
+            <div className="row g-3 mb-4">
+              <div className="col-md-6">
+                <div className="p-3 border rounded h-100">
+                  <h6 className="fw-bold mb-3">Thông tin khách hàng</h6>
+                  <p className="mb-1">
+                    <strong>Người dùng:</strong> {detailRef.current.userName}
+                  </p>
+                  <p className="mb-1">
+                    <strong>Email:</strong> {detailRef.current.email}
+                  </p>
+                  {detailRef.current.shippingAddress && (
+                    <p className="mb-0">
+                      <strong>Địa chỉ:</strong> {detailRef.current.shippingAddress}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="p-3 border rounded h-100">
+                  <h6 className="fw-bold mb-3">Thông tin đơn hàng</h6>
+                  <p className="mb-1">
+                    <strong>Ngày đặt:</strong>{" "}
+                    {detailRef.current.orderDate
+                      ? format(
+                        new Date(detailRef.current.orderDate),
+                        "dd/MM/yyyy, HH:mm"
+                      )
+                      : "—"}
+                  </p>
+                  <p className="mb-0">
+                    <strong>Trạng thái:</strong> {detailRef.current.status}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Order Items */}
+            <div className="mb-3">
+              <h6 className="fw-bold mb-3">Danh sách sản phẩm</h6>
+              <div className="table-responsive">
+                <table className="table table-sm table-striped table-bordered align-middle">
+                  <thead className="table-light">
+                    <tr>
+                      <th className="text-center">Tên sản phẩm</th>
+                      <th className="text-end">Số lượng</th>
+                      <th className="text-end">Đơn giá</th>
+                      <th className="text-end">Thành tiền</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {detailRef.current.orderItems?.map((it, idx) => (
+                      <tr key={idx}>
+                        <td className="text-center">{it.productName}</td>
+                        <td className="text-end">{it.quantity}</td>
+                        <td className="text-end">
+                          {Number(it.price).toLocaleString("vi-VN")} ₫
+                        </td>
+                        <td className="text-end fw-semibold">
+                          {Number(it.subTotal).toLocaleString("vi-VN")} ₫
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Total */}
+            <div className="text-end mt-3">
+              <h5 className="fw-bold text-success">
+                Tổng tiền: {Number(detailRef.current.totalPrice).toLocaleString("vi-VN")} ₫
+              </h5>
+            </div>
+          </div>
+        )}
       </Dialog>
 
-      <Dialog
-        visible={orderDetailOpen}
-        onHide={() => setOrderDetailOpen(false)}
-        style={{ width: "80vw" }}
-        header="Order Details"
-      >
-        <OrderDetail
-          tab={"ORDER"}
-          orderId={orderRef.current ? orderRef.current.id : 0}
-          onHide={() => setOrderDetailOpen(false)}
-        />
-      </Dialog>
+
     </div>
   );
-};
-
-export default Order;
+}

@@ -16,49 +16,87 @@ export default function SideBar() {
                                 <div className="nav-item-wrapper">
                                     <div className="parent-wrapper mt-5 label-1">
                                         <ul className="nav " id="nv-home" >
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/customer" ? "nav-link active" : "nav-link"} to="customer"  >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }} ><i className="fa-regular fa-user"></i> Quản lý Khách Hàng </span></div>
-                                            </Link>
-                                            </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/category" ? "nav-link active" : "nav-link"} to="category" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-layer-group"></i> Quản lý Danh Mục</span></div>
-                                            </Link>
-                                            </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/product" ? "nav-link active" : "nav-link"} to="product" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-book"></i> Quản lý Sản phẩm</span></div>
-                                            </Link>
-                                            </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/order" ? "nav-link active" : "nav-link"} to="order" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-brands fa-first-order"></i> Quản lý Đơn đặt</span></div>
-                                            </Link>
-                                            </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/returnbook" ? "nav-link active" : "nav-link"} to="returnbook" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-rotate-left"></i> Quản lý Đơn trả</span></div>
-                                            </Link>
-                                            </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/postCategory" ? "nav-link active" : "nav-link"} to="postCategory" >
-                                                <div className="d-flex align-items-start"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa-solid fa-mask"></i> Quản lý danh mục bài viết</span></div>
-                                            </Link>
-                                            </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/post" ? "nav-link active" : "nav-link"} to="post" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa fa-commenting-o" aria-hidden="true"></i> Quản lý bài viết</span></div>
-                                            </Link>
-                                            </li>
-                                            <li className="nav-item mb-2"><Link className={location.pathname === "/requestApproval" ? "nav-link active" : "nav-link"} to="requestApproval" >
-                                                <div className="d-flex align-items-center"><span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}><i className="fa fa-comments"></i>Xử lý Bình luận</span></div>
-                                            </Link>
-                                            </li>
                                             <li className="nav-item mb-2">
-                                                <Link className={location.pathname === "/comments" ? "nav-link active" : "nav-link"}to="comments" >
+                                                <Link className={location.pathname === "/customer" ? "nav-link active" : "nav-link"} to="customer">
                                                     <div className="d-flex align-items-center">
                                                         <span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}>
-                                                            <i className="fa-solid fa-message"></i> Danh sách bình luận
+                                                            <i className="fa-solid fa-users"></i> Quản lý Khách Hàng
                                                         </span>
                                                     </div>
                                                 </Link>
                                             </li>
 
+                                            <li className="nav-item mb-2">
+                                                <Link className={location.pathname === "/category" ? "nav-link active" : "nav-link"} to="category">
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}>
+                                                            <i className="fa-solid fa-list"></i> Quản lý Danh Mục
+                                                        </span>
+                                                    </div>
+                                                </Link>
+                                            </li>
+
+                                            <li className="nav-item mb-2">
+                                                <Link className={location.pathname === "/product" ? "nav-link active" : "nav-link"} to="product">
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}>
+                                                            <i className="fa-solid fa-box"></i> Quản lý Sản Phẩm
+                                                        </span>
+                                                    </div>
+                                                </Link>
+                                            </li>
+
+                                            <li className="nav-item mb-2">
+                                                <Link className={location.pathname === "/order" ? "nav-link active" : "nav-link"} to="order">
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}>
+                                                            <i className="fa-solid fa-cart-shopping"></i> Quản lý Đơn Hàng
+                                                        </span>
+                                                    </div>
+                                                </Link>
+                                            </li>
+
+                                            <li className="nav-item mb-2">
+                                                <Link className={location.pathname === "/postCategory" ? "nav-link active" : "nav-link"} to="postCategory">
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}>
+                                                            <i className="fa-solid fa-book-open"></i> Quản lý Danh Mục Bài Viết
+                                                        </span>
+                                                    </div>
+                                                </Link>
+                                            </li>
+
+                                            <li className="nav-item mb-2">
+                                                <Link className={location.pathname === "/post" ? "nav-link active" : "nav-link"} to="post">
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}>
+                                                            <i className="fa-solid fa-pen-to-square"></i> Quản lý Bài Viết
+                                                        </span>
+                                                    </div>
+                                                </Link>
+                                            </li>
+
+                                            <li className="nav-item mb-2">
+                                                <Link className={location.pathname === "/requestApproval" ? "nav-link active" : "nav-link"} to="requestApproval">
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}>
+                                                            <i className="fa-solid fa-check-to-slot"></i> Xử lý Bình luận
+                                                        </span>
+                                                    </div>
+                                                </Link>
+                                            </li>
+
+                                            <li className="nav-item mb-2">
+                                                <Link className={location.pathname === "/comments" ? "nav-link active" : "nav-link"} to="comments">
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="nav-link-text" style={{ fontSize: "16px", paddingLeft: "0" }}>
+                                                            <i className="fa-regular fa-comments"></i> Danh sách Bình Luận
+                                                        </span>
+                                                    </div>
+                                                </Link>
+                                            </li>
                                         </ul>
+
                                     </div>
                                 </div>
                             </li>

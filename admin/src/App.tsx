@@ -1,5 +1,4 @@
-import React, { Suspense } from 'react';
-import logo from './logo.svg';
+import { Suspense } from 'react';
 import './App.css';
 import './assets/css/unicons.css';
 import { Navigate, useRoutes } from 'react-router-dom';

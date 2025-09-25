@@ -1,14 +1,35 @@
-# Visual Studio
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.pub-cache/
+pubspec.lock
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+
+# iOS
+ios/Pods/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/.symlinks/
+ios/build/
+
+# VSCode / IntelliJ
+.vscode/
+.idea/
 .vs/
-*.user
-*.suo
 
-# Build outputs
-bin/
-obj/
-
-# Others
-*.dll
+# Windows
 *.exe
+*.dll
 *.pdb
 *.cache
+*.json
+*.log
+
+# .NET build
+**/bin/
+**/obj/

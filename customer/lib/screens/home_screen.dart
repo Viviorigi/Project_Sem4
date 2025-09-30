@@ -1,10 +1,9 @@
-import 'package:customer/models/category.dart';
-import 'package:customer/models/product.dart';
-import 'package:customer/screens/productDetail_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:customer/models/utils/common.dart';
+import 'package:customer/services/categoryService.dart';
+import 'package:customer/services/productService.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // để dùng logout
-import 'cart_screen.dart';
-import 'login_screen.dart'; // màn login
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,181 +13,229 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String searchQuery = "";
-  int currentPage = 0;
-  final int itemsPerPage = 6;
+  List<dynamic> categories = [];  // DANH SÁCH CATEGORY
+  List<dynamic> products = [];    // DANH SÁCH PRODUCT
+  bool isLoadingCate = true;      // TRẠNG THÁI LOAD CATEGORY
+  bool isLoadingProduct = true;   // TRẠNG THÁI LOAD PRODUCT
 
-  // Hàm logout
-  Future<void> _logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    print("Logout - current token: $token");
-    if (token != null && token.isNotEmpty) {
-      await prefs.remove('token');
-      await prefs.remove('refreshToken');
-      print("Token removed");
+  final CategoryService _categoryService = CategoryService();
+  final ProductService _productService = ProductService();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCategory();  // GỌI API CATEGORY
+    fetchProduct();   // GỌI API PRODUCT
+  }
+
+  // ✅ GỌI API CATEGORY
+  Future<void> fetchCategory() async {
+    final result = await _categoryService.search(pageNumber: 1, pageSize: 10);
+    if (result["success"] == true) {
+      setState(() {
+        categories = result["data"] ?? [];
+        isLoadingCate = false;
+      });
     } else {
-      print("No token found to remove");
+      setState(() {
+        isLoadingCate = false;
+      });
     }
+  }
 
-    // Sau khi logout -> quay về LoginScreen
-    if (!mounted) return;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (route) => false,
-    );
+  // ✅ GỌI API PRODUCT
+  Future<void> fetchProduct() async {
+    final result = await _productService.search(pageNumber: 1, pageSize: 10);
+    if (result["success"] == true) {
+      setState(() {
+        products = result["data"] ?? [];
+        isLoadingProduct = false;
+      });
+    } else {
+      setState(() {
+        isLoadingProduct = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final filtered = products
-        .where((p) => p.name.toLowerCase().contains(searchQuery.toLowerCase()))
-        .toList();
-
-    final totalPages = (filtered.length / itemsPerPage).ceil();
-    final start = currentPage * itemsPerPage;
-    final end =
-    (start + itemsPerPage) > filtered.length ? filtered.length : (start + itemsPerPage);
-    final pageProducts = filtered.sublist(start, end);
-
     return Scaffold(
+      // ✅ THANH TRÊN (APPBAR GIỐNG ẢNH)
       appBar: AppBar(
-        title: const Text("Trang chủ"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const CartScreen()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _logout,
-          ),
-        ],
+        title: const Text(
+          "Cửa hàng điện thoại",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
       ),
-      body: Column(
-        children: [
-          // Danh mục
-          SizedBox(
-            height: 60,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final c = categories[index];
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Center(
-                    child: Text(
-                      c.name,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
 
-          // Thanh tìm kiếm
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: "Tìm kiếm sản phẩm...",
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            // ✅ Ô TÌM KIẾM
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Tìm kiếm điện thoại...",
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
               ),
-              onChanged: (val) {
-                setState(() {
-                  searchQuery = val;
-                  currentPage = 0;
-                });
-              },
             ),
-          ),
+            const SizedBox(height: 20),
 
-          // Danh sách sản phẩm
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: pageProducts.length,
+            // ✅ BANNER GIẢ LẬP
+            Container(
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.blueGrey.shade200,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                "BANNER ĐIỆN THOẠI",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // ✅ HIỂN THỊ CATEGORY
+            const Text(
+              "Danh mục",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+
+            isLoadingCate
+                ? const Center(child: CircularProgressIndicator())
+                : SizedBox(
+              height: 80,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  final cate = categories[index];
+                  return Container(
+                    width: 80,
+                    margin: const EdgeInsets.only(right: 12),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        cate["categoryName"] ?? "No Name",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 28),
+
+            // ✅ HIỂN THỊ PRODUCT
+            const Text(
+              "Sản phẩm bán chạy",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+
+            isLoadingProduct
+                ? const Center(child: CircularProgressIndicator())
+                : GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: products.length,
+              shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 0.7,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
               ),
               itemBuilder: (context, index) {
-                final p = pageProducts[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => DetailScreen(product: p)),
-                    );
-                  },
-                  child: Card(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.asset(
-                              p.image,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
+                final p = products[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // hien thi anh
+                      Container(
+                        height: 100,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                          //load ảnh
+                          child: CachedNetworkImage(
+                            imageUrl: "${Common.domain}/images/${p.image}",
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) => Icon(Icons.error),
                           ),
                         ),
-                        Text(
-                          p.name,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        p["productName"] ?? "Tên sản phẩm",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
                         ),
-                        Text("${p.price.toStringAsFixed(0)} đ"),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${p["price"] ?? 0} đ",
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
             ),
-          ),
+          ],
+        ),
+      ),
 
-          // Phân trang
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(totalPages, (index) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    currentPage = index;
-                  });
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(4),
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: currentPage == index ? Colors.blue : Colors.grey,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    "${index + 1}",
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              );
-            }),
-          )
+      // ✅ BOTTOM NAVIGATION
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: "Yêu thích",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "Cài đặt",
+          ),
         ],
+        currentIndex: 0,
+        onTap: (index) {},
       ),
     );
   }

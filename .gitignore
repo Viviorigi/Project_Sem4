@@ -3,7 +3,7 @@
 .packages
 build/
 .pub-cache/
-pubspec.lock
+
 
 # Android
 android/.gradle/
@@ -27,9 +27,3 @@ ios/build/
 *.dll
 *.pdb
 *.cache
-*.json
-*.log
-
-# .NET build
-**/bin/
-**/obj/

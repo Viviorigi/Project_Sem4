@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:customer/models/common.dart';
+import 'package:customer/models/utils/common.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 

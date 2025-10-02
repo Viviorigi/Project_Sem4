@@ -27,7 +27,7 @@ class CategoryComponent extends StatelessWidget{
         child:  Text(
            name,
            style: const TextStyle(
-               color: greyColor,
+               color: kAccentDark,
                fontFamily: "Poppins",
                fontSize: 9
            ),

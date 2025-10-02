@@ -39,8 +39,8 @@ class _HomeState extends State<HomeComponent>{
  final List<String> categoryImages = [
    "assets/user/images/slide1.jpg",
    "assets/user/images/slide2.jpg",
-   "assets/user/images/slide3.png",
-   "assets/user/images/slide4.png",
+   "assets/user/images/slide3.jpg",
+   "assets/user/images/slide4.jpg",
    "assets/user/images/slide5.jpg"
  ];
 
@@ -124,7 +124,7 @@ class _HomeState extends State<HomeComponent>{
                               style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
-                                  color: greyColor),
+                                  color: Colors.black),
                             ),
                             InkWell(
                               onTap: () {
@@ -137,7 +137,7 @@ class _HomeState extends State<HomeComponent>{
                               child: Text(
                                 "See more",
                                 style: TextStyle(
-                                    color: Colors.green,
+                                    color: kMuted,
                                     height: 2.0
                                 ),
                               ),
@@ -168,13 +168,13 @@ class _HomeState extends State<HomeComponent>{
                                 style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
-                                  color: greyColor,
+                                  color: Colors.black,
                                 ),
                               ),
                               Text(
                                 "See more",
                                 style: TextStyle(
-                                    color: Colors.green,
+                                    color: kMuted,
                                     height: 2.0
                                 ),
                               )

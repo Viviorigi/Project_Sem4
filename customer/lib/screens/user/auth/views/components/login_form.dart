@@ -132,22 +132,6 @@ class _LoginFormState extends State<LoginForm> {
 
               const SizedBox(height: 12),
 
-              // Remember me + Forgot
-              Row(
-                children: [
-                  Checkbox(
-                    value: _rememberMe,
-                    onChanged: (v) => setState(() => _rememberMe = v ?? false),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                    side: BorderSide(color: kStroke),
-                    activeColor: kAccentDark,
-                  ),
-                  Text("Remember me", style: TextStyle(color: kMuted, fontSize: 13)),
-                  const Spacer(),
-                ],
-              ),
-
               const SizedBox(height: 20),
 
               // CTA button

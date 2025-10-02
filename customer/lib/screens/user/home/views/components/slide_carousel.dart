@@ -15,8 +15,8 @@ class _CarouselWithThreeSlidesState extends State<HomeSlide> {
   final List<String> imgList = [
     'assets/user/images/slide1.jpg',
     'assets/user/images/slide2.jpg',
-    'assets/user/images/slide3.png',
-    'assets/user/images/slide4.png',
+    'assets/user/images/slide3.jpg',
+    'assets/user/images/slide4.jpg',
     'assets/user/images/slide5.jpg',
   ];
 
@@ -59,7 +59,7 @@ class _CarouselWithThreeSlidesState extends State<HomeSlide> {
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-              color: (  _current != entry.key) ? greyColor: greenBgColor),
+              color: (  _current != entry.key) ? greyColor: kAccentDark),
             ),
           );
           }).toList(),

@@ -119,7 +119,7 @@ class CardProduct extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                             padding: const EdgeInsets.all(16),
-                            backgroundColor: Colors.grey,
+                            backgroundColor: kAccentDark,
                           ),
                           child: const Icon(Icons.add, color: Colors.white),
                         ),

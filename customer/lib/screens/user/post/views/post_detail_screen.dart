@@ -63,14 +63,19 @@ class _PostDetail extends State<PostDetailScreen> {
   }
 
   String formatCreatedAt(dynamic createdAt) {
-    if (createdAt == null) return "";
-    if (createdAt is DateTime) {
-      final d = createdAt;
+    // Định dạng: HH:mm dd/MM/yyyy
+    try {
+      DateTime dt;
+      if (createdAt is DateTime) {
+        dt = createdAt;
+      } else {
+        dt = DateTime.parse(createdAt.toString());
+      }
       String two(int v) => v.toString().padLeft(2, '0');
-      return "${two(d.day)}/${two(d.month)}/${d.year} ${two(d.hour)}:${two(d.minute)}";
+      return "${two(dt.hour)}:${two(dt.minute)} ${two(dt.day)}/${two(dt.month)}/${dt.year}";
+    } catch (_) {
+      return "";
     }
-    // nếu backend trả String
-    return createdAt.toString();
   }
 
   int get commentsCount => commentsResp?.comments?.length ?? 0;
@@ -78,20 +83,22 @@ class _PostDetail extends State<PostDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final p = widget.post!;
+    final createdAtText = formatCreatedAt(p.createdAt);
+
     return Scaffold(
-      backgroundColor: kAccentDark,
+      backgroundColor: Colors.white, // nền trắng
       body: RefreshIndicator(
         onRefresh: _loadPost,
         edgeOffset: 80,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           slivers: [
-            // Sliver AppBar hiện đại
+            // AppBar + Cover
             SliverAppBar(
               pinned: true,
               stretch: true,
               elevation: 0,
-              backgroundColor: kAccentDark,
+              backgroundColor: Colors.black, // để khi co lại có transition mượt trên ảnh
               leading: Padding(
                 padding: const EdgeInsets.only(left: 6),
                 child: Material(
@@ -107,25 +114,15 @@ class _PostDetail extends State<PostDetailScreen> {
                   ),
                 ),
               ),
-              expandedHeight: 320,
+              expandedHeight: 340,
               flexibleSpace: FlexibleSpaceBar(
                 stretchModes: const [StretchMode.zoomBackground, StretchMode.fadeTitle],
-                titlePadding: const EdgeInsetsDirectional.only(start: 72, bottom: 14, end: 16),
-                title: Text(
-                  p.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: whiteColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    letterSpacing: 0.2,
-                    shadows: [Shadow(blurRadius: 4, color: Colors.black54)],
-                  ),
-                ),
+                titlePadding: EdgeInsets.zero,
+                title: const SizedBox.shrink(), // không dùng title mặc định
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
+                    // Ảnh cover
                     Image.network(
                       '$imageUrl${p.image}',
                       fit: BoxFit.cover,
@@ -136,20 +133,56 @@ class _PostDetail extends State<PostDetailScreen> {
                         return Container(color: Colors.grey.shade300);
                       },
                     ),
+                    // Gradient tối dưới để nổi chữ
                     Container(
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Color(0x00000000), Color(0xAA000000)],
+                          colors: [Colors.transparent, Colors.transparent, Colors.black54],
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 0.6, sigmaY: 0.6),
-                        child: Container(color: Colors.transparent),
+                    // Tiêu đề ở GIỮA ảnh (font 36) + thời gian bên dưới
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              p.title,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 36, // yêu cầu
+                                fontWeight: FontWeight.w800,
+                                height: 1.15,
+                                letterSpacing: .2,
+                                shadows: [Shadow(blurRadius: 6, color: Colors.black54)],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            if (createdAtText.isNotEmpty)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.access_time, size: 16, color: Colors.white70),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    createdAtText,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 13.5,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -172,47 +205,42 @@ class _PostDetail extends State<PostDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Meta
+                      // Meta (comment count)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                         child: Row(
                           children: [
-                            const Icon(Icons.schedule, size: 18, color: Colors.black54),
+                            const Icon(Icons.comment, size: 18, color: Colors.black54),
                             const SizedBox(width: 6),
                             Text(
-                              formatCreatedAt(p.createdAt),
+                              '$commentsCount bình luận',
                               style: const TextStyle(color: Colors.black54, fontSize: 13.5),
-                            ),
-                            const Spacer(),
-                            // _StatChip(
-                            //   icon: Icons.remove_red_eye,
-                            //   label: (p.view ?? 0).toString(),
-                            // ),
-                            const SizedBox(width: 8),
-                            _StatChip(
-                              icon: Icons.comment,
-                              label: '$commentsCount',
                             ),
                           ],
                         ),
                       ),
-
                       const _DividerInset(),
 
                       // Description
                       const _SectionHeader(title: "Description"),
                       _SectionBody(text: stripHtml(p.description)),
-
                       const _DividerInset(),
 
                       // Content
                       const _SectionHeader(title: "Content"),
                       _SectionBody(text: stripHtml(p.content)),
 
+                      // Ngăn cách rõ ràng với comments
                       const _DividerInset(),
-
-                      // Comments
                       const _SectionHeader(title: "Comments"),
+
+                      // ĐƯA FORM LÊN TRÊN danh sách comment
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                        child: FormCommentPost(postId: p.id.toString()),
+                      ),
+
+                      // Danh sách comment (luôn ở CUỐI trang)
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 220),
                         child: _loading
@@ -234,15 +262,12 @@ class _PostDetail extends State<PostDetailScreen> {
                                 avatar: entry.account.avatar,
                               ))
                                   .toList(),
-                              const _DividerInset(),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                                child: FormCommentPost(postId: p.id.toString()),
-                              ),
                             ],
                           ),
                         ),
                       ),
+
+                      const SafeArea(top: false, child: SizedBox(height: 18)),
                     ],
                   ),
                 ),
@@ -301,31 +326,6 @@ class _DividerInset extends StatelessWidget {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Divider(color: Color(0xFFE6E6E6), height: 28, thickness: 1),
-    );
-  }
-}
-
-class _StatChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const _StatChip({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F6F8),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: const Color(0xFFE9ECF1)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: Colors.black54),
-          const SizedBox(width: 6),
-          Text(label, style: const TextStyle(fontSize: 13.5, color: Colors.black87)),
-        ],
-      ),
     );
   }
 }

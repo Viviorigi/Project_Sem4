@@ -84,7 +84,7 @@ class _PostCategoryPost extends State<PostCategoryPostScreen> {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          // nền gradient xịn
+          // nền gradient
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -165,8 +165,12 @@ class _PostCategoryPost extends State<PostCategoryPostScreen> {
                             },
                             child: const Padding(
                               padding: EdgeInsets.all(6),
-                              child: Icon(Icons.filter_list,
-                                  size: 28, color: whiteColor),
+                              // >>> ĐỔI ICON 3 GẠCH NGANG TẠI ĐÂY
+                              child: Icon(
+                                Icons.dehaze_rounded,
+                                size: 28,
+                                color: whiteColor,
+                              ),
                             ),
                           ),
                         ),
@@ -199,15 +203,12 @@ class _PostCategoryPost extends State<PostCategoryPostScreen> {
                           : (posts.isEmpty
                           ? const _EmptyState()
                           : ListView.separated(
-                        padding:
-                        const EdgeInsets.fromLTRB(12, 16, 12, 16),
+                        padding: const EdgeInsets.fromLTRB(12, 16, 12, 16),
                         itemCount: posts.length,
-                        separatorBuilder: (_, __) =>
-                        const SizedBox(height: 12),
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
                         itemBuilder: (context, index) {
                           final post = posts[index];
 
-                          // Dùng thẳng PostItem (KHÔNG bọc thêm Card/InkWell)
                           return PostItem(
                             image: post.image,
                             name: post.title,
@@ -216,7 +217,9 @@ class _PostCategoryPost extends State<PostCategoryPostScreen> {
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (_) => PostDetailScreen(post: post)),
+                                MaterialPageRoute(
+                                  builder: (_) => PostDetailScreen(post: post),
+                                ),
                               );
                             },
                           );

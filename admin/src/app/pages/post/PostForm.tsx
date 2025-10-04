@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { PostDTO } from "../../model/PostDTO";
 import { PostService, PostItem } from "../../services/post/PostService";
 
-// 👇 import service danh mục
 import {
   PostCategoryService,
   PostCategoryItem,
@@ -35,11 +34,17 @@ export default function PostForm({ closeForm, onSave, post }: Props) {
   const [errors, setErrors] = useState<{ title?: string; postCategoryId?: string }>({});
   const [preview, setPreview] = useState<string | undefined>(undefined);
 
-  // 👇 state danh mục
   const [categories, setCategories] = useState<PostCategoryItem[]>([]);
   const [loadingCats, setLoadingCats] = useState<boolean>(false);
 
-  // Load danh mục để chọn
+  const resolveImageSrc = (pv?: string) => {
+    if (!pv) return undefined;
+    if (pv.startsWith("blob:") || pv.startsWith("data:")) return pv; // ảnh mới 
+    if (/^https?:\/\//i.test(pv)) return pv;                         // URL 
+    // còn lại: coi như tên file/đường dẫn tương đối trên server
+    return `${process.env.REACT_APP_API_URL}/api/Account/getImage/${pv}`;
+  };
+
   useEffect(() => {
     setLoadingCats(true);
     const body = { pageNumber: 1, pageSize: 1000, keyword: "", sortBy: "CreatedAt", sortDir: "desc" as const };
@@ -47,7 +52,6 @@ export default function PostForm({ closeForm, onSave, post }: Props) {
     PostCategoryService.getInstance()
       .search(body)
       .then(({ data }) => {
-        // Chuẩn hoá giống nơi khác
         const items = (data?.data ?? data?.items ?? []).map((x: any) => ({
           id: x.id,
           postCategoryName: x.postCategoryName ?? "",
@@ -86,8 +90,28 @@ export default function PostForm({ closeForm, onSave, post }: Props) {
   const onFile = (e: ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     setForm((prev) => ({ ...prev, image: f ?? null }));
-    if (f) setPreview(URL.createObjectURL(f));
+
+    // Hủy object URL cũ nếu có
+    setPreview((old) => {
+      if (old && old.startsWith("blob:")) URL.revokeObjectURL(old);
+      return old;
+    });
+
+    if (f) {
+      const url = URL.createObjectURL(f);
+      setPreview(url);
+    }
+    // Cho phép chọn lại cùng 1 file
+    e.currentTarget.value = "";
   };
+
+  // Optional: cleanup khi unmount
+  useEffect(() => {
+    return () => {
+      if (preview && preview.startsWith("blob:")) URL.revokeObjectURL(preview);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const validate = () => {
     const next: typeof errors = {};
@@ -145,7 +169,6 @@ export default function PostForm({ closeForm, onSave, post }: Props) {
           {errors.title && <div className="invalid-feedback d-block">{errors.title}</div>}
         </div>
 
-        {/* 👇 Dropdown chọn danh mục từ PostCategory */}
         <div className="col-md-4 mb-3">
           <label>Danh mục <span className="text-danger">(*)</span></label>
           <select
@@ -189,7 +212,14 @@ export default function PostForm({ closeForm, onSave, post }: Props) {
         <div className="col-md-8 mb-3">
           <label>Ảnh</label>
           <input type="file" accept="image/*" className="form-control" onChange={onFile} />
-          {preview && <img alt="preview" src={`${process.env.REACT_APP_API_URL}/api/Account/getImage/${preview}`} className="mt-2" style={{ maxHeight: 120 }} />}
+          {preview && (
+            <img
+              alt="preview"
+              src={resolveImageSrc(preview)}
+              className="mt-2"
+              style={{ maxHeight: 120 }}
+            />
+          )}
         </div>
       </div>
 

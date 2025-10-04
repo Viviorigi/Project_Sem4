@@ -90,9 +90,9 @@ class _PostCategoryPost extends State<PostCategoryPostScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                greenBgColor.withOpacity(0.95),
-                greenBgColor.withOpacity(0.86),
-                greenBgColor.withOpacity(0.80),
+                kAccentDark.withOpacity(0.95),
+                kAccentDark.withOpacity(0.86),
+                kAccentDark.withOpacity(0.80),
               ],
             ),
           ),
@@ -207,35 +207,18 @@ class _PostCategoryPost extends State<PostCategoryPostScreen> {
                         itemBuilder: (context, index) {
                           final post = posts[index];
 
-                          // ⬇⬇⬇ FIX: Bọc PostItem để điều hướng sang PostDetailScreen
-                          return Card(
-                            elevation: 1.5,
-                            shadowColor: Colors.black12,
-                            margin: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => PostDetailScreen(post: post),
-                                  ),
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 6, horizontal: 6),
-                                child: PostItem(
-                                  image: post.image,
-                                  name: post.title,
-                                  description: post.description,
-                                  post: post,
-                                ),
-                              ),
-                            ),
+                          // Dùng thẳng PostItem (KHÔNG bọc thêm Card/InkWell)
+                          return PostItem(
+                            image: post.image,
+                            name: post.title,
+                            description: post.description,
+                            post: post,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => PostDetailScreen(post: post)),
+                              );
+                            },
                           );
                         },
                       )),

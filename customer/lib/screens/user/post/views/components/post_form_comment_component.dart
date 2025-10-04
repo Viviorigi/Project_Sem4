@@ -1,136 +1,175 @@
 import 'package:ecommerce_sem4/services/user/auth/auth_service.dart';
+import 'package:ecommerce_sem4/services/user/comment/comment_service.dart';
 import 'package:ecommerce_sem4/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ecommerce_sem4/services/user/comment/comment_service.dart';
+
 import '../../../../../models/user/comment/post/request/create_request.dart';
 
 class FormCommentPost extends StatefulWidget {
   final String postId;
-  const FormCommentPost(
-      {super.key,
-        required this.postId
-      });
+  const FormCommentPost({super.key, required this.postId});
 
   @override
-  State<StatefulWidget> createState() => _FormCommentPost();
+  State<StatefulWidget> createState() => _FormCommentPostState();
 }
 
-class _FormCommentPost extends State<FormCommentPost> {
-  final TextEditingController _commentKeyword = TextEditingController();
+class _FormCommentPostState extends State<FormCommentPost> {
+  final TextEditingController _controller = TextEditingController();
 
   final searchApiComment = postCommentUri;
   String? accessToken = "";
   String? accountId = "";
-  String commentValue = "";
   Map<String, String> headers = <String, String>{};
 
-  final imageUrl = "http://10.0.2.2:5069/images/";
+  bool _isSending = false;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     AuthService().checkLoginStatus(context);
   }
 
-  void _showAlertDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toast(String msg, {bool ok = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: ok ? Colors.green[600] : Colors.red[600],
+        duration: const Duration(seconds: 2),
+      ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Future<void> _createComment() async {
+    final text = _controller.text.trim();
+    if (text.isEmpty) {
+      _toast("Vui lòng nhập nội dung trước khi gửi", ok: false);
+      return;
+    }
+    if (_isSending) return;
 
-    Future<void> createComment() async{
+    try {
+      setState(() => _isSending = true);
 
       final pref = await SharedPreferences.getInstance();
       accessToken = pref.getString("accessToken");
       accountId = pref.getString("id");
-      commentValue = _commentKeyword.text.trim();
+
       headers = {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $accessToken',
       };
-      if(commentValue == null || commentValue=="" || commentValue.isEmpty){
-        _showAlertDialog("Error", "Comment failed. Please try again.");
-        return;
-      }
 
-      Map<String, Object?> request = CreatePostCommentRequest(
-          content:commentValue,
-          postId: widget.postId,
-          accountId: accountId
+      final request = CreatePostCommentRequest(
+        content: text,
+        postId: widget.postId,
+        accountId: accountId,
       ).toMap();
 
-      String? data = await CommentPostService().createComment(searchApiComment, headers, request);
+      final resp = await CommentPostService()
+          .createComment(searchApiComment, headers, request);
 
-      if (data != "") {
-        _showAlertDialog("Success", "Comment successfully!");
-        _commentKeyword.clear();
+      if (resp != null && resp.isNotEmpty) {
+        _controller.clear();
+        FocusScope.of(context).unfocus();
+        _toast("Đã gửi bình luận!");
       } else {
-        _showAlertDialog("Error", "Comment failed. Please try again.");
+        _toast("Gửi bình luận thất bại. Thử lại nhé.", ok: false);
       }
+    } catch (_) {
+      _toast("Có lỗi xảy ra. Thử lại sau nhé.", ok: false);
+    } finally {
+      if (mounted) setState(() => _isSending = false);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool canSend = _controller.text.trim().isNotEmpty && !_isSending;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white70,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Shadow color
-            spreadRadius: 2, // Spread radius
-            blurRadius: 10, // Blur radius
-            offset: const Offset(4, 4), // Shadow position (x, y)
-          ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE9ECF1), width: 1),
+        boxShadow: const [
+          BoxShadow(color: Color(0x14000000), blurRadius: 12, offset: Offset(0, 6)),
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          // Ô nhập “pill”, tự giãn dòng
           Expanded(
-            child: SizedBox(
-              height: 50, // Fixed height
-              child: TextFormField(
-                controller: _commentKeyword,
-
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1.0),
-                    borderRadius: BorderRadius.circular(10),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 44, maxHeight: 140),
+              child: Scrollbar(
+                child: TextField(
+                  controller: _controller,
+                  onChanged: (_) => setState(() {}),
+                  onSubmitted: (_) => _createComment(),
+                  textInputAction: TextInputAction.newline,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  minLines: 1,
+                  decoration: InputDecoration(
+                    hintText: "Viết bình luận…",
+                    hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                    filled: true,
+                    fillColor: const Color(0xFFF9FAFB),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.only(left: 10, right: 6),
+                      child: Icon(Icons.mode_comment_outlined, size: 20, color: Colors.black38),
+                    ),
+                    prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: Color(0xFFE9ECF1), width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: Color(0xFFBFC7FF), width: 1.2),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.blue, width: 1.0),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  hintText: "Write a comment...",
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-
                 ),
               ),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.send, color: Colors.blue),
-            onPressed: () {
-              createComment();
-            },
+
+          const SizedBox(width: 8),
+
+          // Nút gửi nổi
+          Material(
+            color: canSend ? kAccentDark : Colors.grey.shade300,
+            shape: const CircleBorder(),
+            elevation: canSend ? 2 : 0,
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: canSend ? _createComment : null,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: _isSending
+                      ? const SizedBox(
+                    key: ValueKey('loading'),
+                    width: 18, height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  )
+                      : const Icon(Icons.send_rounded, key: ValueKey('icon'), size: 20, color: Colors.white),
+                ),
+              ),
+            ),
           ),
         ],
       ),

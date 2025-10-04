@@ -46,20 +46,20 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-"eslintConfig": {
+  "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ],
     "rules": {
-    "no-unused-vars": "off",
-    "no-console": "off",
-    "react-hooks/exhaustive-deps": "off",
-    "react/react-in-jsx-scope": "off",
-    "react/jsx-uses-react": "off",
-    "react/jsx-no-undef": "off",
-    "jsx-a11y/anchor-is-valid": "off"
-  }
+      "no-unused-vars": "off",
+      "no-console": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "react/react-in-jsx-scope": "off",
+      "react/jsx-uses-react": "off",
+      "react/jsx-no-undef": "off",
+      "jsx-a11y/anchor-is-valid": "off"
+    }
   },
   "browserslist": {
     "production": [

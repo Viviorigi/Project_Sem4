@@ -234,14 +234,31 @@ class _ProductDetail extends State<ProductDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    (widget.product?.description != null &&
-                        widget.product!.description!.isNotEmpty)
-                        ? stripHtml(widget.product!.description)
-                        : "No description available.",
-                    style: const TextStyle(
-                        fontSize: 15, color: Colors.black87),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0), // lề trái/phải gọn
+                    child: Text(
+                      prettyDescription(widget.product?.description),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.black87,
+                        height: 1.5, // giãn dòng ổn định
+                      ),
+                      textAlign: TextAlign.left,
+                      softWrap: true,
+                      // Giúp line-height phân bổ đều giữa các thiết bị/phông
+                      textHeightBehavior: const TextHeightBehavior(
+                        leadingDistribution: TextLeadingDistribution.even,
+                      ),
+                      // Strut cố định chiều cao dòng -> tránh “lộn xộn” giữa các ký tự/bullet
+                      strutStyle: const StrutStyle(
+                        fontSize: 15,
+                        height: 1.5,
+                        leading: 0.0,
+                        forceStrutHeight: true,
+                      ),
+                    ),
                   ),
+
                 ],
               ),
             ),
@@ -249,6 +266,53 @@ class _ProductDetail extends State<ProductDetailScreen> {
     );
   }
 }
+
+String prettyDescription(String? raw) {
+  if (raw == null || raw.trim().isEmpty) {
+    return "No description available.";
+  }
+
+  // 1) Chuẩn hoá xuống dòng từ HTML
+  String s = raw
+      .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n')
+      .replaceAll(RegExp(r'</p\s*>', caseSensitive: false), '\n')
+      .replaceAll(RegExp(r'<li[^>]*>', caseSensitive: false), '\n• ')
+      .replaceAll(RegExp(r'</li\s*>', caseSensitive: false), '');
+
+  // 2) Bỏ các tag còn lại
+  s = s.replaceAll(RegExp(r'<[^>]+>'), '');
+
+  // 3) Decode vài entity hay gặp
+  s = s
+      .replaceAll('&nbsp;', ' ')
+      .replaceAll('&amp;', '&')
+      .replaceAll('&quot;', '"')
+      .replaceAll('&lt;', '<')
+      .replaceAll('&gt;', '>');
+
+  // 4) Tách dòng, trim, bỏ dòng rỗng thừa
+  final lines = s
+      .split('\n')
+      .map((e) => e.trim())
+      .where((e) => e.isNotEmpty)
+      .toList();
+
+  // 5) Thêm bullet & thụt dòng cho dòng “phụ”
+  // Quy ước: dòng chứa ":" (như "Màn hình:") coi là mục chính (•),
+  // còn lại coi là chi tiết (◦) và thụt vào.
+  final out = <String>[];
+  final headingRegex = RegExp(r'^[A-Za-zÀ-ỹ0-9].*?:'); // có nhãn kèm dấu ':'
+  for (final line in lines) {
+    if (headingRegex.hasMatch(line)) {
+      out.add('• $line');
+    } else {
+      out.add('  ◦ $line');
+    }
+  }
+
+  return out.join('\n');
+}
+
 
 String stripHtml(String? htmlText) {
   if (htmlText == null) return "";

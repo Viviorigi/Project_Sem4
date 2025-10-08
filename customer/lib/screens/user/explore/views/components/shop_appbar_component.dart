@@ -9,12 +9,12 @@ class ShopAppBar extends StatelessWidget implements PreferredSizeWidget{
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: greenBgColor,
+      backgroundColor: kAccentDark,
       centerTitle: true,
       title: const Text(
         "Find Products",
         style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontSize: 22
         ),
       ),

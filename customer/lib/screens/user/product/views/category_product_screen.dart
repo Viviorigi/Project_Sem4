@@ -29,7 +29,7 @@ class _CategoryProduct extends State<CategoryProductScreen>{
   List<Product> products = [];
   String? accessToken = "";
   Map<String, String> headers = <String, String>{};
-  final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "\$");
+  final formatCurrency = NumberFormat.currency(locale: "vi_Vn", symbol: "\₫");
   final imageUrl = "http://10.0.2.2:5069/images/";
 
   @override
@@ -137,7 +137,7 @@ class _CategoryProduct extends State<CategoryProductScreen>{
                   ],
                 )
             ),
-            backgroundColor: greenBgColor,
+            backgroundColor: kAccentDark,
             automaticallyImplyLeading: false,
           ),
         ),

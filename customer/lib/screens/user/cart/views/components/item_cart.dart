@@ -155,7 +155,7 @@ class _ItemCart extends State<ItemCart>{
                   Text(
                     widget.cartResponse!.product.price.toString(),
                     style: const TextStyle(
-                        color: greenBgColor,
+                        color: kAccentDark,
                         fontWeight: FontWeight.bold
                     ),
                   )
@@ -181,7 +181,7 @@ class _ItemCart extends State<ItemCart>{
                               ),
                               child: IconButton(
                                 onPressed: _decrementQuantity,
-                                icon: const Icon(Icons.remove,color: greenBgColor,),
+                                icon: const Icon(Icons.remove,color: kAccentDark,),
                                 padding: EdgeInsets.zero,
                               ),
                             ),
@@ -209,7 +209,7 @@ class _ItemCart extends State<ItemCart>{
                               ),
                               child: IconButton(
                                 onPressed: _incrementQuantity,
-                                icon: const Icon(Icons.add,color: greenBgColor,),
+                                icon: const Icon(Icons.add,color: kAccentDark,),
                                 padding: EdgeInsets.zero,
                               ),
                             ),

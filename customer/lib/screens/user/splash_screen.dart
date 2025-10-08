@@ -32,7 +32,7 @@ class _MySplashScreen extends State<SplashScreen>{
    return SafeArea(
      child: Scaffold(
      body:  Container(
-       color: greenBgColor,
+       color: kAccentDark,
        width: double.infinity,
        height: double.infinity,
        child: Column(

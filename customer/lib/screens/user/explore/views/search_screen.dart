@@ -100,7 +100,7 @@ class _ShopComponent extends State<SearchScreen>{
             preferredSize: const Size.fromHeight(100.0),
             child: AppBar(
               automaticallyImplyLeading: false,
-              backgroundColor: greenBgColor,
+              backgroundColor: kAccentDark,
               flexibleSpace:  Container(
                 alignment: Alignment.center,
                 // width: double.infinity,

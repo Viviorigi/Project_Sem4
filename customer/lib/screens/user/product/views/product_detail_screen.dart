@@ -88,7 +88,7 @@ class _ProductDetail extends State<ProductDetailScreen> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: greenBgColor,
+            backgroundColor: kAccentDark,
             automaticallyImplyLeading: true,
             foregroundColor: whiteColor,
             title: const Text("Product detail"),
@@ -196,7 +196,7 @@ class _ProductDetail extends State<ProductDetailScreen> {
                                 IconButton(
                                   onPressed: _incrementQuantity,
                                   icon: const Icon(Icons.add),
-                                  color: greenBgColor,
+                                  color: kAccentDark,
                                 ),
                               ],
                             ),
@@ -207,7 +207,7 @@ class _ProductDetail extends State<ProductDetailScreen> {
                               height: 40,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: greenBgColor,
+                                  backgroundColor: kAccentDark,
                                   foregroundColor: Colors.white,
                                 ),
                                 onPressed: _addToCart,

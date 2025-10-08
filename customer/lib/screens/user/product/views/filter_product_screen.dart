@@ -120,7 +120,7 @@ class _FilterProduct extends State<FilterProductScreen>{
                     ],
                   )
               ),
-              backgroundColor: greenBgColor,
+              backgroundColor: kAccentDark,
               automaticallyImplyLeading: false,
             ),
           ),
@@ -186,7 +186,7 @@ class _FilterProduct extends State<FilterProductScreen>{
                                   borderRadius:  BorderRadius.circular(10)
                               ),
                               foregroundColor: f4f4Color,
-                              backgroundColor: greenBgColor,
+                              backgroundColor: kAccentDark,
                               minimumSize: const Size.fromHeight(70)),
                           onPressed: () {
                             if(selectedValue==null){

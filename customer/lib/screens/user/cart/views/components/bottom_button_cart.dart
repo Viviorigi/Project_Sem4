@@ -19,7 +19,7 @@ class BottomButtonCart extends StatelessWidget{
 
     return  Container(
       padding:const EdgeInsets.fromLTRB(23, 15, 15, 15),
-      color: greenBgColor,
+      color: kAccentDark,
       child: Column(
         children: [
           Row(
@@ -46,7 +46,7 @@ class BottomButtonCart extends StatelessWidget{
                       buttonName,
                       style: const TextStyle(
                         fontSize: 18,
-                        color: greenBgColor,
+                        color: kAccentDark,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

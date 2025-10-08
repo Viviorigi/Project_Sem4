@@ -107,7 +107,7 @@ class _CategoryList extends State<CategoryScreen>{
                     ],
                   )
               ),
-              backgroundColor: greenBgColor,
+              backgroundColor: kAccentDark,
               automaticallyImplyLeading: false,
             ),
           ),

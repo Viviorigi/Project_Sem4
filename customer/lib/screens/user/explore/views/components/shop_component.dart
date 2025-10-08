@@ -29,12 +29,11 @@ class _ShopComponent extends State<ShopComponent>{
   Map<String, String> headers = <String, String>{};
 
   List<String> categoryImages = [
-    "assets/user/images/category_1.png",
-    "assets/user/images/category_2.png",
-    "assets/user/images/category_3.png",
-    "assets/user/images/category_4.png",
-    "assets/user/images/category_5.png",
-    "assets/user/images/category_6.png",
+    "assets/user/images/slide1.jpg",
+    "assets/user/images/slide2.jpg",
+    "assets/user/images/slide3.jpg",
+    "assets/user/images/slide4.jpg",
+    "assets/user/images/slide5.jpg"
   ];
 
   List<Color> colorsBg = [
@@ -47,7 +46,7 @@ class _ShopComponent extends State<ShopComponent>{
   ];
   
   List<Color> colorSideBg = [
-    greenBgColor,
+    kAccentDark,
     Colors.orange,
     Colors.redAccent,
     Color(0xFFF7A593),

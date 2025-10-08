@@ -142,7 +142,7 @@ class _CartScreen extends State<CartScreen>{
       child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: greenBgColor,
+            backgroundColor: kAccentDark,
             title: const Text(
               "Cart",
               style: TextStyle(
@@ -207,7 +207,7 @@ class _CartScreen extends State<CartScreen>{
                                             topRight: Radius.circular(50.0),
                                             bottomRight: Radius.circular(50.0),
                                           ),
-                                          color: greenBgColor,
+                                          color: kAccentDark,
                                         ),
                                         width: 130,
                                         child: Text(

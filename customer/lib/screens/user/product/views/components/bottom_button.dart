@@ -15,7 +15,7 @@ class BottomButton extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final formatCurrency = NumberFormat.currency(locale: "en_US", symbol: "\$");
+    final formatCurrency = NumberFormat.currency(locale: "vi_VN", symbol: "\₫");
 
    return  Container(
      padding:const EdgeInsets.fromLTRB(23, 15, 15, 15),

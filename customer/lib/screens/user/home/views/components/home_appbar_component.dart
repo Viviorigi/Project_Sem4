@@ -31,15 +31,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                   SizedBox(height: 2),
-                  Text(
-                    "Your address",
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 13,
-                      color: Colors.white54,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  )
                 ],
               ),
 

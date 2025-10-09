@@ -1,240 +1,252 @@
-
 import 'package:ecommerce_sem4/models/user/cart/response/cart_list_response.dart';
-import 'package:ecommerce_sem4/screens/user/cart/views/cart_screen.dart';
-import 'package:ecommerce_sem4/services/user/cart/cart_service.dart';
 import 'package:ecommerce_sem4/utils/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
-class ItemCart extends StatefulWidget{
+class ItemCart extends StatefulWidget {
   final CartListResponse? cartResponse;
-  final Function? onDelete;
+  final VoidCallback? onDelete;
   final Function(int quantity)? onUpdateQuantity;
-  const ItemCart({super.key, required this.cartResponse, this.onDelete, this.onUpdateQuantity});
+
+  const ItemCart({
+    super.key,
+    required this.cartResponse,
+    this.onDelete,
+    this.onUpdateQuantity,
+  });
 
   @override
-  State<StatefulWidget> createState() => _ItemCart();
+  State<ItemCart> createState() => _ItemCartState();
 }
 
-class _ItemCart extends State<ItemCart>{
-  String? accessToken = "";
-  Map<String, String> headers = <String, String>{};
-  final TextEditingController _quantityController = TextEditingController();
-  final imageUrl = "http://10.0.2.2:5069/images/";
+class _ItemCartState extends State<ItemCart> {
+  final String imageUrl = "http://10.0.2.2:5069/images/";
+  late final NumberFormat _currency =
+  NumberFormat.currency(locale: "vi_VN", symbol: "\₫");
 
+  late int _quantity;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _quantityController.text = widget.cartResponse!.quantity.toString();
+    final q = widget.cartResponse?.quantity ?? 1;
+    _quantity = q < 1 ? 1 : q;
   }
 
-  void _decrementQuantity() {
-    if(int.parse(_quantityController.text)>1){
-      int updatedQuantity = int.parse(_quantityController.text)-1;
-      _quantityController.text = updatedQuantity.toString();
-      _updateQuantity(updatedQuantity);
-    }
-
+  void _decrement() {
+    if (_quantity <= 1) return;
+    setState(() => _quantity--);
+    widget.onUpdateQuantity?.call(_quantity);
   }
 
-  void _incrementQuantity(){
-    int updatedQuantity = int.parse(_quantityController.text)+1;
-    _quantityController.text = updatedQuantity.toString();
-    _updateQuantity(updatedQuantity);
+  void _increment() {
+    setState(() => _quantity++);
+    widget.onUpdateQuantity?.call(_quantity);
   }
 
-  _updateQuantity(int newQuantity) {
-    widget.onUpdateQuantity!(newQuantity);
-  }
-
-  Future<void> _removeItem() async {
-    widget.onDelete!();
-  }
-
-  @override
-  void dispose(){
-    _quantityController.dispose();
-    super.dispose();
-  }
+  void _remove() => widget.onDelete?.call();
 
   @override
   Widget build(BuildContext context) {
+    final item = widget.cartResponse;
+    final name = item?.product.productName ?? 'Product';
+    final type = item?.product.category?.categoryName
+        ?? item?.product.category?.categoryName        // nếu model flatten
+        ?? item?.product.category?.slug      // dự phòng khác nếu có
+        ?? 'SmartPhone';
+    final price = item?.product.price ?? 0.0;
+    final img = (item?.product.image ?? '').trim();
+
+    const borderLavender = Color(0xFFE6E0FF);
+    const shadowColor = Color(0x14000000);
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(0, 0, 0, 7),
-      height: 100,
-      child: Card(
-        margin: EdgeInsets.zero,
+      height: 120,
+      decoration: BoxDecoration(
         color: Colors.white,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Container(
-            //   margin:const EdgeInsets.all(6),
-            //   width: 100,
-            //   decoration: BoxDecoration(
-            //       border: Border.all(
-            //         color: Colors.grey,
-            //         width: 1,
-            //       ),
-            //       borderRadius: BorderRadius.circular(10),
-            //       shape: BoxShape.rectangle,
-            //       image: const DecorationImage(
-            //           image: AssetImage("assets/user/images/category_6.png"),
-            //           fit: BoxFit.contain
-            //       )
-            //   ),
-            // ),
-            Container(
-              margin: const EdgeInsets.all(6),
-              width: 100,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1,
+        border: Border.all(color: borderLavender, width: 1),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(color: shadowColor, blurRadius: 12, offset: Offset(0, 6)),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // nội dung chính
+          Row(
+            children: [
+              // Thumbnail
+              Container(
+                width: 110,
+                height: double.infinity,
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: borderLavender),
+                  color: const Color(0xFFF3F2F8),
                 ),
-                borderRadius: BorderRadius.circular(10),
-                shape: BoxShape.rectangle,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10), // To match the border radius of the Container
-                child: Image.network(
-                  '$imageUrl${widget.cartResponse?.product.image}', // Replace with your image URL
-                  fit: BoxFit.contain,
-                  errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                    // Fallback image in case of an error
-                    return Image.asset(
-                      "assets/user/images/category_6.png",
-                      fit: BoxFit.contain,
-                    );
+                clipBehavior: Clip.antiAlias,
+                child: (img.isNotEmpty &&
+                    !img.toLowerCase().contains('null') &&
+                    !img.toLowerCase().contains('undefined'))
+                    ? Image.network(
+                  '$imageUrl$img',
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Image.asset(
+                    "assets/user/images/category_5.png",
+                    fit: BoxFit.cover,
+                  ),
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return Container(color: Colors.grey.shade200);
                   },
-                  // loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                  //   if (loadingProgress == null) return child; // Image loaded successfully
-                  //   return Center(
-                  //       child: CircularProgressIndicator(
-                  //         value: loadingProgress.expectedTotalBytes != null
-                  //             ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                  //             : null,
-                  //       ); // Loading indicator
-                  //   );
-                  // },
+                )
+                    : Image.asset(
+                  "assets/user/images/category_5.png",
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+              // Texts & stepper
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Tên sp
+                      Text(
+                        name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 16.5,
+                          fontWeight: FontWeight.w800,
+                          height: 1.1,
+                          letterSpacing: .2,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      // Loại
+                      Text(
+                        type,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Spacer(),
+
+                      // Giá + Stepper
+                      Row(
+                        children: [
+                          // Giá
+                          Text(
+                            _currency.format(price),
+                            style: const TextStyle(
+                              color: kAccentDark,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Spacer(),
+                          // Stepper “pill”
+                          _QtyPill(
+                            value: _quantity,
+                            onMinus: _decrement,
+                            onPlus: _increment,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // nút xóa góc phải
+          Positioned(
+            top: 6,
+            right: 6,
+            child: Material(
+              color: Colors.white,
+              shape: const CircleBorder(),
+              elevation: 1,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: _remove,
+                child: const Padding(
+                  padding: EdgeInsets.all(6),
+                  child: Icon(Icons.close_rounded, size: 16, color: Colors.grey),
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-              child: Column(
+/// Stepper số lượng dạng “pill”
+class _QtyPill extends StatelessWidget {
+  final int value;
+  final VoidCallback onMinus;
+  final VoidCallback onPlus;
 
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+  const _QtyPill({
+    required this.value,
+    required this.onMinus,
+    required this.onPlus,
+  });
 
-                  SizedBox(
-                    width: 100,
-                    child: Text(
-                      softWrap: true,
-                      widget.cartResponse!.product.productName,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 17
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    "Fruit",
-                    style:  TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17
-                    ),
-                  ),
-                  Text(
-                    widget.cartResponse!.product.price.toString(),
-                    style: const TextStyle(
-                        color: kAccentDark,
-                        fontWeight: FontWeight.bold
-                    ),
-                  )
-                ],
+  @override
+  Widget build(BuildContext context) {
+    const border = Color(0xFFE9ECF1);
+
+    return Container(
+      height: 36,
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FAFB),
+        border: Border.all(color: border),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _circleBtn(icon: Icons.remove, onTap: onMinus),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+              '$value',
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                color: Colors.black87,
               ),
             ),
-            Expanded(
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                        height: 30,
-                        padding:const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.green[200],
-                              ),
-                              child: IconButton(
-                                onPressed: _decrementQuantity,
-                                icon: const Icon(Icons.remove,color: kAccentDark,),
-                                padding: EdgeInsets.zero,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: TextFormField(
-                                controller: _quantityController,
-                                textAlign: TextAlign.center,
-                                decoration:const InputDecoration(
-                                  border: InputBorder.none,
-                                ),
-                                keyboardType: TextInputType.number,
-                                onChanged: (value) {
-                                  // setState(() {
-                                  //   _quantity = int.tryParse(value) ?? 1;
-                                  // });
-                                },
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.green[200],
-                              ),
-                              child: IconButton(
-                                onPressed: _incrementQuantity,
-                                icon: const Icon(Icons.add,color: kAccentDark,),
-                                padding: EdgeInsets.zero,
-                              ),
-                            ),
-                          ],
-                        )
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      width: 22,
-                      height: 22,
-                      child:  IconButton(
-                        onPressed: _removeItem,
-                        icon: Icon(Icons.close, size: 15.0,color: Colors.grey,),
-                        padding: EdgeInsets.zero,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-              ,
-            )
-          ],
+          ),
+          _circleBtn(icon: Icons.add, onTap: onPlus),
+        ],
+      ),
+    );
+  }
+
+  Widget _circleBtn({required IconData icon, required VoidCallback onTap}) {
+    return Material(
+      color: Colors.white,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Icon(icon, size: 18, color: kAccentDark),
         ),
       ),
     );

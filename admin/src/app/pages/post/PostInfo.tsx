@@ -97,10 +97,17 @@ export default function PostInfo({ info, setUserSearchParams, closeDetail }: Pro
               <img
                 src={`${process.env.REACT_APP_API_URL}/api/Account/getImage/${info.imageUrl}`}
                 alt="post"
-                style={{ maxHeight: 160 }}
+                style={{ maxHeight: 360 }}
               />
             </div>
           )}
+
+          <div className="pt-3">
+            <h3 className="mb-1">Nội dung</h3>
+             <div dangerouslySetInnerHTML={{ __html: info.content }} />
+          </div>
+         
+
 
 
           <div className="pt-4 text-end">

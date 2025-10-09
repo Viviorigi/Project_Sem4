@@ -25,3 +25,14 @@ wwwroot\images\iphone_13promax.jpg
 wwwroot\images\iphone_12promax.jpg
 wwwroot\images\iphone_11promax.jpg
 wwwroot\images\iphone_11.jpg
+wwwroot\images\post1.jpg
+wwwroot\images\post10.jpg
+wwwroot\images\post11.jpg
+wwwroot\images\post2.jpg
+wwwroot\images\post3.jpg
+wwwroot\images\post4.jpg
+wwwroot\images\post5.jpg
+wwwroot\images\post6.jpg
+wwwroot\images\post7.jpg
+wwwroot\images\post8.jpg
+wwwroot\images\post9.jpg

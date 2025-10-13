@@ -4,6 +4,7 @@ using AspnetApi.Configs;
 using AspnetApi.Data;
 using AspnetApi.Models;
 using AspnetApi.Services.Auth;
+using AspnetApi.Services.Email;
 using AspnetApi.Services.User;
 using AspnetApi.Utils;
 using AutoMapper;
@@ -22,6 +23,9 @@ builder.Services.AddControllers();
 // Add DbContext
 builder.Services.AddDbContext<ApiDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AppContext")));
+
+//Add Email Sender
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // Configure CORS
 builder.Services.AddCors(options =>

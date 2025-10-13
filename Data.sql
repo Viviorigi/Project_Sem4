@@ -1618,18 +1618,20 @@ INSERT INTO Posts(Title, Description, PostCategoryId, Content, Image, CreatedAt,
 (N'Ưu Đãi Đặc Biệt: Tặng Bảo Hành Vàng Cho Khách Hàng Tại MobileCity Thành Đô', N'MobileCity chính thức triển khai chương trình tặng Bảo Hành Vàng cho Quý khách hàng mua điện thoại hoặc máy tính bảng tại cơ sở MobileCity Thành Đô. Đây là lời tri ân đặc biệt, mang đến cho khách hàng sự yên tâm và trải nghiệm mua sắm trọn vẹn hơn tại MobileCity.', 4, N'Tặng Bảo Hành Vàng Tại MobileCity Thành Đô Thời gian áp dụng: Từ 11/8/2025 đến khi có thông báo mới. Cơ sở áp dụng: MobileCity Thành Đô - Km15, QL 32, Hoài Đức. Số lượng: Mỗi ngày chỉ 03 suất – dành cho khách hàng nhanh tay nhất. Lợi ích vượt trội của Bảo Hành Vàng MobileCity MobileCity tự hào mang đến cho quý khách hàng gói Bảo Hành Vàng độc quyền - mang lại sự an tâm và hài lòng tuyệt đối khi mua sắm tại hệ thống của chúng tôi.', 'post10.jpg', GETDATE(), 'Published', ''),
 (N'Tin khuyến mãi 24/09/2025: Điện thoại iPhone, iQOO, OnePlus, OPPO giảm giá lên đến 2 triệu đồng', N'Điện thoại iPhone, iQOO, OnePlus, OPPO giảm giá lên đến 2 triệu đồng từ ngày 24/09 tại MobileCity. Hướng dẫn mua iPhone, iQOO, OnePlus, OPPO giá rẻ, Bảo hành 12 tháng, trả góp 0%.', 4, N'Danh sách điện thoại giảm giá iPhone Air 256GB giảm 2 triệu đồng Giá cũ: 31.450.000 - giá mới 29.250.000 ₫ iQOO 13 12/256GB giảm 200K Giá cũ: 12.850.000 - giá mới 12.650.000 ₫ OnePlus 13 12/256GB giảm 200K Giá cũ: 13.450.000 - giá mới 12.950.000 ₫ ', 'post11.jpg', GETDATE(), 'Published', '');
 
-/*INSERT INTO Comments (Content, PostId, CreatedAt, AccountId) VALUES
-(N'Like', 1, GETDATE(), ''),
-(N'Tym', 1, GETDATE(), ''),
-(N'Like', 2, GETDATE(), ''),
-(N'Tym', 3, GETDATE(), ''),
-(N'Like', 4, GETDATE(), ''),
-(N'Like', 5, GETDATE(), '');
+
+
+INSERT INTO Comments (Content, PostId, CreatedAt, AccountId) VALUES
+(N'Like', 1, GETDATE(), '64133507-5d5c-4f84-9734-e6265c3fa4e3'),
+(N'Tym', 1, GETDATE(), '64133507-5d5c-4f84-9734-e6265c3fa4e3'),
+(N'Like', 2, GETDATE(), '64133507-5d5c-4f84-9734-e6265c3fa4e3'),
+(N'Tym', 3, GETDATE(), '64133507-5d5c-4f84-9734-e6265c3fa4e3'),
+(N'Like', 4, GETDATE(), '64133507-5d5c-4f84-9734-e6265c3fa4e3'),
+(N'Like', 5, GETDATE(), '64133507-5d5c-4f84-9734-e6265c3fa4e3');
 
 INSERT INTO RequestApproves (CommentId, Status, RequestedAt, CreatedAt) VALUES
-(1, 'APPROVED', GETDATE(), GETDATE()),
-(1, 'APPROVED', GETDATE(), GETDATE()),
 (2, 'APPROVED', GETDATE(), GETDATE()),
 (3, 'APPROVED', GETDATE(), GETDATE()),
 (4, 'APPROVED', GETDATE(), GETDATE()),
-(5, 'APPROVED', GETDATE(), GETDATE());*/
+(5, 'APPROVED', GETDATE(), GETDATE()),
+(6, 'APPROVED', GETDATE(), GETDATE()),
+(7, 'APPROVED', GETDATE(), GETDATE());

@@ -1619,7 +1619,7 @@ INSERT INTO Posts(Title, Description, PostCategoryId, Content, Image, CreatedAt,
 (N'Tin khuyến mãi 24/09/2025: Điện thoại iPhone, iQOO, OnePlus, OPPO giảm giá lên đến 2 triệu đồng', N'Điện thoại iPhone, iQOO, OnePlus, OPPO giảm giá lên đến 2 triệu đồng từ ngày 24/09 tại MobileCity. Hướng dẫn mua iPhone, iQOO, OnePlus, OPPO giá rẻ, Bảo hành 12 tháng, trả góp 0%.', 4, N'Danh sách điện thoại giảm giá iPhone Air 256GB giảm 2 triệu đồng Giá cũ: 31.450.000 - giá mới 29.250.000 ₫ iQOO 13 12/256GB giảm 200K Giá cũ: 12.850.000 - giá mới 12.650.000 ₫ OnePlus 13 12/256GB giảm 200K Giá cũ: 13.450.000 - giá mới 12.950.000 ₫ ', 'post11.jpg', GETDATE(), 'Published', '');
 
 
-
+/*
 INSERT INTO Comments (Content, PostId, CreatedAt, AccountId) VALUES
 (N'Like', 1, GETDATE(), '64133507-5d5c-4f84-9734-e6265c3fa4e3'),
 (N'Tym', 1, GETDATE(), '64133507-5d5c-4f84-9734-e6265c3fa4e3'),
@@ -1635,3 +1635,4 @@ INSERT INTO RequestApproves (CommentId, Status, RequestedAt, CreatedAt) VALUES
 (5, 'APPROVED', GETDATE(), GETDATE()),
 (6, 'APPROVED', GETDATE(), GETDATE()),
 (7, 'APPROVED', GETDATE(), GETDATE());
+*/

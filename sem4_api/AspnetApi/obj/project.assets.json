@@ -5283,11 +5283,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem3_csharp-master\\AspnetApi\\AspnetApi.csproj",
+      "projectUniqueName": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem4_api\\AspnetApi\\AspnetApi.csproj",
       "projectName": "AspnetApi",
-      "projectPath": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem3_csharp-master\\AspnetApi\\AspnetApi.csproj",
+      "projectPath": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem4_api\\AspnetApi\\AspnetApi.csproj",
       "packagesPath": "C:\\Users\\dn281\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem3_csharp-master\\AspnetApi\\obj\\",
+      "outputPath": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem4_api\\AspnetApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

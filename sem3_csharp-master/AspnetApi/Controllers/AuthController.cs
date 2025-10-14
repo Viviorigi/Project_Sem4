@@ -54,18 +54,18 @@ namespace AspnetApi.Controllers
 
                 IdentityResult? created = await _userManager.CreateAsync(newUser, user.Password);
 
-                var receiver = user.Email;
-                var subject = "Tạo tài khoản thành công.";
-                var message = "Tạo tài khoản thành công, trải nghiệm dịch vụ nhé.";
-
-                await _emailSender.SendEmailAsync(receiver, subject, message);
-
                 if (created.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(newUser, "User");
 
                     AuthResult authResult = await _jwtService.GenerateToken(newUser);
                     //return a token
+
+                    var receiver = user.Email;
+                    var subject = "Tạo tài khoản thành công.";
+                    var message = "Tạo tài khoản thành công, trải nghiệm dịch vụ nhé.";
+
+                    await _emailSender.SendEmailAsync(receiver, subject, message);
                     return Ok(authResult);
                 }
                 else

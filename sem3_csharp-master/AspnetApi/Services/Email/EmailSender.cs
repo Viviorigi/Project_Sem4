@@ -15,7 +15,7 @@ namespace AspnetApi.Services.Email
             };
 
             return client.SendMailAsync(
-                new MailMessage(from: "Project_Sem_4",
+                new MailMessage(from: "taun696969@gmail.com",
                                 to: email,
                                 subject,
                                 message

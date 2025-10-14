@@ -4,7 +4,9 @@ using AspnetApi.Dtos.Order;
 using AspnetApi.Dtos.Order.Request;
 using AspnetApi.Dtos.Order.Response;
 using AspnetApi.Models;
+using AspnetApi.Services.Email;
 using JwtToken.Dtos;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,13 +17,14 @@ namespace AspnetApi.Controllers
     public class OrderController : ControllerBase
     {
         private readonly ApiDbContext _context;
-
         private readonly ICommonService<Order> _commonService;
+        private readonly IEmailSender _emailSender;
 
-        public OrderController(ApiDbContext context, ICommonService<Order> commonService)
+        public OrderController(ApiDbContext context, ICommonService<Order> commonService, IEmailSender emailSender)
         {
             _context = context;
             _commonService = commonService;
+            _emailSender = emailSender;
         }
 
         // Create a new order
@@ -66,6 +69,18 @@ namespace AspnetApi.Controllers
             // Remove cart items for the user
             _context.CartItems.RemoveRange(cartItems);
             await _context.SaveChangesAsync();
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == order.UserId);
+            if (user == null)
+            {
+                return BadRequest(new { message = "User not found." });
+            }
+
+            var receiver = user.Email;
+            var subject = "Đặt hàng thành công.";
+            var message = "Đặt hàng thành công, trải nghiệm dịch vụ nhé.";
+
+            await _emailSender.SendEmailAsync(receiver, subject, message);
 
             return Ok(order);
         }

@@ -23,13 +23,8 @@ ios/build/
 .vs/
 
 # Windows
-*.exe
 *.dll
 *.pdb
-<<<<<<< HEAD
-*.cache
-=======
 *.cache
 
 
->>>>>>> f94c652583bee9b59690a0b8c8460958012a909b

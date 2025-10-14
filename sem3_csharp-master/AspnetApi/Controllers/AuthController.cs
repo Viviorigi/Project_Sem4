@@ -7,7 +7,6 @@ using AspnetApi.Services.Email;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using AspnetApi.Services.Email;
 
 namespace AspnetApi.Controllers
 {

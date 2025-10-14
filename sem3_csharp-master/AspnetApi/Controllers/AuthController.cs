@@ -3,6 +3,7 @@ using AspnetApi.Dtos.Auth.Request;
 using AspnetApi.Dtos.Auth.Response;
 using AspnetApi.Models;
 using AspnetApi.Services.Auth;
+using AspnetApi.Services.Email;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

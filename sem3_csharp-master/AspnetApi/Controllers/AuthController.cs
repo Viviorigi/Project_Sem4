@@ -6,6 +6,7 @@ using AspnetApi.Services.Auth;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using AspnetApi.Services.Email;
 
 namespace AspnetApi.Controllers
 {
@@ -17,12 +18,14 @@ namespace AspnetApi.Controllers
         private readonly UserManager<Account> _userManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _emailSender;
 
-        public AuthController(UserManager<Account> userManager, IJwtService jwtService, IMapper mapper)
+        public AuthController(UserManager<Account> userManager, IJwtService jwtService, IMapper mapper, IEmailSender emailSender)
         {
             _userManager = userManager;
             _jwtService = jwtService;
             _mapper = mapper;
+            _emailSender = emailSender;
         }
 
 
@@ -50,7 +53,12 @@ namespace AspnetApi.Controllers
 
                 IdentityResult? created = await _userManager.CreateAsync(newUser, user.Password);
 
-               
+                var receiver = user.Email;
+                var subject = "Tạo tài khoản thành công.";
+                var message = "Tạo tài khoản thành công, trải nghiệm dịch vụ nhé.";
+
+                await _emailSender.SendEmailAsync(receiver, subject, message);
+
                 if (created.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(newUser, "User");

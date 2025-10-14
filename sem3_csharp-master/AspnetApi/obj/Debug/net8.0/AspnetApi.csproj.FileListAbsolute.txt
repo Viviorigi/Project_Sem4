@@ -1322,3 +1322,15 @@ D:\doansem4\Project_Sem4\sem3_csharp-master\AspnetApi\obj\Debug\net8.0\refint\As
 D:\doansem4\Project_Sem4\sem3_csharp-master\AspnetApi\obj\Debug\net8.0\AspnetApi.pdb
 D:\doansem4\Project_Sem4\sem3_csharp-master\AspnetApi\obj\Debug\net8.0\AspnetApi.genruntimeconfig.cache
 D:\doansem4\Project_Sem4\sem3_csharp-master\AspnetApi\obj\Debug\net8.0\ref\AspnetApi.dll
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.csproj.AssemblyReference.cache
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.AssemblyInfoInputs.cache
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.AssemblyInfo.cs
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.csproj.CoreCompileInputs.cache
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.sourcelink.json
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\scopedcss\bundle\AspnetApi.styles.css
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.dll
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\refint\AspnetApi.dll
+C:\Users\dn281\Desktop\sem4\do_an_sem4\Sem4_api\AspnetApi\obj\Debug\net8.0\AspnetApi.pdb

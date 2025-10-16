@@ -142,7 +142,7 @@ export default function AddCategory({ hideForm, categoryDTO, onSave }: Props) {
                 style={{ width: "650px", backgroundColor: "#f5f5f5" }}
                 baseZIndex={1100}
             >
-                <h3>{isEdit ? "Edit Danh mục" : "Add Danh mục"}</h3>
+                <h3>{isEdit ? "Chỉnh danh mục" : "Thêm mới danh mục"}</h3>
 
                 <div className="row">
                     <div className="col-md-12 mb-5">

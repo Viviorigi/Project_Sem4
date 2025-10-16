@@ -184,9 +184,9 @@ export default function CategoryInfo({ info, onRefresh, closeDetail }: Props) {
             <thead>
               <tr>
                 <th className="text-center" style={{ width: '6%' }}>#</th>
-                <th className="text-center" style={{ width: '30%' }}>SẢN PHẨM</th>
-                <th className="text-center" style={{ width: '12%' }}>GIÁ</th>
-                <th className="text-center" style={{ width: '12%' }}>GIÁ KM</th>
+                <th className="text-center" style={{ width: '36%' }}>SẢN PHẨM</th>
+                <th className="text-center" style={{ width: '18%' }}>GIÁ</th>
+                {/* <th className="text-center" style={{ width: '12%' }}>GIÁ KM</th> */}
                 <th className="text-center" style={{ width: '16%' }}>NGÀY TẠO</th>
                 <th className="text-center" style={{ width: '12%' }}>TRẠNG THÁI</th>
               </tr>
@@ -213,7 +213,7 @@ export default function CategoryInfo({ info, onRefresh, closeDetail }: Props) {
                     </div>
                   </td>
                   <td className="text-center">{p.price?.toLocaleString?.('vi-VN')}</td>
-                  <td className="text-center">{p.salePrice?.toLocaleString?.('vi-VN')}</td>
+                  {/* <td className="text-center">{p.salePrice?.toLocaleString?.('vi-VN')}</td> */}
                   <td className="text-center">{formatDate(p.createdAt)}</td>
                   <td className="text-center">
                     <span className={

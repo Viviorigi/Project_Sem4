@@ -357,9 +357,9 @@ export default function Product() {
                   <thead>
                     <tr>
                       <th className="align-middle text-center" style={{ width: '5%' }}>#</th>
-                      <th className="align-middle text-center" style={{ width: '25%' }}>SẢN PHẨM</th>
-                      <th className="align-middle text-center" style={{ width: '10%' }}>GIÁ</th>
-                      <th className="align-middle text-center" style={{ width: '10%' }}>GIÁ KM</th>
+                      <th className="align-middle text-center" style={{ width: '30%' }}>SẢN PHẨM</th>
+                      <th className="align-middle text-center" style={{ width: '15%' }}>GIÁ</th>
+                      {/* <th className="align-middle text-center" style={{ width: '10%' }}>GIÁ KM</th> */}
                       <th className="align-middle text-center" style={{ width: '15%' }}>DANH MỤC</th>
                       <th className="align-middle text-center" style={{ width: '12%' }}>NGÀY TẠO</th>
                       <th className="align-middle text-center" style={{ width: '8%' }}>TRẠNG THÁI</th>
@@ -392,7 +392,7 @@ export default function Product() {
                         </td>
 
                         <td className="align-middle text-center">{p.price?.toLocaleString?.('vi-VN')}</td>
-                        <td className="align-middle text-center">{p.salePrice?.toLocaleString?.('vi-VN')}</td>
+                        {/* <td className="align-middle text-center">{p.salePrice?.toLocaleString?.('vi-VN')}</td> */}
                         <td className="align-middle text-center">{p.category?.categoryName ?? ''}</td>
                         <td className="align-middle text-center">{formatDate(p.createdAt)}</td>
 

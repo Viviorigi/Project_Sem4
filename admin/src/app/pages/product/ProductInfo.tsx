@@ -144,36 +144,35 @@ export default function ProductInfo({ info, onRefresh, closeDetail }: Props) {
                       <span className="badge bg-secondary me-2">
                         {info.category?.categoryName ?? 'Không có danh mục'}
                       </span>
-                      <span className="badge bg-light text-dark">
+                      {/* <span className="badge bg-light text-dark">
                         ID: {info.id}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Pricing & Dates */}
-              <div className="row pt-4">
+                       <div className="row pt-4">
                 <div className="col-6">
                   <h6 className="mb-1 text-800">Giá</h6>
                   <h4 className="fs-1 text-1000 mb-0">
                     {info.price?.toLocaleString?.('vi-VN') ?? 'N/A'}
                   </h4>
                 </div>
-                <div className="col-6">
-                  <h6 className="mb-1 text-800">Giá khuyến mãi</h6>
-                  <h4 className="fs-1 text-1000 mb-0">
-                    {info.salePrice?.toLocaleString?.('vi-VN') ?? '0'}
-                  </h4>
-                </div>
-              </div>
-
-              <div className="d-flex flex-between-center pt-4">
-                <div className="text-start">
+                 <div className="text-start col-6">
                   <h6 className="mb-2 text-800">Ngày tạo</h6>
                   <h4 className="fs-1 text-1000 mb-0">{formatDate(info.createdAt)}</h4>
                 </div>
               </div>
+
+                </div>
+              </div>
+
+              {/* Pricing & Dates */}
+         
+              {/* <div className="d-flex flex-between-center pt-4">
+                <div className="text-start">
+                  <h6 className="mb-2 text-800">Ngày tạo</h6>
+                  <h4 className="fs-1 text-1000 mb-0">{formatDate(info.createdAt)}</h4>
+                </div>
+              </div> */}
               {/* Description */}
               <div className="mt-4">
                 <h5 className="mb-2">Mô tả</h5>

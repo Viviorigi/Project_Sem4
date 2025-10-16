@@ -202,7 +202,7 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
     const fd = new FormData();
     fd.append("ProductName", form.productName.trim());
     fd.append("Price", form.price);
-    fd.append("SalePrice", form.salePrice || "0");
+    // fd.append("SalePrice", form.salePrice || "0");
     fd.append("Active", form.active);
     fd.append("CategoryId", form.categoryId);
     if (form.description?.trim())
@@ -283,7 +283,7 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
           <div className="col-md-6 mb-5">
             <div className="form-group mb-3">
               <label>
-                Product Name <span className="text-danger">(*)</span>
+                Tên sản phẩm <span className="text-danger">(*)</span>
               </label>
               <input
                 type="text"
@@ -297,7 +297,7 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
 
             <div className="form-group mb-3">
               <label>
-                Price <span className="text-danger">(*)</span>
+                Giá sản phẩm <span className="text-danger">(*)</span>
               </label>
               <input
                 type="text"
@@ -310,7 +310,7 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
               />
             </div>
 
-            <div className="form-group mb-3">
+            {/* <div className="form-group mb-3">
               <label>Sale Price</label>
               <input
                 type="text"
@@ -321,11 +321,11 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
                 onChange={handleText}
                 placeholder="Giá khuyến mãi (mặc định 0)"
               />
-            </div>
+            </div> */}
 
             <div className="form-group mb-3">
               <label>
-                Category <span className="text-danger">(*)</span>
+                Danh mục <span className="text-danger">(*)</span>
               </label>
               <select
                 name="categoryId"
@@ -343,7 +343,7 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
             </div>
 
             <div className="form-group mb-3">
-              <label>Active</label>
+              <label>Trạng thái</label>
               <select
                 name="active"
                 className="form-select"
@@ -359,7 +359,7 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
           {/* Column 2 */}
           <div className="col-md-6 mb-5">
             <div className="form-group mb-3">
-              <label>Description</label>
+              <label>Mô tả</label>
               <JoditEditor
                 value={form.description}
                 onChange={(content) =>
@@ -370,7 +370,7 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
 
             {/* Image */}
             <div className="form-group mb-3">
-              <label>Image (ảnh bìa)</label>
+              <label> Chọn ảnh</label>
               <br />
               <input type="file" accept="image/*" onChange={onMainImageChange} />
               {!!previewMain && (
@@ -390,7 +390,7 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
             </div>
 
             {/* Album */}
-            <div className="form-group mb-3">
+            {/* <div className="form-group mb-3">
               <label>Album (nhiều ảnh)</label>
               <br />
               <input type="file" multiple accept="image/*" onChange={onAlbumChange} />
@@ -423,7 +423,7 @@ export default function ProductForm({ hideForm, productDTO, onSave }: Props) {
                   ))}
                 </div>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
 

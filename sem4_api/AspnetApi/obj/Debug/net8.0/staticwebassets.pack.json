@@ -1,0 +1,177 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\iphone_11.jpg",
+      "PackagePath": "staticwebassets\\images\\iphone_11.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\iphone_11promax.jpg",
+      "PackagePath": "staticwebassets\\images\\iphone_11promax.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\iphone_12promax.jpg",
+      "PackagePath": "staticwebassets\\images\\iphone_12promax.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\iphone_13promax.jpg",
+      "PackagePath": "staticwebassets\\images\\iphone_13promax.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\iphone_15.jpg",
+      "PackagePath": "staticwebassets\\images\\iphone_15.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\iphone_15promax.jpg",
+      "PackagePath": "staticwebassets\\images\\iphone_15promax.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\oppo_k13.jpg",
+      "PackagePath": "staticwebassets\\images\\oppo_k13.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\oppo_n5.jpg",
+      "PackagePath": "staticwebassets\\images\\oppo_n5.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\oppo_x8ultra.jpg",
+      "PackagePath": "staticwebassets\\images\\oppo_x8ultra.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\oppo_x9plus.jpg",
+      "PackagePath": "staticwebassets\\images\\oppo_x9plus.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\oppo_x9pro.jpg",
+      "PackagePath": "staticwebassets\\images\\oppo_x9pro.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post1.jpg",
+      "PackagePath": "staticwebassets\\images\\post1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post10.jpg",
+      "PackagePath": "staticwebassets\\images\\post10.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post11.jpg",
+      "PackagePath": "staticwebassets\\images\\post11.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post2.jpg",
+      "PackagePath": "staticwebassets\\images\\post2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post3.jpg",
+      "PackagePath": "staticwebassets\\images\\post3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post4.jpg",
+      "PackagePath": "staticwebassets\\images\\post4.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post5.jpg",
+      "PackagePath": "staticwebassets\\images\\post5.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post6.jpg",
+      "PackagePath": "staticwebassets\\images\\post6.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post7.jpg",
+      "PackagePath": "staticwebassets\\images\\post7.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post8.jpg",
+      "PackagePath": "staticwebassets\\images\\post8.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\post9.jpg",
+      "PackagePath": "staticwebassets\\images\\post9.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\realme_15pro.jpg",
+      "PackagePath": "staticwebassets\\images\\realme_15pro.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\realme_gt7.jpg",
+      "PackagePath": "staticwebassets\\images\\realme_gt7.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\realme_gt7pro.jpg",
+      "PackagePath": "staticwebassets\\images\\realme_gt7pro.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\realme_neo7.jpg",
+      "PackagePath": "staticwebassets\\images\\realme_neo7.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\realme_neo7turbo.jpg",
+      "PackagePath": "staticwebassets\\images\\realme_neo7turbo.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\redmi_k80pro.jpg",
+      "PackagePath": "staticwebassets\\images\\redmi_k80pro.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\vivo_x100spro.jpg",
+      "PackagePath": "staticwebassets\\images\\vivo_x100spro.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\vivo_x100ultra.jpg",
+      "PackagePath": "staticwebassets\\images\\vivo_x100ultra.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\vivo_x200fe.jpg",
+      "PackagePath": "staticwebassets\\images\\vivo_x200fe.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\vivo_x200pro.jpg",
+      "PackagePath": "staticwebassets\\images\\vivo_x200pro.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\vivo_x200ultra.jpg",
+      "PackagePath": "staticwebassets\\images\\vivo_x200ultra.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\xiaomi_13.jpg",
+      "PackagePath": "staticwebassets\\images\\xiaomi_13.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\xiaomi_15tpro.jpg",
+      "PackagePath": "staticwebassets\\images\\xiaomi_15tpro.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\xiaomi_17.jpg",
+      "PackagePath": "staticwebassets\\images\\xiaomi_17.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\xiaomi_17pro.jpg",
+      "PackagePath": "staticwebassets\\images\\xiaomi_17pro.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\xiaomi_17promax.jpg",
+      "PackagePath": "staticwebassets\\images\\xiaomi_17promax.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.AspnetApi.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.AspnetApi.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.AspnetApi.props",
+      "PackagePath": "build\\AspnetApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.AspnetApi.props",
+      "PackagePath": "buildMultiTargeting\\AspnetApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.AspnetApi.props",
+      "PackagePath": "buildTransitive\\AspnetApi.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

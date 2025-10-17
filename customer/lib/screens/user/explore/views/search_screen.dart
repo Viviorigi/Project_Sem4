@@ -169,7 +169,7 @@ class _ShopComponent extends State<SearchScreen>{
                     children: products.map((e){
                       return  Container(
                         width: 180,
-                        child: CardProduct(image: '$imageUrl${e.image}' ,name: e.productName,price: e.price.toString(), product: e,),
+                        child: CardProduct(image: '$imageUrl${e.image}' ,name: e.productName,price: e.price, product: e,),
                       );
                     }).toList(),
                   )

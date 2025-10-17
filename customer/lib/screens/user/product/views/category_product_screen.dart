@@ -154,7 +154,7 @@ class _CategoryProduct extends State<CategoryProductScreen>{
                       children: products.map((product){
                         return Container(
                           width: 185,
-                          child: CardProduct(image: '$imageUrl${product.image}',name: product.productName,price: formatCurrency.format(product.price), product: product,),
+                          child: CardProduct(image: '$imageUrl${product.image}',name: product.productName,price: product.price, product: product,),
                         );
                       }).toList(),
                     )

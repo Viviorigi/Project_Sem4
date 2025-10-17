@@ -189,7 +189,7 @@ class _HomeState extends State<HomeComponent>{
                                 child: CardProduct(
                                     image: '$imageUrl${product.image}',
                                     name: product.productName,
-                                    price: formatCurrency.format(product.price),
+                                    price: product.price,
                                     product: product
                                     )
                               );

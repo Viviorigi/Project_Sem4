@@ -14,7 +14,7 @@ class CardProduct extends StatelessWidget {
 
   final String image;
   final String name;
-  final String price;
+  final double price;
 
   final Product product; // không nullable để tránh null khi push
 
@@ -27,6 +27,9 @@ class CardProduct extends StatelessWidget {
     required this.product,
   });
 
+  String get formattedPrice {
+    return formatCurrency.format(price);
+  }
 
   Future<void> _addToCart(BuildContext context) async {
     final pref = await SharedPreferences.getInstance();
@@ -86,7 +89,7 @@ class CardProduct extends StatelessWidget {
             children: <Widget>[
               // Ảnh
               SizedBox(
-                height: 100,
+                height: 150,
                 width: double.infinity,
                 child: Image.network(
                   image,
@@ -113,7 +116,7 @@ class CardProduct extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          price,
+                          formattedPrice,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),

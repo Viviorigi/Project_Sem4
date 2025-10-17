@@ -1,6 +1,26 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\11081d35-217e-408b-8b7d-53d9cd6b4380.jpg",
+      "PackagePath": "staticwebassets\\images\\11081d35-217e-408b-8b7d-53d9cd6b4380.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\1b278947-66ec-4e35-a4fb-b68ffea4f579.png",
+      "PackagePath": "staticwebassets\\images\\1b278947-66ec-4e35-a4fb-b68ffea4f579.png"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\74812757-3341-4829-896b-57cfb2799d7f.jpg",
+      "PackagePath": "staticwebassets\\images\\74812757-3341-4829-896b-57cfb2799d7f.jpg"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\7f4781bc-fb9f-4adc-82b1-090eae27596d.png",
+      "PackagePath": "staticwebassets\\images\\7f4781bc-fb9f-4adc-82b1-090eae27596d.png"
+    },
+    {
+      "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\c568a328-6b83-47b2-97c8-a14574dc8aa6.jpg",
+      "PackagePath": "staticwebassets\\images\\c568a328-6b83-47b2-97c8-a14574dc8aa6.jpg"
+    },
+    {
       "Id": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\iphone_11.jpg",
       "PackagePath": "staticwebassets\\images\\iphone_11.jpg"
     },

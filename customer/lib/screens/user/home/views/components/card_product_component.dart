@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+final formatCurrency = NumberFormat.currency(locale: "vi_VN", symbol: "₫");
+
 class CardProduct extends StatelessWidget {
 
   final String image;
@@ -16,6 +18,7 @@ class CardProduct extends StatelessWidget {
 
   final Product product; // không nullable để tránh null khi push
 
+
   const CardProduct({
     super.key,
     required this.image,
@@ -23,6 +26,12 @@ class CardProduct extends StatelessWidget {
     required this.price,
     required this.product,
   });
+
+  String get formattedPrice {
+    // chuyển giá từ String sang double (nếu cần)
+    double p = double.tryParse(price) ?? 0;
+    return formatCurrency.format(p);
+  }
 
   Future<void> _addToCart(BuildContext context) async {
     final pref = await SharedPreferences.getInstance();
@@ -109,7 +118,7 @@ class CardProduct extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          price,
+                          formattedPrice,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
@@ -135,3 +144,4 @@ class CardProduct extends StatelessWidget {
     );
   }
 }
+

@@ -5,7 +5,6 @@ import 'package:ecommerce_sem4/screens/user/cart/views/cart_screen.dart';
 import 'package:ecommerce_sem4/screens/user/category/views/category_screen.dart';
 import 'package:ecommerce_sem4/screens/user/explore/views/search_screen.dart';
 import 'package:ecommerce_sem4/screens/user/explore/views/shop_screen.dart';
-import 'package:ecommerce_sem4/screens/user/favourite/views/favourite_screen.dart';
 import 'package:ecommerce_sem4/screens/user/home/views/home_screen.dart';
 import 'package:ecommerce_sem4/screens/user/layout/views/layout_screen.dart';
 import 'package:ecommerce_sem4/screens/user/onboarding/views/onboarding_screen.dart';
@@ -61,10 +60,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case cartRoute:
       return MaterialPageRoute(
         builder: (context) => const CartScreen()
-      );
-    case favouriteRoute:
-      return MaterialPageRoute(
-        builder: (context) => const FavouriteScreen()
       );
     case accountRoute:
       return MaterialPageRoute(

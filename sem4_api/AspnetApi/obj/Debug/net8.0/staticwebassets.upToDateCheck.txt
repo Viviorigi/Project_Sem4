@@ -1,3 +1,8 @@
+wwwroot\images\11081d35-217e-408b-8b7d-53d9cd6b4380.jpg
+wwwroot\images\1b278947-66ec-4e35-a4fb-b68ffea4f579.png
+wwwroot\images\74812757-3341-4829-896b-57cfb2799d7f.jpg
+wwwroot\images\7f4781bc-fb9f-4adc-82b1-090eae27596d.png
+wwwroot\images\c568a328-6b83-47b2-97c8-a14574dc8aa6.jpg
 wwwroot\images\iphone_11.jpg
 wwwroot\images\iphone_11promax.jpg
 wwwroot\images\iphone_12promax.jpg

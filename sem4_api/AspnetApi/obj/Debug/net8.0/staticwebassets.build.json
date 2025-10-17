@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "C5OONneOZozNSWp9TXHRuUnpt6mQDbeV0PmPQmC4liY=",
+  "Hash": "mD1iGxeN9ziIMsdsTC8PRO3gLML3U86JrDHc/z4Dqwo=",
   "Source": "AspnetApi",
   "BasePath": "_content/AspnetApi",
   "Mode": "Default",
@@ -16,6 +16,111 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\11081d35-217e-408b-8b7d-53d9cd6b4380.jpg",
+      "SourceId": "AspnetApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\",
+      "BasePath": "_content/AspnetApi",
+      "RelativePath": "images/11081d35-217e-408b-8b7d-53d9cd6b4380#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "i2l9vwywx6",
+      "Integrity": "6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\11081d35-217e-408b-8b7d-53d9cd6b4380.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\1b278947-66ec-4e35-a4fb-b68ffea4f579.png",
+      "SourceId": "AspnetApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\",
+      "BasePath": "_content/AspnetApi",
+      "RelativePath": "images/1b278947-66ec-4e35-a4fb-b68ffea4f579#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hupgoo8kr2",
+      "Integrity": "JyHFJLDAW37b3xSB+zL8QFHar8dT5QSfwigRbaywiuU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\1b278947-66ec-4e35-a4fb-b68ffea4f579.png"
+    },
+    {
+      "Identity": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\74812757-3341-4829-896b-57cfb2799d7f.jpg",
+      "SourceId": "AspnetApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\",
+      "BasePath": "_content/AspnetApi",
+      "RelativePath": "images/74812757-3341-4829-896b-57cfb2799d7f#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "i2l9vwywx6",
+      "Integrity": "6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\74812757-3341-4829-896b-57cfb2799d7f.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\7f4781bc-fb9f-4adc-82b1-090eae27596d.png",
+      "SourceId": "AspnetApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\",
+      "BasePath": "_content/AspnetApi",
+      "RelativePath": "images/7f4781bc-fb9f-4adc-82b1-090eae27596d#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "xuag2kxcdb",
+      "Integrity": "B0NXjRsl94qr7hPI67StdfhgmcJ7H9rIp4la667ft5Q=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\7f4781bc-fb9f-4adc-82b1-090eae27596d.png"
+    },
+    {
+      "Identity": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\c568a328-6b83-47b2-97c8-a14574dc8aa6.jpg",
+      "SourceId": "AspnetApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\",
+      "BasePath": "_content/AspnetApi",
+      "RelativePath": "images/c568a328-6b83-47b2-97c8-a14574dc8aa6#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "i2l9vwywx6",
+      "Integrity": "6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\c568a328-6b83-47b2-97c8-a14574dc8aa6.jpg"
+    },
     {
       "Identity": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\iphone_11.jpg",
       "SourceId": "AspnetApi",
@@ -816,6 +921,416 @@
     }
   ],
   "Endpoints": [
+    {
+      "Route": "images/11081d35-217e-408b-8b7d-53d9cd6b4380.i2l9vwywx6.jpg",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\11081d35-217e-408b-8b7d-53d9cd6b4380.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "70772"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 08:45:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "i2l9vwywx6"
+        },
+        {
+          "Name": "label",
+          "Value": "images/11081d35-217e-408b-8b7d-53d9cd6b4380.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y="
+        }
+      ]
+    },
+    {
+      "Route": "images/11081d35-217e-408b-8b7d-53d9cd6b4380.jpg",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\11081d35-217e-408b-8b7d-53d9cd6b4380.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "70772"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 08:45:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y="
+        }
+      ]
+    },
+    {
+      "Route": "images/1b278947-66ec-4e35-a4fb-b68ffea4f579.hupgoo8kr2.png",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\1b278947-66ec-4e35-a4fb-b68ffea4f579.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3305"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JyHFJLDAW37b3xSB+zL8QFHar8dT5QSfwigRbaywiuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 08:44:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hupgoo8kr2"
+        },
+        {
+          "Name": "label",
+          "Value": "images/1b278947-66ec-4e35-a4fb-b68ffea4f579.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-JyHFJLDAW37b3xSB+zL8QFHar8dT5QSfwigRbaywiuU="
+        }
+      ]
+    },
+    {
+      "Route": "images/1b278947-66ec-4e35-a4fb-b68ffea4f579.png",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\1b278947-66ec-4e35-a4fb-b68ffea4f579.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3305"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"JyHFJLDAW37b3xSB+zL8QFHar8dT5QSfwigRbaywiuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 08:44:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-JyHFJLDAW37b3xSB+zL8QFHar8dT5QSfwigRbaywiuU="
+        }
+      ]
+    },
+    {
+      "Route": "images/74812757-3341-4829-896b-57cfb2799d7f.i2l9vwywx6.jpg",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\74812757-3341-4829-896b-57cfb2799d7f.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "70772"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 08:42:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "i2l9vwywx6"
+        },
+        {
+          "Name": "label",
+          "Value": "images/74812757-3341-4829-896b-57cfb2799d7f.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y="
+        }
+      ]
+    },
+    {
+      "Route": "images/74812757-3341-4829-896b-57cfb2799d7f.jpg",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\74812757-3341-4829-896b-57cfb2799d7f.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "70772"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 08:42:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y="
+        }
+      ]
+    },
+    {
+      "Route": "images/7f4781bc-fb9f-4adc-82b1-090eae27596d.png",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\7f4781bc-fb9f-4adc-82b1-090eae27596d.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "113348"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"B0NXjRsl94qr7hPI67StdfhgmcJ7H9rIp4la667ft5Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 09:02:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-B0NXjRsl94qr7hPI67StdfhgmcJ7H9rIp4la667ft5Q="
+        }
+      ]
+    },
+    {
+      "Route": "images/7f4781bc-fb9f-4adc-82b1-090eae27596d.xuag2kxcdb.png",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\7f4781bc-fb9f-4adc-82b1-090eae27596d.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "113348"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"B0NXjRsl94qr7hPI67StdfhgmcJ7H9rIp4la667ft5Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 09:02:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xuag2kxcdb"
+        },
+        {
+          "Name": "label",
+          "Value": "images/7f4781bc-fb9f-4adc-82b1-090eae27596d.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-B0NXjRsl94qr7hPI67StdfhgmcJ7H9rIp4la667ft5Q="
+        }
+      ]
+    },
+    {
+      "Route": "images/c568a328-6b83-47b2-97c8-a14574dc8aa6.i2l9vwywx6.jpg",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\c568a328-6b83-47b2-97c8-a14574dc8aa6.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "70772"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 08:47:19 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "i2l9vwywx6"
+        },
+        {
+          "Name": "label",
+          "Value": "images/c568a328-6b83-47b2-97c8-a14574dc8aa6.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y="
+        }
+      ]
+    },
+    {
+      "Route": "images/c568a328-6b83-47b2-97c8-a14574dc8aa6.jpg",
+      "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\c568a328-6b83-47b2-97c8-a14574dc8aa6.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "70772"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 08:47:19 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-6vEWrS0G/u9Y+ZTfVSIoVwNEae5d2UUre10WLr9H13Y="
+        }
+      ]
+    },
     {
       "Route": "images/iphone_11.gxynjxxq9e.jpg",
       "AssetFile": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\wwwroot\\images\\iphone_11.jpg",

@@ -27,11 +27,6 @@ class CardProduct extends StatelessWidget {
     required this.product,
   });
 
-  String get formattedPrice {
-    // chuyển giá từ String sang double (nếu cần)
-    double p = double.tryParse(price) ?? 0;
-    return formatCurrency.format(p);
-  }
 
   Future<void> _addToCart(BuildContext context) async {
     final pref = await SharedPreferences.getInstance();
@@ -118,7 +113,7 @@ class CardProduct extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          formattedPrice,
+                          price,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),

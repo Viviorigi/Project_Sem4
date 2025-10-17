@@ -146,10 +146,6 @@ class _ProductDetail extends State<ProductDetailScreen> {
                                         color: Colors.black87),
                                   ),
                                 ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.favorite_border),
-                                ),
                               ],
                             ),
                             const SizedBox(height: 8),

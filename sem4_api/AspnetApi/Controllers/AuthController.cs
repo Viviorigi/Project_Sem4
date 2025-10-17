@@ -61,8 +61,78 @@ namespace AspnetApi.Controllers
                     //return a token
 
                     var receiver = user.Email;
-                    var subject = "Tạo tài khoản thành công.";
-                    var message = "Tạo tài khoản thành công, trải nghiệm dịch vụ nhé.";
+                    var subject = "🎉 Chào mừng bạn đến với PhoneStore!";
+                    var message = $@"
+                    <!DOCTYPE html>
+                    <html lang='vi'>
+                    <head>
+                    <meta charset='UTF-8'>
+                    <style>
+                      body {{
+                        font-family: 'Segoe UI', Arial, sans-serif;
+                        background-color: #f6f8fb;
+                        color: #333;
+                        margin: 0;
+                        padding: 20px;
+                      }}
+                      .mail-box {{
+                        max-width: 420px;
+                        margin: auto;
+                        background: #ffffff;
+                        border-radius: 12px;
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+                        overflow: hidden;
+                      }}
+                      .header {{
+                        background: linear-gradient(120deg, #0d6efd, #6610f2);
+                        color: white;
+                        text-align: center;
+                        padding: 18px;
+                      }}
+                      .header h1 {{
+                        font-size: 22px;
+                        margin: 0;
+                      }}
+                      .content {{
+                        padding: 24px 20px;
+                        text-align: center;
+                      }}
+                      .content h2 {{
+                        color: #0d6efd;
+                        font-size: 18px;
+                        margin-bottom: 10px;
+                      }}
+                      .content p {{
+                        font-size: 15px;
+                        line-height: 1.6;
+                        margin: 0;
+                      }}
+                      .footer {{
+                        text-align: center;
+                        font-size: 13px;
+                        color: #777;
+                        padding: 12px;
+                        border-top: 1px solid #eee;
+                      }}
+                    </style>
+                    </head>
+                    <body>
+                      <div class='mail-box'>
+                        <div class='header'>
+                          <h1>PhoneStore</h1>
+                        </div>
+                        <div class='content'>
+                          <h2>Xin chào {user.Username} 👋</h2>
+                          <p>Cảm ơn bạn đã đăng ký tài khoản tại <strong>PhoneStore</strong>.</p>
+                          <p>Tài khoản của bạn đã được tạo thành công. Chúc bạn có trải nghiệm mua sắm tuyệt vời! 🎉</p>
+                        </div>
+                        <div class='footer'>
+                          © 2025 PhoneStore. Cảm ơn bạn đã đồng hành cùng chúng tôi.
+                        </div>
+                      </div>
+                    </body>
+                    </html>";
+
 
                     await _emailSender.SendEmailAsync(receiver, subject, message);
                     return Ok(authResult);

@@ -9,6 +9,8 @@ using JwtToken.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using System.Text;
 
 namespace AspnetApi.Controllers
 {
@@ -31,29 +33,23 @@ namespace AspnetApi.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateOrder(Order order)
         {
-            // Fetch the cart for the user
+            // Lấy giỏ hàng của user
             var cart = await _context.Carts
-                .Include(c => c.CartItems) // Ensure cart items are loaded
-                .FirstOrDefaultAsync(c => c.UserId.Equals(order.UserId));
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.UserId == order.UserId);
 
             if (cart == null)
-            {
                 return NotFound(new { message = "Cart not found for the user." });
-            }
 
-            // Retrieve cart items
-            var cartItems = cart.CartItems.ToList();
-
+            var cartItems = cart.CartItems?.ToList() ?? new List<CartItem>();
             if (cartItems.Count == 0)
-            {
-                return new JsonResult("No products in the cart.");
-            }
+                return BadRequest(new { message = "No products in the cart." });
 
-            // Add the order
+            // Lưu Order (để có Order.Id)
             _context.Order.Add(order);
-            await _context.SaveChangesAsync(); // Save changes to generate order Id
+            await _context.SaveChangesAsync();
 
-            // Create OrderItems from CartItems
+            // Tạo OrderItems từ CartItems
             var orderItems = cartItems.Select(item => new OrderItem
             {
                 OrderId = order.Id,
@@ -62,25 +58,146 @@ namespace AspnetApi.Controllers
                 Price = item.Price
             }).ToList();
 
-            // Add OrderItems to the database
             await _context.OrderItems.AddRangeAsync(orderItems);
             await _context.SaveChangesAsync();
 
-            // Remove cart items for the user
+            // Xóa giỏ hàng
             _context.CartItems.RemoveRange(cartItems);
             await _context.SaveChangesAsync();
 
+            // Lấy thông tin user
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == order.UserId);
             if (user == null)
-            {
                 return BadRequest(new { message = "User not found." });
-            }
 
-            var receiver = user.Email;
-            var subject = "Đặt hàng thành công.";
-            var message = "Đặt hàng thành công, trải nghiệm dịch vụ nhé.";
+            // JOIN để lấy tên sản phẩm hiển thị
+            var productLookup = await _context.Products
+                .Where(p => orderItems.Select(oi => oi.ProductId).Contains(p.Id))
+                .Select(p => new { p.Id, p.ProductName })
+                .ToListAsync();
 
-            await _emailSender.SendEmailAsync(receiver, subject, message);
+            var details = (from oi in orderItems
+                           join p in productLookup on oi.ProductId equals p.Id
+                           select new
+                           {
+                               Name = p.ProductName,
+                               oi.Quantity,
+                               oi.Price,
+                               Subtotal = oi.Price * oi.Quantity
+                           }).ToList();
+
+            // Tính tổng
+            float subtotal = details.Sum(x => x.Subtotal);  
+            float grandTotal = subtotal ;
+
+            // Định dạng tiền tệ VN
+            var vi = new CultureInfo("vi-VN");
+            string Money(float v) => string.Format(vi, "{0:c0}", v);
+
+            // Chuẩn bị HTML email
+            var sb = new StringBuilder($@"
+                    <!DOCTYPE html>
+                    <html lang='vi'>
+                    <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1' />
+                    <style>
+                      body {{
+                        font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+                        background:#f6f8fb; color:#333; margin:0; padding:16px;
+                      }}
+                      .wrap {{
+                        max-width:600px; margin:0 auto; background:#fff; border-radius:12px;
+                        box-shadow:0 4px 12px rgba(0,0,0,0.08); overflow:hidden;
+                      }}
+                      .header {{
+                        background:linear-gradient(120deg,#0d6efd,#6610f2);
+                        color:#fff; text-align:center; padding:18px 14px;
+                      }}
+                      .header h1 {{ font-size:20px; margin:0; }}
+                      .section {{ padding:18px 18px 6px 18px; }}
+                      .muted {{ color:#666; font-size:14px; }}
+                      .table {{
+                        width:100%; border-collapse:collapse; margin-top:8px; font-size:14px;
+                      }}
+                      .table th, .table td {{
+                        border-bottom:1px solid #eee; padding:10px 8px; text-align:left;
+                      }}
+                      .table th {{ background:#fafafa; font-weight:600; }}
+                      .right {{ text-align:right; }}
+                      .total-row td {{ font-weight:700; }}
+                      .footer {{
+                        border-top:1px solid #eee; text-align:center; padding:12px; font-size:12px; color:#777;
+                      }}
+                      @media (max-width: 480px) {{
+                        .table th, .table td {{ padding:8px 6px; }}
+                      }}
+                    </style>
+                    </head>
+                    <body>
+                      <div class='wrap'>
+                        <div class='header'>
+                          <h1>✅ Xác nhận đặt hàng thành công</h1>
+                        </div>
+
+                        <div class='section'>
+                          <p>Xin chào {(user.Email ?? user.UserName)},</p>
+                          <p>Cảm ơn bạn đã đặt hàng tại <strong>PhoneStore</strong>.</p>
+                          <p class='muted'>
+                            Mã đơn: <strong>#{order.Id:000000}</strong><br/>
+                            Ngày đặt: {DateTime.Now.ToString("dd/MM/yyyy HH:mm", vi)}
+                          </p>
+
+                          <table class='table'>
+                            <thead>
+                              <tr>
+                                <th>Sản phẩm</th>
+                                <th class='right'>SL</th>
+                                <th class='right'>Đơn giá</th>
+                                <th class='right'>Thành tiền</th>
+                              </tr>
+                            </thead>
+                            <tbody>");
+
+                                foreach (var d in details)
+                                {
+                                    sb.Append($@"
+                              <tr>
+                                <td>{System.Net.WebUtility.HtmlEncode(d.Name)}</td>
+                                <td class='right'>{d.Quantity}</td>
+                                <td class='right'>{Money(d.Price)}</td>
+                                <td class='right'>{Money(d.Subtotal)}</td>
+                              </tr>");
+                                }
+
+                                sb.Append($@"
+                              <tr>
+                                <td colspan='3' class='right'>Tạm tính</td>
+                                <td class='right'>{Money(subtotal)}</td>
+                              </tr>
+                              <tr class='total-row'>
+                                <td colspan='3' class='right'>Tổng cộng</td>
+                                <td class='right'>{Money(grandTotal)}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                          <p class='muted' style='margin-top:12px'>
+                            Lưu ý: Bộ phận chăm sóc khách hàng sẽ liên hệ để xác nhận và sắp xếp giao hàng sớm nhất.
+                          </p>
+                        </div>
+
+                        <div class='footer'>
+                          © {DateTime.Now:yyyy} PhoneStore — Cảm ơn bạn đã tin tưởng chúng tôi.
+                        </div>
+                      </div>
+                    </body>
+                    </html>");
+
+            var subject = $"Xác nhận đơn hàng #{order.Id:000000}";
+            var htmlMessage = sb.ToString();
+
+            await _emailSender.SendEmailAsync(user.Email, subject, htmlMessage);
 
             return Ok(order);
         }

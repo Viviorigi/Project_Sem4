@@ -5277,23 +5277,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dn281\\.nuget\\packages\\": {},
+    "C:\\Users\\duong\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem4_api\\AspnetApi\\AspnetApi.csproj",
+      "projectUniqueName": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\AspnetApi.csproj",
       "projectName": "AspnetApi",
-      "projectPath": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem4_api\\AspnetApi\\AspnetApi.csproj",
-      "packagesPath": "C:\\Users\\dn281\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dn281\\Desktop\\sem4\\do_an_sem4\\sem4_api\\AspnetApi\\obj\\",
+      "projectPath": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\AspnetApi.csproj",
+      "packagesPath": "C:\\Users\\duong\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\duong\\OneDrive\\Desktop\\sem_4\\Project_Sem4\\sem4_api\\AspnetApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\dn281\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\duong\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -5320,7 +5320,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net8.0": {
@@ -5388,7 +5388,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.204/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

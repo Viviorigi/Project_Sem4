@@ -16,6 +16,7 @@ class CardProduct extends StatelessWidget {
 
   final Product product; // không nullable để tránh null khi push
 
+
   const CardProduct({
     super.key,
     required this.image,
@@ -23,6 +24,7 @@ class CardProduct extends StatelessWidget {
     required this.price,
     required this.product,
   });
+
 
   Future<void> _addToCart(BuildContext context) async {
     final pref = await SharedPreferences.getInstance();
@@ -135,3 +137,4 @@ class CardProduct extends StatelessWidget {
     );
   }
 }
+

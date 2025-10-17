@@ -183,7 +183,7 @@ export default function RequestComments() {
       text: 'Duyệt comment này?',
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Approve',
+      confirmButtonText: 'Chấp nhận',
       cancelButtonText: 'Hủy',
       confirmButtonColor: '#4caf50',
     }).then(async r => {

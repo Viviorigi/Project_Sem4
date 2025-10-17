@@ -308,7 +308,7 @@ export default function Post() {
                   <th className="text-center" style={{ width: "5%" }}>#</th>
                   <th className="text-center" style={{ width: "8%" }}>ID</th>
                   <th style={{ width: "25%" }}>Tiêu đề</th>
-                  <th className="text-center" style={{ width: "10%" }}>Danh mục</th>
+                  {/* <th className="text-center" style={{ width: "10%" }}>Danh mục</th> */}
                   <th className="text-center" style={{ width: "12%" }}>Trạng thái</th>
                   <th className="text-center" style={{ width: "20%" }}>Ngày tạo</th>
                   <th className="text-center" style={{ width: "20%" }}>Hành động</th>
@@ -317,10 +317,10 @@ export default function Post() {
               <tbody className="text-center">
                 {list.map((u, idx) => (
                   <tr key={u.id}>
-                    <td className="align-middle text-end">{indexOfFirstItem + idx + 1}</td>
+                    <td className="align-middle text-center">{indexOfFirstItem + idx + 1}</td>
                     <td className="align-middle">{u.id}</td>
                     <td className="align-middle text-start">{u.title}</td>
-                    <td className="align-middle">{u.postCategoryId}</td>
+                    {/* <td className="align-middle">{u.postCategoryId}</td> */}
                     <td className="align-middle">
                       <span className={`badge ${u.status?.toUpperCase() === "PUBLISH" || u.status === "Published" ? "bg-success" : "bg-secondary"}`}>
                         {u.status || "N/A"}

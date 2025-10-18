@@ -65,6 +65,12 @@ export default function Login() {
       return false;
     }
 
+    if(loginRequest.email=="user@gmail.com"){
+      toast.error("You don't have permission");
+      setLoginState();
+      return false;
+    }
+
     return true;
   };
   
